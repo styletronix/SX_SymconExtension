@@ -1,0 +1,39 @@
+{
+  "elements": [
+
+  ],
+    "actions":
+    [
+      {
+        "type": "Button",
+        "label": "AUS",
+        "onClick": "SXGRP_SetState($id, false);"
+      },
+      {
+        "type": "Button",
+        "label": "AN",
+        "onClick": "SXGRP_SetState($id, true);"
+      },
+      {
+        "type": "Button",
+        "label": "Alarm-Modus",
+        "onClick": "SXGRP_SetAlertState($id, true);"
+      },
+       {
+        "type": "Button",
+        "label": "Normal-Modus",
+        "onClick": "SXGRP_SetAlertState($id, false);"
+      },
+       {
+        "type": "Button",
+        "label": "Geräte aktualisieren",
+        "onClick": "SXGRP_UpdateEvents($id);"
+      }
+    ],
+    "status":
+    [
+        { "code": 102, "icon": "active", "caption": "OK" },
+        { "code": 201, "icon": "error", "caption": "Authentication failed" },
+        { "code": 202, "icon": "error", "caption": "No credits left" }
+    ]
+}

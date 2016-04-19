@@ -1,0 +1,15 @@
+{
+  "elements": [
+  ],
+    "actions":
+    [
+    ],
+    "status":
+    [
+      {
+        "code": 102,
+        "icon": "active",
+        "caption": "OK"
+      }
+    ]
+}

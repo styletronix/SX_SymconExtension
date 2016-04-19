@@ -1,0 +1,66 @@
+{
+  "elements": [
+    {
+      "type": "NumberSpinner",
+      "name": "AutoLockDelay",
+      "caption": "AutoLockDelay"
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "DoorOpenerTime",
+      "caption": "Türöffner Dauer"
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "MaxOpenTime",
+      "caption": "Türöffner maximale Dauer"
+    },
+      {
+      "type": "CheckBox",
+      "name": "UnlockOnly",
+      "caption": "KeyMatic nur entriegeln ohne zu öffnen"
+    }
+  ],
+    "actions":
+    [
+      {
+        "type": "Button",
+        "label": "Geräte aktualisieren",
+        "onClick": "SXSecKey_UpdateEvents($id);"
+      },
+      {
+        "type": "Button",
+        "label": "Türe öffnen",
+        "onClick": "SXSecKey_OpenDoor($id, false);"
+      },
+      {
+        "type": "Button",
+        "label": "Türe dauerhaft öffnen",
+        "onClick": "SXSecKey_OpenDoor($id, true);"
+      },
+      {
+        "type": "Button",
+        "label": "Türe schließen",
+        "onClick": "SXSecKey_CloseDoor($id);"
+      },
+      {
+        "type": "Button",
+        "label": "Türe verriegeln",
+        "onClick": "SXSecKey_LockDoor($id);"
+      },
+      {
+        "type": "Button",
+        "label": "Autolock an",
+        "onClick": "SXSecKey_SetAutoLockState($id, true);"
+      },
+      {
+        "type": "Button",
+        "label": "Autolock aus",
+        "onClick": "SXSecKey_SetAutoLockState($id, false);"
+      }
+    ],
+    "status":
+    [
+        { "code": 102, "icon": "active", "caption": "OK" }
+    ]
+}

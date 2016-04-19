@@ -1,0 +1,40 @@
+{
+  "elements": [
+    {
+      "type": "ValidationTextBox",
+      "name": "IPAddress",
+      "caption": "IP-Adresse oder Host"
+    },
+    {
+      "type": "ValidationTextBox",
+      "name": "MACAddress",
+      "caption": "MAC Adresse"
+    },
+    {
+      "type": "ValidationTextBox",
+      "name": "BroadcastAddress",
+      "caption": "Broadcast Adresse"
+    },
+    {
+      "type": "IntervalBox",
+      "name": "TestInterval",
+      "caption": "Sekunden"
+    }
+  ],
+    "actions":
+    [
+       {
+        "type": "Button",
+        "label": "Ereignisse aktualisieren",
+        "onClick": "SXwol_UpdateEvents($id);"
+      }
+    ],
+    "status":
+    [
+      {
+        "code": 102,
+        "icon": "active",
+        "caption": "OK"
+      }
+    ]
+}

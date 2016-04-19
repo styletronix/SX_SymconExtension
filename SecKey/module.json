@@ -1,0 +1,13 @@
+{
+    "id": "{6054E2AA-CD66-4223-A70E-18027B2FA54A}",
+    "name": "KeyMatic",
+    "type": 3,
+    "vendor": "Styletronix.net",
+  "aliases": [
+    "KeyMatic"
+  ],  
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "SXSecKey"
+}

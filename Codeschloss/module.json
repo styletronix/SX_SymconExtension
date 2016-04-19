@@ -1,0 +1,13 @@
+{
+    "id": "{19B4C27D-0AB4-438F-A252-7F687B4982C6}",
+    "name": "Codeschloss",
+    "type": 3,
+    "vendor": "Styletronix.net",
+  "aliases": [
+    "Codeschloss"
+  ],  
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "SXCode"
+}

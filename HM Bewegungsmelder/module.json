@@ -1,0 +1,13 @@
+{
+    "id": "{C01F2B02-4C2E-42C3-A223-813877CD1AF8}",
+    "name": "HM_Taster_mit_Bewegungsmelder",
+    "type": 3,
+    "vendor": "Styletronix.net",
+  "aliases": [
+    "HM_Taster_mit_Bewegungsmelder"
+  ],  
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "SX"
+}

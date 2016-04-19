@@ -1,0 +1,13 @@
+{
+    "id": "{1A65D909-D832-4FFD-BE4C-0F134DC04282}",
+    "name": "Gruppensteuerung",
+    "type": 3,
+    "vendor": "Styletronix.net",
+  "aliases": [
+    "Gruppensteuerung"
+  ],  
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "SXGRP"
+}

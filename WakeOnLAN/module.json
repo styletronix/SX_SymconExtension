@@ -1,0 +1,13 @@
+{
+    "id": "{00E8BC05-66E7-4F5E-A0F3-ABDF54E6044A}",
+    "name": "WakeOnLAN",
+    "type": 3,
+    "vendor": "Styletronix.net",
+  "aliases": [
+    "WakeOnLAN"
+  ],  
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "SXwol"
+}
