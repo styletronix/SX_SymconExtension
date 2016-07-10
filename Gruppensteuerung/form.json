@@ -1,6 +1,14 @@
 {
   "elements": [
-
+    {
+      "type": "Label",
+      "label": "Geben Sie eine Kategorie oder Instanz an, die Verknüpfungen mit Variablen enthält, die als Gruppe geschaltet werden sollen."
+    },
+    {
+      "type": "SelectObject",
+      "name": "DeviceCategory",
+      "caption": "Geräteliste"
+    }
   ],
     "actions":
     [
@@ -16,12 +24,12 @@
       },
       {
         "type": "Button",
-        "label": "Alarm-Modus",
+        "label": "Alarm-Modus aktivieren",
         "onClick": "SXGRP_SetAlertState($id, true);"
       },
        {
         "type": "Button",
-        "label": "Normal-Modus",
+        "label": "Alarm-Modus deaktivieren",
         "onClick": "SXGRP_SetAlertState($id, false);"
       },
        {

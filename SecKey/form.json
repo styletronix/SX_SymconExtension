@@ -1,24 +1,54 @@
 {
   "elements": [
+        {
+      "type": "Label",
+      "label": "Wählen Sie die Instanz des 1. Kanals der KeyMatic aus."
+    },
     {
-      "type": "NumberSpinner",
+      "type": "SelectInstance",
+      "name": "SecKeyID",
+      "caption": "SecKey Kanal 1"
+    },
+    {
+      "type": "Label",
+      "label": "Automatische verriegelung nach dem schließen der Türe."
+    },
+    {
+      "type": "IntervalBox",
       "name": "AutoLockDelay",
-      "caption": "AutoLockDelay"
+      "caption": "Sekunden"
     },
     {
-      "type": "NumberSpinner",
+      "type": "Label",
+      "label": "Dauer für Türöffner"
+    },
+    {
+      "type": "IntervalBox",
       "name": "DoorOpenerTime",
-      "caption": "Türöffner Dauer"
+      "caption": "Sekunden"
     },
     {
-      "type": "NumberSpinner",
-      "name": "MaxOpenTime",
-      "caption": "Türöffner maximale Dauer"
+      "type": "Label",
+      "label": "Dauer für Türöffner bei maximaler Öffnungszeit. Nur relevant für automatische Türsteuerungen."
     },
-      {
+        {
+      "type": "IntervalBox",
+      "name": "MaxOpenTime",
+      "caption": "Sekunden"
+    },
+    {
       "type": "CheckBox",
       "name": "UnlockOnly",
-      "caption": "KeyMatic nur entriegeln ohne zu öffnen"
+      "caption": "KeyMatic nur entriegeln"
+    },
+    {
+      "type": "Label",
+      "label": "maximale Verzögerung zwischen Aufschließen und Türöffner"
+    },
+            {
+      "type": "IntervalBox",
+      "name": "DoorOpenDelay",
+      "caption": "Sekunden"
     }
   ],
     "actions":

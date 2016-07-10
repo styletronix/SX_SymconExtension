@@ -9,6 +9,8 @@ class KeyMatic extends IPSModule {
             parent::Create();
 
 			$this->RegisterVariableBoolean("AutoLock", "Automatisch verriegeln", "~Switch");
+            $this->EnableAction("AutoLock");
+
 			$this->RegisterVariableBoolean("DoorLocked", "Türe verriegelt", "~Switch");
 			$this->RegisterVariableBoolean("DoorClosed", "Türe geschlossen", "~Switch");
 
@@ -16,16 +18,32 @@ class KeyMatic extends IPSModule {
 			$this->RegisterPropertyFloat("DoorOpenerTime", 1.0);
 			$this->RegisterPropertyFloat("MaxOpenTime", 1.0);
 			$this->RegisterPropertyBoolean("UnlockOnly", false);
+            $this->RegisterPropertyInteger("SecKeyID", false);
+            $this->RegisterPropertyInteger("DoorOpenDelay", 10);
 
 			$this->RegisterTimer("AutoLockDelay", 0, "SXSecKey_LockDoor(".$this->InstanceID.");");
 			$this->RegisterTimer("MaxOpenTimeDelay", 0, "SXSecKey_CloseDoor(".$this->InstanceID.");");
 
-			@$CategoryID = IPS_GetCategoryIDByName("Sec-Key", $this->InstanceID);
-			if ($CategoryID == false){
-				$CategoryID = IPS_CreateCategory();
-				IPS_SetName($CategoryID, "Sec-Key");
-				IPS_SetParent($CategoryID, $this->InstanceID);
-			}
+
+            //Automatisches Versionsupdate
+            $KeyMaticID = 0;
+            if ($this->ReadPropertyInteger("SecKeyID") == false){
+                @$CategoryID = IPS_GetCategoryIDByName("Sec-Key", $this->InstanceID);
+                if ($CategoryID !== false){
+                    foreach(IPS_GetChildrenIDs($SecKeyID) as $LinkID){
+                        $itemObject = IPS_GetObject($LinkID);
+
+                        if ($itemObject["ObjectType"] == 6){
+                            $TargetID = IPS_GetLink($LinkID)["TargetID"];
+                        }else{
+                            $TargetID = $LinkID;
+                        }
+                        if ($TargetID > 0){
+                            $KeyMaticID = $TargetID;
+                        }
+                    }
+                }
+            }
 
 			@$CategoryID = IPS_GetCategoryIDByName("TuerOeffner", $this->InstanceID);
 			if ($CategoryID == false){
@@ -79,11 +97,16 @@ class KeyMatic extends IPSModule {
 				IPS_SetEventScheduleGroup($EventID, 6, 64);
 				IPS_SetEventActive($EventID, false);
 			}
-			
+
+
+            //Automatisches Versionsupdate
+            if ($KeyMaticID > 0){
+                IPS_SetProperty($this->InstanceID, "SecKeyID", $KeyMaticID);
+                IPS_ApplyChanges($this->InstanceID);
+            }
+
 
 			$this->UpdateEvents();
-
-			$this->EnableAction("AutoLock");
         }
 
         public function ApplyChanges() {
@@ -96,35 +119,26 @@ class KeyMatic extends IPSModule {
 		public function UpdateEvents(){
 			$foundIDs = array();
 
-            //$this->RegisterTimer("AutoLockDelay", 0, "SXSecKey_LockDoor(".$this->InstanceID.");");
 
-			$SecKeyID = IPS_GetCategoryIDByName("Sec-Key", $this->InstanceID);
-			$TuerOeffnerID = IPS_GetCategoryIDByName("TuerOeffner", $this->InstanceID);
-			$SecKeyScript1ID = $this->RegisterScript("UpdateStatus", "UpdateStatus", "<?\n\nSXSecKey_UpdateStatus(".$this->InstanceID."); \n\n?>");		
-			foreach(IPS_GetChildrenIDs($SecKeyID) as $LinkID){
-				$itemObject = IPS_GetObject($LinkID);
+            //Events für KeyMatic
+			$SecKeyScript1ID = $this->RegisterScript("UpdateStatus", "UpdateStatus", "<?\n\nSXSecKey_UpdateStatus(".$this->InstanceID."); \n\n?>");
+            $SecKeyID = $this->ReadPropertyInteger("SecKeyID");
 
-				if ($itemObject["ObjectType"] == 6){
-				   $TargetID = IPS_GetLink($LinkID)["TargetID"];
-				}else{
-					$TargetID = $LinkID;
-				}
-				$TargetID = IPS_GetObjectIDByIdent("STATE", $TargetID);
-				$EventName = "TargetID ".$TargetID;
-				$foundIDs[] = $EventName;
+            if ($SecKeyID > 0){
+                $TargetID = IPS_GetObjectIDByIdent("STATE", $SecKeyID);
+                $EventName = "TargetID ".$TargetID;
+                $foundIDs[] = $EventName;
+                @$EventID = IPS_GetEventIDByName($EventName, $SecKeyScript1ID);
+                if ($EventID == false){
+                    $EventID = IPS_CreateEvent(0);
+                    IPS_SetEventTrigger($EventID, 0, $TargetID);
+                    IPS_SetName($EventID, $EventName);
+                    IPS_SetParent($EventID, $SecKeyScript1ID);
+                    IPS_SetEventActive($EventID, true);
+                }
+            }
 
-				@$EventID = IPS_GetEventIDByName($EventName, $SecKeyScript1ID);
-				if ($EventID == false){
-					$EventID = IPS_CreateEvent(0);
-					IPS_SetEventTrigger($EventID, 0, $TargetID);
-					IPS_SetName($EventID, $EventName);
-					IPS_SetParent($EventID, $SecKeyScript1ID);
-					IPS_SetEventActive($EventID, true);
-				}
-			}
-
-
-
+            //Events für Schlüssel
 			$SchluesselID = IPS_GetCategoryIDByName("Schluessel", $this->InstanceID);
 			$TuerOeffnerScriptID = $this->RegisterScript("OpenDoor", "OpenDoor", "<?\n\nSXSecKey_OpenDoor(".$this->InstanceID.", false); \n\n?>");
 			foreach(IPS_GetChildrenIDs($SchluesselID) as $key2) {
@@ -158,7 +172,7 @@ class KeyMatic extends IPSModule {
 			}
 
 
-
+            //Events für Schlüssel Dauer auf
 			$SchluesselID = IPS_GetCategoryIDByName("Schluessel Dauer auf", $this->InstanceID);
 			$TuerOeffnerScriptID = $this->RegisterScript("OpenDoorMaxTime", "OpenDoorMaxTime", "<?\n\nSXSecKey_OpenDoor(".$this->InstanceID.", true); \n\n?>");
 			foreach(IPS_GetChildrenIDs($SchluesselID) as $key2) {
@@ -192,14 +206,7 @@ class KeyMatic extends IPSModule {
 			}
 
 
-
-
-
-			// $AlarmzonenID = IPS_GetCategoryIDByName("Alarmzonen", $this->InstanceID);
-
-
-
-
+            //Events für Türkontakt
 			$TuerKontaktID = IPS_GetCategoryIDByName("TuerKontakt", $this->InstanceID);
 			$TuerKontaktScriptID = $this->RegisterScript("SetDoorClosed", "SetDoorClosed", "<?\n\nSXSecKey_DoorClosed(".$this->InstanceID."); \n\n?>");
 			
@@ -309,25 +316,15 @@ class KeyMatic extends IPSModule {
 				return;
 			}
 
-			$SecKeyID = IPS_GetCategoryIDByName("Sec-Key", $this->InstanceID);
-			foreach(IPS_GetChildrenIDs($SecKeyID) as $LinkID){
-				set_time_limit(30);
-				$itemObject = IPS_GetObject($LinkID);
+            $TargetID = $this->ReadPropertyInteger("SecKeyID");
 
-				if ($itemObject["ObjectType"] == 6){
-				   $TargetID = IPS_GetLink($LinkID)["TargetID"];
-				}else{
-					$TargetID = $LinkID;
-				}
-
-				//Abschliesen
-				if (HM_WriteValueBoolean($TargetID, "STATE", false) !== true){
-                    $EreignisID = IPS_GetEventIDByName ("AutoLockDelay", $this->InstanceID);
-                    IPS_SetEventCyclicTimeFrom($EreignisID, date('H'), date('i'), date('s'));
-					$this->SetTimerInterval ("AutoLockDelay", 5000);
-				}
-			}
-		}
+            //Abschliesen
+            if (HM_WriteValueBoolean($TargetID, "STATE", false) !== true){
+                $EreignisID = IPS_GetEventIDByName ("AutoLockDelay", $this->InstanceID);
+                IPS_SetEventCyclicTimeFrom($EreignisID, date('H'), date('i'), date('s'));
+                $this->SetTimerInterval ("AutoLockDelay", 5000);
+            }
+        }
 		
 		public function OpenDoor(boolean $keepopen){
 			set_time_limit(30);
@@ -339,6 +336,7 @@ class KeyMatic extends IPSModule {
 			$OpenTimer = $this->ReadPropertyFloat ("DoorOpenerTime");
 			$MaxOpenTime = $this->ReadPropertyFloat ("MaxOpenTime");
 			$UnlockOnly = $this->ReadPropertyBoolean ("UnlockOnly");
+            $DoorOpenDelay = $this->ReadPropertyInteger ("DoorOpenDelay");
 
 			if ($keepopen){
 				$OpenTimer = $MaxOpenTime;
@@ -356,23 +354,16 @@ class KeyMatic extends IPSModule {
 					$TargetID = $LinkID;
 				}
 
-				SetValue($TargetID, false);
+                if (@IPS_RequestAction(IPS_GetParent($TargetID), IPS_GetName($TargetID), false) == false){
+                    SetValue($TargetID, false);
+                }
 			}
 
 			//Türe aufschließen
-			$SecKeyID = IPS_GetCategoryIDByName("Sec-Key", $this->InstanceID);
-			foreach(IPS_GetChildrenIDs($SecKeyID) as $LinkID){
-				set_time_limit(30);
-				$itemObject = IPS_GetObject($LinkID);
-
-				if ($itemObject["ObjectType"] == 6){
-				   $TargetID = IPS_GetLink($LinkID)["TargetID"];
-				}else{
-					$TargetID = $LinkID;
-				}
+			$TargetID = $this->ReadPropertyInteger("SecKeyID");
 
 				//Prüfe ob Türe gerade abgeschlossen wird
-				HM_RequestStatus($TargetID, "DIRECTION");
+			    HM_RequestStatus($TargetID, "DIRECTION");
 				$KeyLockDIRECTIONID = IPS_GetObjectIDByIdent("DIRECTION", $TargetID);
 				$count = 0;
 				while ($count <= 20){
@@ -380,7 +371,7 @@ class KeyMatic extends IPSModule {
 					if (GetValueInteger($KeyLockDIRECTIONID) == 0){break;}
 					$count++;
 					IPS_Sleep(500);
-				}
+                }
 
 				//Aufschliesen
 				if ($UnlockOnly == true){
@@ -397,13 +388,12 @@ class KeyMatic extends IPSModule {
 				HM_RequestStatus($TargetID, "STATE");
 				$KeyLockStateID = IPS_GetObjectIDByIdent("STATE", $TargetID);
 				$count = 0;
-				while ($count <= 20){
+				while ($count <= $DoorOpenDelay * 2){
 					set_time_limit(30);
 					if (GetValueBoolean($KeyLockStateID) == true){break;}
 					$count++;
 					IPS_Sleep(500);
 				}
-			}
 			
 			//Sicherstellen, dass Türe nicht per AutoTimer geschlossen wird
 			$this->SetTimerInterval("AutoLockDelay", 0);
@@ -434,7 +424,9 @@ class KeyMatic extends IPSModule {
                     IPS_SetEventCyclicTimeFrom($EreignisID, date('H'), date('i'), date('s'));
 					$this->SetTimerInterval("MaxOpenTimeDelay", $OpenTimer * 1000);
 				}else{
-					SetValueBoolean($TargetID, true);
+                    if (@IPS_RequestAction(IPS_GetParent($TargetID), IPS_GetName($TargetID), true) == false){
+                        SetValue($TargetID, true);
+                    }
 					if ($OpenTimer > 0){
                         $EreignisID = IPS_GetEventIDByName ("MaxOpenTimeDelay", $this->InstanceID);
                         IPS_SetEventCyclicTimeFrom($EreignisID, date('H'), date('i'), date('s'));
@@ -458,17 +450,11 @@ class KeyMatic extends IPSModule {
 				}else{
 					$TargetID = $LinkID;
 				}
-
-				$pID = IPS_GetParent($TargetID);
-				$inst = IPS_GetInstance($pID);
-				$istHM = ($inst["ModuleInfo"]["ModuleID"] == "{EE4A81C6-5C90-4DB7-AD2F-F6BBD521412E}");
 				
 				$var = IPS_GetVariable ($TargetID);
-				if ($istHM){
-					HM_WriteValueBoolean($pID, IPS_GetName($TargetID), false);
-				}else{
-					SetValueBoolean($TargetID, false);
-				}
+                if (@IPS_RequestAction(IPS_GetParent($TargetID), IPS_GetName($TargetID), false) == false){
+                    SetValue($TargetID, false);
+                }
 			}
 		}
 
@@ -487,20 +473,11 @@ class KeyMatic extends IPSModule {
 			}
 			return true;
 		}
-
 		public function isDoorLocked(){
-			$SecKeyID = IPS_GetCategoryIDByName("Sec-Key", $this->InstanceID);
-			foreach(IPS_GetChildrenIDs($SecKeyID) as $LinkID){
-				$itemObject = IPS_GetObject($LinkID);
-
-				if ($itemObject["ObjectType"] == 6){
-				   $TargetID = IPS_GetLink($LinkID)["TargetID"];
-				}else{
-					$TargetID = $LinkID;
-				}
-
-				return !GetValue(IPS_GetObjectIDByIdent("STATE", $TargetID));
-			}
+			$TargetID = $this->ReadPropertyInteger("SecKeyID");
+            if ($TargetID > 0){
+                return !GetValue(IPS_GetObjectIDByIdent("STATE", $TargetID));
+            }
 			return false;
 		}
 		

@@ -19,14 +19,33 @@
       "type": "IntervalBox",
       "name": "TestInterval",
       "caption": "Sekunden"
+    },
+    {
+      "type": "Label",
+      "label": "Um den PC in den Energiesparmodus zu versetzen oder herunterzufahren, muss die Anwendung LAN Command installiert werden. Diese befindet sich als Setup-Datei im Modulordner." 
     }
   ],
     "actions":
     [
-       {
+      {
         "type": "Button",
-        "label": "Ereignisse aktualisieren",
-        "onClick": "SXwol_UpdateEvents($id);"
+        "label": "Status aktualisieren",
+        "onClick": "SXwol_UpdateStatus($id);"
+      },
+      {
+        "type": "Button",
+        "label": "Gerät aufwecken",
+        "onClick": "SXwol_WakeOnLan($id);"
+      },
+      {
+        "type": "Button",
+        "label": "PC Standbymodus",
+        "onClick": "SXwol_Standby($id);"
+      },
+      {
+        "type": "Button",
+        "label": "PC Herunterfahren",
+        "onClick": "SXwol_Shutdown($id);"
       }
     ],
     "status":

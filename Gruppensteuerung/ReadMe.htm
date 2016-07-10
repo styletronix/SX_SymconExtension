@@ -16,13 +16,24 @@
         Beim aktivieren der Alarmbeleuchtung mit <b>SXGRP_SetAlertState($id, true)</b> werden alle Endgeräte eingeschaltet und beim beenden der Alarmbeleuchtung mit <b>SXGRP_SetAlertState($id, false)</b> auf den vorherigen Zustand zurück versetzt.<br />
         <b>Hinweis:</b> Bei aktiver Alarmbeleuchtung kann die Beleuchtung nicht über die Gruppenfunktion ausgeschaltet werden.
     </p>
+    <hr />
+
+    <h1>Update</h1>
     
+    <h3>1.0</h3>
+    <p>1. öffentliche Version</p>
+    
+    <h3>1.1</h3>
+    <p>Die Variable "Alarm Merker" wird nicht mehr benötigt und kann gelöscht werden.</p>
+    <p>Die Alarmbeleuchtung hat nur für HomeMatic Geräte funktioniert.</p>
+    <p>Die Kategoie "Devices" kann jetzt geändert werden. In der Konfiguration kann auch eine bereits vorhandene Kategorie ausgewählt werden.</p>
+    <p>Das verknüpfen der Variablen "Ergebnis..." innerhalb der Kategorie "Devices" führte zu einer Endlosschleife beim aktualisieren der Werte.</p>
 
     <hr />
     <h1>Einrichtung</h1>
     <ul>
         <li>Erstellen Sie eine neue Instanz der Gruppensteuerung.</li>
-        <li>Fügen Sie in der Kategorie "devices" Variablen oder Links zu Variablen hinzu, welche geschaltet werden sollen. <small><a href="#devices">Siehe "devices"</a>)</small></li>
+        <li>Fügen Sie in der Kategorie "Devices" Variablen oder Links zu Variablen hinzu, welche geschaltet werden sollen. Alternativ können Sie über die Konfiguration eine eigene Kategorie mit vorhandenen Elementen auswählen. <small><a href="#devices">Siehe "devices"</a>)</small></li>
         <li>Klicken Sie in der Instanz-Konfiguration auf "Geräte aktualisieren".</li>
         <li>Verlinken Sie die Variable "Ergebnis Boolean" mit der Weboberfläche um alle Geräte Ein- und Auszuschalten. bzw. den Status der geräte zu sehen.</li>
     </ul>
@@ -56,7 +67,8 @@
     <a name="devices"></a><h3>devices</h3>
     <p>In dieser Kategorie können Geräte und Links abgelegt werden, welche zu Gerätevariablen führen, die ein oder ausgeschaltet werden sollen.</p>
     <p>Unterstützt werden Variablen und alle anderen Geräte, welche auch über das WebFront geschaltet werden können, sowie Verknüpfungen zu den entsprechenden Variablen.<br />
-    <b>Hinweis:</b> Bei Geräten die Variable, welche geschaltet werden soll als Verknüpfung verwenden, nicht die gesamte Instanz.</p>
+    <b>Hinweis:</b> Bei Geräten die Variable, welche geschaltet werden soll als Verknüpfung verwenden, nicht die gesamte Instanz.<br />Alternativ können Sie in der Konfiguration auch eine bereits vorhandene Kategorie auswählen.</p>
+
 
     <hr />
 

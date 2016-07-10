@@ -19,17 +19,20 @@
             $this->RegisterVariableFloat("Ergebnis_Integer", "Ergebnis Integer", "~Intensity.100");
             $this->EnableAction("Ergebnis_Integer");
 
-			$this->RegisterVariableString("PreAlertState", "Alarm Merker");
-			
+            $this->RegisterPropertyInteger("DeviceCategory", 0);
+            
+            if ($this->ReadPropertyInteger("DeviceCategory") == 0){
+                @$CategoryID = IPS_GetCategoryIDByName("Devices", $this->InstanceID);
+                if ($CategoryID == false){
+                    $CategoryID = IPS_CreateCategory();
+                    IPS_SetName($CategoryID, "Devices");
+                    IPS_SetParent($CategoryID, $this->InstanceID);
+                }
 
-
-			@$CategoryID = IPS_GetCategoryIDByName("Devices", $this->InstanceID);
-			if ($CategoryID == false){
-				$CategoryID = IPS_CreateCategory();
-				IPS_SetName($CategoryID, "Devices");
-				IPS_SetParent($CategoryID, $this->InstanceID);
-			}
-
+                IPS_SetProperty($this->InstanceID, "DeviceCategory", $CategoryID);
+                IPS_ApplyChanges($this->InstanceID);
+            }
+            
 			$this->UpdateEvents();
         }
         public function ApplyChanges() {
@@ -41,9 +44,11 @@
 
 		public function UpdateEvents(){
 			$ScriptID = $this->RegisterScript("Update", "Update", "<?\n\nSXGRP_RefreshStatus(".$this->InstanceID."); \n\n?>");
-			$CategoryID = IPS_GetCategoryIDByName("Devices", $this->InstanceID);
+			$CategoryID = $this->ReadPropertyInteger("DeviceCategory");
 
 			$foundIDs = array();
+
+            $ignoreIDs = IPS_GetChildrenIDs($this->InstanceID);
 
 			foreach(IPS_GetChildrenIDs($CategoryID) as $key2) {
 				$itemObject = IPS_GetObject($key2);
@@ -54,7 +59,8 @@
 				   $TargetID = IPS_GetLink($key2)["TargetID"];
 				}
 
-				if ($TargetID > 0){
+
+				if ($TargetID > 0 and !in_array($TargetID, $ignoreIDs)){
 					$EventName = "TargetID ".$TargetID;
 					$foundIDs[] = $EventName;
 
@@ -82,7 +88,8 @@
 			$result = false;
             $resultFloat = 0.0;
             $resultInteger = 0;
-			$CategoryID = IPS_GetCategoryIDByName("Devices", $this->InstanceID);
+			$CategoryID =  $this->ReadPropertyInteger("DeviceCategory");
+            $ignoreIDs = IPS_GetChildrenIDs($this->InstanceID);
 
 			foreach(IPS_GetChildrenIDs($CategoryID) as $key2) {
 	         $itemObject = IPS_GetObject($key2);
@@ -94,7 +101,7 @@
 				   $TargetID = IPS_GetLink($key2)["TargetID"];
 				}
 
-			if ($TargetID > 0){
+			if ($TargetID > 0 and !in_array($TargetID, $ignoreIDs)){
 				$var = IPS_GetVariable ($TargetID);
 				$t = $var["VariableType"];
 				if ($t == 0){
@@ -138,12 +145,13 @@
 
        }
 	    public function SetState(boolean $Value){
-			$currentPreAlertState = GetValue($this->GetIDForIdent("PreAlertState"));
+            $data = $this->ReadSettings();
+			$currentPreAlertState = $data["PreAlertState"];  // GetValue($this->GetIDForIdent("PreAlertState"));
 			if ($currentPreAlertState !== "" and $Value == false){
 				return;
 			}
 
-			$CategoryID = IPS_GetCategoryIDByName("Devices", $this->InstanceID);
+			$CategoryID =  $this->ReadPropertyInteger("DeviceCategory");
 			$this->SetChildLinksBoolean($CategoryID, $Value);
 			$this->RefreshStatus();
 	}
@@ -153,7 +161,7 @@
 				return;
 			}
 
-			$CategoryID = IPS_GetCategoryIDByName("Devices", $this->InstanceID);
+			$CategoryID =  $this->ReadPropertyInteger("DeviceCategory");
 			$this->SetChildLinksFloat($CategoryID, $Value);
 			$this->RefreshStatus();
         }
@@ -163,19 +171,21 @@
 				return;
 			}
 
-			$CategoryID = IPS_GetCategoryIDByName("Devices", $this->InstanceID);
+			$CategoryID =  $this->ReadPropertyInteger("DeviceCategory");
 			$this->SetChildLinksInteger($CategoryID, $Value);
 			$this->RefreshStatus();
         }
 
 		public function SetAlertState(boolean $Value){
-			$currentPreAlertState = GetValue($this->GetIDForIdent("PreAlertState"));
-			$CategoryID = IPS_GetCategoryIDByName("Devices", $this->InstanceID);
+            $data = $this->ReadSettings();
+
+			$currentPreAlertState = $data['PreAlertState'];
+			$CategoryID =  $this->ReadPropertyInteger("DeviceCategory");
 
 			if ($Value == true){
 				if ($currentPreAlertState == ""){
 					$result = $this->GetCurrentStateString();
-					SetValue($this->GetIDForIdent("PreAlertState"),	$result);
+                    $data["PreAlertState"] = $result;
 				}
 
 				$this->SetChildLinksBoolean($CategoryID, $Value);
@@ -183,15 +193,17 @@
 			}else{
 				if ($currentPreAlertState !== ""){
 					$this->SetCurrentStateString($currentPreAlertState);
-					SetValue($this->GetIDForIdent("PreAlertState"),	"");
+                    $data["PreAlertState"] = "";
 				}
 			}
 
+            $this->WriteSettings($data);
 			$this->RefreshStatus();
 		}
 		public function GetCurrentStateString(){
 			$arr =array();
-			$CategoryID = IPS_GetCategoryIDByName("Devices", $this->InstanceID);
+			$CategoryID =  $this->ReadPropertyInteger("DeviceCategory");
+            $ignoreIDs = IPS_GetChildrenIDs($this->InstanceID);
 
 			foreach(IPS_GetChildrenIDs($CategoryID) as $key2) {
 				$itemObject = IPS_GetObject($key2);
@@ -203,7 +215,7 @@
 					$TargetID = IPS_GetLink($key2)["TargetID"];
 				}
 
-				if ($TargetID > 0){
+				if ($TargetID > 0 and !in_array($TargetID, $ignoreIDs)){
 					$var = IPS_GetVariable ($TargetID);
 					$t = $var["VariableType"];
 					if ($t == 0){
@@ -222,7 +234,8 @@
 		}
 		public function SetCurrentStateString(string $State){
 			$arr = json_decode($State, true);
-			$CategoryID = IPS_GetCategoryIDByName("Devices", $this->InstanceID);
+			$CategoryID =  $this->ReadPropertyInteger("DeviceCategory");
+            $ignoreIDs = IPS_GetChildrenIDs($this->InstanceID);
 
 			foreach(IPS_GetChildrenIDs($CategoryID) as $key2) {
 				set_time_limit(30);
@@ -236,36 +249,16 @@
 					$TargetID = IPS_GetLink($key2)["TargetID"];
 				}
 
-				if ($TargetID > 0){
+				if ($TargetID > 0 and !in_array($TargetID, $ignoreIDs)){
 					$pID = IPS_GetParent($TargetID);
-					$inst = IPS_GetInstance($pID);
-					$istHM = ($inst["ModuleInfo"]["ModuleID"] == "{EE4A81C6-5C90-4DB7-AD2F-F6BBD521412E}");
-
+                    $VariableName = IPS_GetName($TargetID);
 					$value = $arr[$TargetID];
 					$var = IPS_GetVariable ($TargetID);
 					$t = $var["VariableType"];
-					if ($t == 0){
-						if ($istHM){
-							HM_WriteValueBoolean($pID, IPS_GetName($TargetID), $value);
-						}else{
-							SetValueBoolean($TargetID, $value);
-						}
-					}
-					if ($t == 1){
-						if ($istHM){
-							HM_WriteValueInteger($pID, IPS_GetName($TargetID), $value);
-						}else{
-							SetValueInteger($TargetID, $value);
-						}
-					}
-					if ($t == 2){
-						if ($istHM){
-							HM_WriteValueFloat($pID, IPS_GetName($TargetID), $value);
 
-						}else{
-							SetValueFloat($TargetID, $value);
-						}
-					}
+                    if (@IPS_RequestAction($pID, $VariableName, $value) == false){
+                        SetValue($TargetID, $value);
+                    }
 				}
 			}
 		}
@@ -291,6 +284,8 @@
  		}
 
         private function SetChildLinks(integer $key, boolean $value, integer $valueInteger, float $valueFloat){
+            $ignoreIDs = IPS_GetChildrenIDs($this->InstanceID);
+
             foreach(IPS_GetChildrenIDs($key) as $key2) {
 				set_time_limit(30);
 
@@ -303,7 +298,7 @@
 					$TargetID = IPS_GetLink($key2)["TargetID"];
 				}
 
-				if ($TargetID > 0){
+				if ($TargetID > 0 and !in_array($TargetID, $ignoreIDs)){
 					$pID = IPS_GetParent($TargetID);
                     $VariableName = IPS_GetName($TargetID);
 
@@ -348,5 +343,22 @@
 
             $this->SetChildLinks($key, $valbool, $value, $value / 100);
 		}
+
+        private function WriteSettings($data){
+            $fp = fopen(IPS_GetKernelDir().$this->InstanceID.'.settings.json', 'w');
+            fwrite($fp, json_encode($data));
+            fclose($fp);
+        }
+        private function ReadSettings(){
+            $filename = IPS_GetKernelDir().$this->InstanceID.'.settings.json';
+            if (file_exists($filename)) {
+                $contents = file_get_contents($filename);
+                return json_decode($contents,true);
+            }else{
+                $contents = array();
+                $contents["PreAlertState"] = "";
+                return $contents;
+            }
+        }
     }
 ?>
