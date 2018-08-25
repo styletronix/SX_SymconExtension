@@ -42,3 +42,6 @@ Die Gruppen verfügen über eine "Alarmbeleuchtung". Wird diese Funktion aktivie
 Zur manuellen Steuerung gibt es sowohl einen Schieberegler für Dimmbare Geräte, als auch einen Ein/Aus Schalter für nicht dimmbare Geräte in der Weboberfläche. Werden mehrere Gerätearten in einer Gruppe kombiniert, wird ein dimmen >= 1% automatisch alle nicht dimmbaren Geräte einschalten.
 
 Werden einzelne Geräte nicht über die Gruppe gesteuert, so zeigt die Gruppensteuerung als Status den höchsten Dimm-Wert der Geräte an.
+
+### Liste der unterstützten Befehle
+... in Arbeit
