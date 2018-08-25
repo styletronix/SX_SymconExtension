@@ -1,11 +1,20 @@
 # SX_SymconExtension
 
-Dies ist ein Modul für IP-Symcon, um dessen funktionalität zu erweitern.
+Dies ist ein Modul für IP-Symcon, um dessen funktionalität zu erweitern. Derzeit wird in IP-Symcon ab Version 5.0 nur die Gruppensteuerung unterstützt. Die anderen Module werden derzeit überarbeitet.
 
 # Gruppensteuerung
 Die Gruppensteuerung ermöglicht das gleichzeitige Schalten mehrerer Endgeräte. Der primäre Zweck ist die Steuerung von Beleuchtung oder Rollos. Allerdings kann die Gruppensteuerung auch universell für andere Zwecke eingesetzt werden. z.B. überall dort, wo der Maximalwert mehrerer Geräte benötigt wird.
 
 Die Gruppensteuerung kann für komplexe Aufgaben kaskadiert werden. Das bedeutet dass eine Gruppe aus mehreren Untergruppen bestehen kann.
+
+### Installation
+1.  Fügen Sie SX_SymconExtension zu den Modulen von IP-Symcon hinzu.
+2.  Erstellen Sie eine neue Instanz der Gruppensteuerung und speichern Sie die Instanz erst mal ohne weiter Änderung an dieser Stelle
+3.  Fügen Sie Links zu schaltbaren variablen in der Kategorie "Geräte" hinzu, welche per Gruppe gesteuert werden sollen.
+4.  Öffnen Sie den Instanzeditor und klicken Sie auf "Geräte aktualisieren" damit die Gruppensteuerung die entsprechenden Skripts für die Geräte generiert. Führen Sie diesen Schritt jedes mal aus, wenn Sie Geräte hinzufügen oder entfernen.
+5.  Prüfen Sie die Funktion durch verwenden der Taste "An" und "Aus" im Instanzeditor.
+6. Fügen Sie gegebenenfalls Bewegungsmelder und Helligkeitssensoren in der entsprechenden Kategorie hinzu und aktualisieren Sie auch dann die Geräte über den Instanzeditor.
+
 
 ### Profile
 Der Status der Geräte kann in Profilen gespeichert werden. Wobei für jedes Profil der einzelstatus der Geräte gespeichert wird. Wird z.b. in einem Profil die Lampe1 auf 50% und die Lampe2 auf 100% gesetzt, wird genau dieser Zustand wiederhergestellt, sobald das Profil wieder aufgerufen wird.
