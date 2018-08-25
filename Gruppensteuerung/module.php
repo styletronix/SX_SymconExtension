@@ -61,6 +61,11 @@
 				IPS_SetVariableProfileAssociation("SXGRP.Profiles2", 9, "Profil 9", "Light", null);
 				IPS_SetVariableProfileAssociation("SXGRP.Profiles2", 10, "Profil 10", "Light", null);
 			}
+		
+			if (IPS_VariableProfileExists ( "SXGRP.Brightness" ) == false){
+				IPS_CreateVariableProfile("SXGRP.Brightness", 2);
+				IPS_SetVariableProfileValues("SXGRP.Brightness", 0, 2000, 5);
+			}
 				
 			$this->RegisterVariableInteger("ProfileID", "Profil", "SXGRP.Profiles");
             $this->EnableAction("ProfileID");
@@ -71,7 +76,7 @@
 			$this->RegisterVariableInteger("ProfileID3", "Profil Abwesend", "SXGRP.Profiles2");
             $this->EnableAction("ProfileID3");
 
-			$this->RegisterVariableFloat("IlluminationLevelMotion", "Helligkeitsgrenze für Bewegungsmelder", "");
+			$this->RegisterVariableFloat("IlluminationLevelMotion", "Helligkeitsgrenze fÃ¼r Bewegungsmelder", "SXGRP.Brightness");
             $this->EnableAction("IlluminationLevelMotion");
 			
 			$this->RegisterPropertyInteger("PresenceTimeout", 10);
@@ -83,10 +88,10 @@
 			
             $this->RegisterPropertyInteger("DeviceCategory", null);
 			if ($this->ReadPropertyInteger("DeviceCategory") == null){
-                @$CategoryID = IPS_GetCategoryIDByName("Geräte", $this->InstanceID);
+                @$CategoryID = IPS_GetCategoryIDByName("GerÃ¤te", $this->InstanceID);
                 if ($CategoryID == false){
                     $CategoryID = IPS_CreateCategory();
-                    IPS_SetName($CategoryID, "Geräte");
+                    IPS_SetName($CategoryID, "GerÃ¤te");
                     IPS_SetParent($CategoryID, $this->InstanceID);
                 }
 
@@ -121,7 +126,7 @@
 				$ApplyChanges = true;
 			}	
 			
-			$ScriptID = $this->RegisterScript("StoreCurrentAsPresenceStateTemplate", "Als Vorlage für Anwesenheit speichern", "<?\n\nSXGRP_StoreCurrentAsPresenceStateTemplate(".$this->InstanceID."); \n\n?>");
+			$ScriptID = $this->RegisterScript("StoreCurrentAsPresenceStateTemplate", "Als Vorlage fÃ¼r Anwesenheit speichern", "<?\n\nSXGRP_StoreCurrentAsPresenceStateTemplate(".$this->InstanceID."); \n\n?>");
 			
 			$ScriptID = $this->RegisterScript("Update", "Update", "<?\n\nSXGRP_RefreshStatus(".$this->InstanceID."); \n\n?>"); 
 			IPS_SetHidden($ScriptID, true); 
@@ -284,7 +289,7 @@
 		public function RefreshPresence() {
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
 			
-			// Bricht ausführung ab wenn Bewegungsmelder deaktiviert sind. 
+			// Bricht ausfÃ¼hrung ab wenn Bewegungsmelder deaktiviert sind. 
 			// Wird diese Option verwendet, so wird das Profil beim deasktivieren der Bewegungsmelder nicht auf "Abwesend" gesetzt sondern verbleibt im aktuellen zustand.
 			// if ($enabled == false){return;}	
 			
@@ -318,7 +323,7 @@
 				$PresenceDetectorsExist = true;
 				
 				$var = IPS_GetVariable ($TargetID);
-				// Prüfe ob Bewegungsmelder innerhalb des angegebenen sendeabstandes eine neue Bewegung gemeldet hat.
+				// PrÃ¼fe ob Bewegungsmelder innerhalb des angegebenen sendeabstandes eine neue Bewegung gemeldet hat.
 				if ($PresenceRefreshTimeout > 0){
 					$timediff = time() - $var['VariableUpdated'];
 					if ($timediff >= $PresenceRefreshTimeout){
@@ -326,7 +331,7 @@
 					}
 				}
 				
-				// Prüfe ob Helligkeit am Bewegungsmelder dem Mindestlevel entspricht
+				// PrÃ¼fe ob Helligkeit am Bewegungsmelder dem Mindestlevel entspricht
 				if ($BrightnessSegmentationLevel == 1 and $IlluminationCategoryID > 0){
 					$PresenceParent = IPS_GetParent($TargetID);
 					
@@ -609,7 +614,7 @@
 				return;
 			}
 			
-			// Keine weitere Ausführung, wenn Bewegungsmelder deaktiviert sind.
+			// Keine weitere AusfÃ¼hrung, wenn Bewegungsmelder deaktiviert sind.
 			if ($enabled == false){
 				return;
 			}
@@ -653,12 +658,12 @@
 				}
 				
 			}else{
-				// Prüfe Helligkeit
+				// PrÃ¼fe Helligkeit
 				$IlluminationLevelMotion = GetValueFloat(IPS_GetObjectIDByIdent("IlluminationLevelMotion", $this->InstanceID));  
 				if ($IlluminationLevelMotion > -1){
 					$illumination = $this->GetIlluminationLevelMin();
 					if ($illumination > $IlluminationLevelMotion){
-						return; // Bewegung nicht als erkannt setzen, wenn Helligkeit höher als eingestellter Wert ist.
+						return; // Bewegung nicht als erkannt setzen, wenn Helligkeit hÃ¶her als eingestellter Wert ist.
 					}
 				}
 				
@@ -939,7 +944,7 @@
 				$itemObject = IPS_GetObject($key2);
 				$TargetID = 0;
 
-                // Prüfe ob Ziel ein Link ist
+                // PrÃ¼fe ob Ziel ein Link ist
 				if ($itemObject["ObjectType"] == 6){
 					$TargetID = IPS_GetLink($key2)["TargetID"];
 				}elseif($itemObject["ObjectType"] == 2){
