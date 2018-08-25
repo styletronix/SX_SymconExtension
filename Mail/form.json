@@ -1,0 +1,27 @@
+{
+  "elements": [
+    {
+      "type": "Label",
+      "label": "Geben Sie eine Kategorie oder Instanz an, die Verknüpfungen oder Variablen enthält, die bei Änderung per Mail gesendet werden."
+    },
+    {
+      "type": "SelectObject",
+      "name": "VariablesToSend",
+      "caption": "Variablen zum senden"
+    }
+  ],
+    "actions":
+    [
+      {
+        "type": "Button",
+        "label": "E-Mail senden",
+        "onClick": "SXGRP_SendMail($id, false);"
+      }
+    ],
+    "status":
+    [
+        { "code": 102, "icon": "active", "caption": "OK" },
+        { "code": 201, "icon": "error", "caption": "Authentication failed" },
+        { "code": 202, "icon": "error", "caption": "No credits left" }
+    ]
+}

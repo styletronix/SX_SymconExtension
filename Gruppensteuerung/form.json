@@ -8,6 +8,70 @@
       "type": "SelectObject",
       "name": "DeviceCategory",
       "caption": "Geräteliste"
+    },
+	{
+      "type": "Label",
+      "label": "Geben Sie eine Kategorie oder Instanz an, die Verknüpfungen mit Variablen enthält, die als Anwesenheitsmeldung verwendet werden sollen."
+    },
+    {
+      "type": "SelectObject",
+      "name": "PresenceCategory",
+      "caption": "Anwesenheitsmelder"
+    },
+	{
+      "type": "Label",
+      "label": "Geben Sie eine Kategorie oder Instanz an, die Verknüpfungen mit Variablen enthält, die als Helligkeit verwendet werden sollen."
+    },
+    {
+      "type": "SelectObject",
+      "name": "IlluminationCategory",
+      "caption": "Helligkeit"
+    },
+	{
+      "type": "Label",
+      "label": "0 = Helligkeit und Bewegung werden nur Global ausgewertet und nicht auf einzelne Bereiche aufgeteilt, 1 = Helligkeit und Bewegung werden pro Geräteinstanz ausgewertet."
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "BrightnessSegmentationLevel",
+      "caption": "Helligkeits-Segmente"
+    },
+	{
+      "type": "NumberSpinner",
+      "name": "PresenceOffDelay",
+      "caption": "Verzögerung für Abwesenheit"
+    },
+	{
+      "type": "Label",
+      "label": "Nach Abwesenheit wird vor dem vollständigen Abschalten für die eingestellte Zeit (in Sekunden) gewartet und das Licht auf den unten angegebenen Wert gedimmt."
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "PresenceTimeout",
+      "caption": "Dimm Verzögerung"
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "PresenceDimmerOffPercent",
+      "caption": "Abwesend Dimmer %"
+    },
+	{
+      "type": "Label",
+      "label": "Anwesenheits Timeout (in Sekunden) schaltet nach der hier eingestellten Zeit auf Abwesend, wenn keine der Variablen für die Anwesenheitskontrolle in dieser Zeit aktualisiert wurden."
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "PresenceRefreshTimeout",
+      "caption": "Anwesenheits Timeout"
+    },
+	{
+      "type": "Label",
+      "label": "Bei Abwesenheit wird nach dem Reset Timeout (in Sekunden) das gespeicherte Lichtmuster auf die Vorlage zurückgesetzt. Die Vorlage wird mit dem Button 'Als Vorlage speichern' gesetzt. "
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "PresenceResetToTemplateTimeout",
+      "caption": "Reset Timeout"
     }
   ],
     "actions":
@@ -31,6 +95,21 @@
         "type": "Button",
         "label": "Alarm-Modus deaktivieren",
         "onClick": "SXGRP_SetAlertState($id, false);"
+      },
+       {
+        "type": "Button",
+        "label": "Anwesend",
+        "onClick": "SXGRP_SetPresenceState($id, true);"
+      },
+       {
+        "type": "Button",
+        "label": "Abwesend",
+        "onClick": "SXGRP_SetPresenceState($id, false);"
+      },
+       {
+        "type": "Button",
+        "label": "Als Vorlage speichern",
+        "onClick": "SXGRP_StoreCurrentAsPresenceStateTemplate($id);"
       },
        {
         "type": "Button",

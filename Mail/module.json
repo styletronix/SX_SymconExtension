@@ -1,13 +1,13 @@
 {
-    "id": "{6054E2AA-CD66-4223-A70E-18027B2FA54A}",
-    "name": "KeyMatic",
+    "id": "{e57e8f67-358e-4a36-9d4d-0ab251eae692}",
+    "name": "Mailer",
     "type": 3,
     "vendor": "Styletronix.net",
   "aliases": [
-    "KeyMatic"
+    "Mailer"
   ],  
     "parentRequirements": [],
     "childRequirements": [],
     "implemented": [],
-    "prefix": "SXSecKey"
+    "prefix": "SXMAIL"
 }

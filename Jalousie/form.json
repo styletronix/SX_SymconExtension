@@ -1,0 +1,15 @@
+{
+  "elements": [
+	{ "type": "SelectVariable", "name": "RolladenLevelID", "caption": "Rolladen Positions-Variable" },
+	{ "type": "NumberSpinner", "name": "PositionDiff", "caption": "Differenz zwischen offen und geschlossen", "digits": 2},
+	{ "type": "CheckBox", "name": "POSITION_umkehr", "caption": "Öffnung umkehren" }
+  ],
+    "actions":
+    [
+
+    ],
+    "status":
+    [
+        { "code": 102, "icon": "active", "caption": "OK" }
+    ]
+}
