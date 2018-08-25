@@ -44,4 +44,63 @@ Zur manuellen Steuerung gibt es sowohl einen Schieberegler für Dimmbare Geräte
 Werden einzelne Geräte nicht über die Gruppe gesteuert, so zeigt die Gruppensteuerung als Status den höchsten Dimm-Wert der Geräte an.
 
 ### Liste der unterstützten Befehle
-... in Arbeit
+SXGRP_StoreProfile: 
+Speichert den aktuellen Zustand der Geräte in dem angegebenen Profil (1 - 10)
+
+SXGRP_CallProfile:  
+Setzt die Beleuchtung auf ein bestimmtes Profil.
+Entspricht der Auswahl eines Profils in der Variable "Profil" im WebFront.
+
+SXGRP_StoreCurrentProfile: 
+Speichert den aktuellen Zustand in dem zuletzt gewählten (dem aktuellen) Profil.
+Entspricht der Auswahl "Speichern" der Variable "Profil" im WebFront.
+
+SXGRP_UseProfileIDAsPresenceStateTeplateAndApplyToCurrentStateIfPresent: 
+Aktiviert Profil X wenn Bewegung erkannt wurde und aktiviert dieses sofort, falls derzeit Bewegung vorhanden ist.
+
+SXGRP_UseProfileIDAsPresenceStateTeplate: 
+Aktiviert das Profil X wenn Bewegung erkannt wurde. Wenn der Bewegungsstatus bereits "Anwesend" ist, wird der aktuelle Zustand beibehalten und das neue profil erst bei erneiter Anwesenheit aktiviert.
+
+SXGRP_SetState: 
+Setzt alle Geräte auf einen bestimmten Status (Bool)
+Entspricht der Verwendung des Ein / Aus -Schalters "Gesamt" im WebFront
+
+SXGRP_SetStateFloat: 
+Setzt alle Geräte auf einen bestimmten Status (Float)
+
+SXGRP_SetStateInteger: 
+Setzt alle Geräte auf einen bestimmten Status (Integer)
+Entspricht der Benutzung des Schiebereglers "Gesamt" im WebFront
+
+SXGRP:SetProfileAbsent: 
+Setzt Profil x für "Abwesenheit" ohne den aktuellen Zustand zu ändern. -3= Ein, -2 = Aus, -1 = Automatik
+Entspricht der Variable "Profil Abwesend" im WebFront
+
+SXGRP:SetProfilePresent: 
+Setzt Profil x für "Anwesenheit" ohne den aktuellen Zustand zu ändern. -3= Ein, -2 = Aus, -1 = Automatik
+Entspricht der Variable "Profil Anwesend" im WebFront
+
+SXGRP_DisablePresenceDetection:
+Deaktiviert die Bewegungsmelder.
+Entspricht der Variable "Bewegungsmelder aktiviert" im WebFront.
+
+SXGRP_EnablePresenceDetection:
+Aktiviert die Bewegungsmelder.
+Entspricht der Variable "Bewegungsmelder aktiviert" im WebFront.
+Achtung: Leider gibt es in den Befehlen einen Schreibfehler. Dieser muss dummerweise aus kompatibilitätsgründen so übernommen werden.
+
+SXGRP_GetCurrentStateString:
+Liefert einen String mit dem Wert aller Geräte.
+
+SXGRP_SetCurrentStateString:
+Setzt alle Geräte auf den Zustand, welcher mit SXGRP_GetCurrentStateString ausgelesen wurde.
+
+SXGRP_SetAlertState:
+Aktiviert oder deaktiviert die Alarmbeleuchtung.
+Entspricht der Variable "Alarmbeleuchtung aktiviert" im WebFront
+
+SXGRP_UpdateEvents:
+Entspricht der Option "Geräte aktualisieren" im Instanzeditor.
+
+
+ Alle anderen Funktionen sind für Interne Verwendung bestimmt.
