@@ -16,6 +16,14 @@
             "type": "SelectVariable"
         }
     }, {
+        "caption": "Bezeichnung)",
+        "name": "Caption",
+        "width": "200px",
+        "add": "",
+        "edit": {
+            "type": "ValidationTextBox"
+        }
+    }, {
         "caption": "24h-Alarm (Sabotage / Technik)",
         "name": "24h",
         "width": "100px",
@@ -105,9 +113,10 @@
 			"options": [
 				{ "caption": "Sirene", "value": 0 },
 				{ "caption": "Warnlicht", "value": 1 },
-				{ "caption": "Eingangwarnung", "value": 2 },
+				{ "caption": "Eingangswarnung", "value": 2 },
 				{ "caption": "Ausgangswarnung", "value": 3 },
-				{ "caption": "Alarmbeleuchtung", "value": 4 }
+				{ "caption": "Alarmbeleuchtung", "value": 4 },
+				{ "caption": "Vorwarnung", "value": 5 }
 				]
         }
     }]
