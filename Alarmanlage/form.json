@@ -45,7 +45,7 @@
         }
     }, {
         "caption": "ist Extern",
-        "name": "verzoegerung_eingang",
+        "name": "istExtern",
         "width": "70px",
         "add": true,
         "edit": {
