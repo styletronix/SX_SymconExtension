@@ -6,6 +6,7 @@
 		
         public function Create() {
             parent::Create();
+
 			$ApplyChanges = false;
 			
 			//Variablenprofile erstellen
@@ -53,7 +54,7 @@
 			$this->RegisterPropertyInteger("verzoegerung_eingang", 30);
 			$this->RegisterPropertyInteger("verzoegerung_ausgang", 120);
 			
-			$ScriptID = $this->RegisterScript('onDeviceStatusChanged', 'onDeviceStatusChanged', '<? SXALERT_DeviceStatusChanged('.$this->InstanceID.', $_IPS[\"VARIABLE\"]); ?>'); 
+			$ScriptID = $this->RegisterScript('onDeviceStatusChanged', 'onDeviceStatusChanged', '<? SXALERT_DeviceStatusChanged('.$this->InstanceID.', $_IPS["VARIABLE"]); ?>'); 
 			IPS_SetHidden($ScriptID, true); 
 		
 
@@ -69,46 +70,46 @@
         }
 
 		public function Initialize(){	
-			// $arrString = $this->ReadPropertyString("devices");
-			// $arr = json_decode($arrString);
+			$arrstring = $this->readpropertystring("devices");
+			$arr = json_decode($arrstring);
 
-			// $ScriptID = IPS_GetObjectIDByIdent("onDeviceStatusChanged", $this->InstanceID); 
+			$scriptid = ips_getobjectidbyident("ondevicestatuschanged", $this->instanceid); 
 			
-			// $foundIDs = array();
+			$foundids = array();
 
-			// foreach($arr as $key1) {
-				// $key2 = $key1("InstanceID");
+			foreach($arr as $key1) {
+				$key2 = $key1("instanceid");
 				
-				// $itemObject = IPS_GetObject($key2);
-				// $TargetID = $key2;
-				// $TargetName = IPS_GetName($key2);
+				$itemobject = ips_getobject($key2);
+				$targetid = $key2;
+				$targetname = ips_getname($key2);
 
-				// if ($itemObject["ObjectType"] == 6){
-				   // $TargetID = IPS_GetLink($key2)["TargetID"];
-				// }
+				if ($itemobject["objecttype"] == 6){
+				   $targetid = ips_getlink($key2)["targetid"];
+				}
 
 
-				// if ($TargetID > 0){
-					// $EventName = "TargetID ".$TargetID;
-					// $foundIDs[] = $EventName;
+				if ($targetid > 0){
+					$eventname = "targetid ".$targetid;
+					$foundids[] = $eventname;
 
-					// @$EventID = IPS_GetEventIDByName($EventName, $ScriptID);
-					// if ($EventID === false){
-						// $EventID = IPS_CreateEvent(0);
-						// IPS_SetEventTrigger($EventID, 1, $TargetID);
-						// IPS_SetName($EventID, $EventName);
-						// IPS_SetParent($EventID, $ScriptID);
-						// IPS_SetEventActive($EventID, true);
-					// }
-				// }
-			// }
+					@$eventid = ips_geteventidbyname($eventname, $scriptid);
+					if ($eventid === false){
+						$eventid = ips_createevent(0);
+						ips_seteventtrigger($eventid, 1, $targetid);
+						ips_setname($eventid, $eventname);
+						ips_setparent($eventid, $scriptid);
+						ips_seteventactive($eventid, true);
+					}
+				}
+			}
 
-			// foreach(IPS_GetChildrenIDs($ScriptID) as $key2) {
-				// $EventName = IPS_GetName($key2);
-				// if (!in_array ($EventName, $foundIDs)){
-					// IPS_DeleteEvent($key2);
-				// }
-			// }
+			foreach(ips_getchildrenids($scriptid) as $key2) {
+				$eventname = ips_getname($key2);
+				if (!in_array ($eventname, $foundids)){
+					ips_deleteevent($key2);
+				}
+			}
 			
 		}
 
