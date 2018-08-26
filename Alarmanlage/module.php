@@ -66,8 +66,7 @@
 			$ScriptID = $this->RegisterScript('onDeviceStatusChanged', 'onDeviceStatusChanged', '<? SXALERT_DeviceStatusChanged('.$this->InstanceID.', $_IPS["VARIABLE"]); ?>'); 
 			IPS_SetHidden($ScriptID, true); 
 		
-			$ScriptID = $this->RegisterTimer("ArmDelay", 0, 'SXALERT_ArmSystem('.$this->InstanceID.');');
-			IPS_SetHidden($ScriptID, true); 
+			$this->RegisterTimer("ArmDelay", 0, 'SXALERT_ArmSystem('.$this->InstanceID.');');
 
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
