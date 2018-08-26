@@ -174,11 +174,11 @@
 		}
 		
 		private function TriggerDelayedAlert($DeviceParameters){
-			// SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), true);
+			SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), true);
 			
-			// //TODO: Alarm verzögert
+			//TODO: Alarm verzögert
 			
-			// $this->TriggerAlert($DeviceParameters);
+			$this->TriggerAlert($DeviceParameters);
 		}
 		
 		private function TriggerAlert($DeviceParameters){
