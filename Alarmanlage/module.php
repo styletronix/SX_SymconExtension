@@ -34,6 +34,7 @@
 
 			
 			//Variablen registrieren
+			$this->RegisterVariableBoolean("alarmscharf", "Alarmanlage aktiviert", "~Switch");
 			$this->RegisterVariableBoolean("alarm", "Alarm ausgelöst", "~Switch");
 			$this->RegisterVariableBoolean("technik_alarm", "Technik-Alarm ausgelöst", "~Switch");
 			$this->RegisterVariableBoolean("24h_alarm", "24h-Alarm (Sabotage) ausgelöst", "~Switch");
@@ -174,14 +175,20 @@
 			SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), false);
 			SetValueBoolean($this->GetIDForIdent("alertactive"), false);
 			SetValueInteger($this->GetIDForIdent("alertcount"), 0);
+			SetValueBoolean($this->GetIDForIdent("alarmscharf"), false);
 		}
 		
-		public function SetMode(int $Modus){
+		public function SetMode(int $Modus){			
+			if (GetValueInteger($this->GetIDForIdent("alarmmodus")) == $Modus){
+				return;
+			}
+			
+			$this->Reset();
+			
 			switch($Modus) {
 				case 0:
 					// Deaktiviert
 					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
-					$this->Reset();	
 					break;
 	
 				case 1:
@@ -195,7 +202,6 @@
 				case 4:
 					//Wartung
 					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
-					$this->Reset();	
 					break;
 					
 				default:
@@ -208,13 +214,16 @@
 			$ExitDelay = $this->ReadPropertyInteger("verzoegerung_ausgang");
 			if ($ExitDelay > 0){
 				SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), true);
+				$this->SetTimerInterval ("ArmDelay", $ExitDelay * 1000);
+			}else{
+				$this->ArmSystem();
 			}
-			
-			$this->SetTimerInterval ("ArmDelay", $ExitDelay * 1000);
 		}
 		
 		public function ArmSystem(){
 			SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), false);
+			SetValueBoolean($this->GetIDForIdent("alarmscharf"), true);
+			
 		}
 		
 		private function TriggerDeviceAlert($DeviceParameters){
