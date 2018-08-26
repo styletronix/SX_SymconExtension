@@ -303,6 +303,7 @@
 					
 			
 			// Manuelle Anwesenheit überschreibt Bewegungsmelder
+			$ManualPresence = GetValueBoolean($this->GetIDForIdent("ManualPresence"));
 			if ($ManualPresence == true){
 				IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
 				$this->SetPresenceState(true);
