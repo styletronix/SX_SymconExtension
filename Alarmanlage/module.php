@@ -162,15 +162,15 @@
 		}
 		
 		private function TriggerDeviceAlert($DeviceParameters){
-			// $triggeredDeviceID = $this->GetIDForIdent("deviceTriggered");
-			// $deviceTriggeredString = GetValueString($triggeredDeviceID);
-			// SetValueString($triggeredDeviceID, .$deviceTriggeredString.$DeviceParameters["Bezeichnung"]."\n");
+			$triggeredDeviceID = $this->GetIDForIdent("deviceTriggered");
+			$deviceTriggeredString = GetValueString($triggeredDeviceID);
+			SetValueString($triggeredDeviceID, .$deviceTriggeredString.$DeviceParameters["Bezeichnung"]."\n");
 			
-			// if ($DeviceParameters["verzoegerung_eingang"] == true){
-				// $this->TriggerDelayedAlert($DeviceParameter);
-			// } else {
-				// $this->TriggerAlert($DeviceParameter);
-			// }
+			if ($DeviceParameters["verzoegerung_eingang"] == true){
+				$this->TriggerDelayedAlert($DeviceParameter);
+			} else {
+				$this->TriggerAlert($DeviceParameter);
+			}
 		}
 		
 		private function TriggerDelayedAlert($DeviceParameters){
