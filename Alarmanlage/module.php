@@ -67,8 +67,7 @@
 			$ScriptID = $this->RegisterScript('onDeviceStatusChanged', 'onDeviceStatusChanged', '<? SXALERT_DeviceStatusChanged('.$this->InstanceID.', $_IPS["VARIABLE"]); ?>'); 
 			IPS_SetHidden($ScriptID, true); 
 		
-			$this->RegisterTimer("ArmDelay", 0, 'SXALERT_ArmSystem($_IPS[\'TARGET\']);');
-			//$this->RegisterTimer("GetUpdates", 15000, 'Telegram_GetUpdates($_IPS[\'TARGET\']);');
+			$this->RegisterTimer("ArmDelay", 0, 'SXALERT_ArmSystem($_IPS["TARGET"]);');
 
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
