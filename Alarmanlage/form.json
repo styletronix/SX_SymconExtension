@@ -3,14 +3,66 @@
     {
     "type": "List",
     "name": "devices",
-    "caption": "Melder",
-    "rowCount": 0,
+    "caption": "Sensoren",
+    "rowCount": 5,
     "add": true,
     "delete": true,
-    "sort": {
-        "column": "Name",
-        "direction": "ascending"
-    },
+    "columns": [{
+        "caption": "Sensoren",
+        "name": "InstanceID", 
+        "width": "auto",
+        "add": 0,
+        "edit": {
+            "type": "SelectVariable"
+        }
+    }, {
+        "caption": "ist 24h-Alarm (Sabotage / Technik)",
+        "name": "24h",
+        "width": "50px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "ist Technik-Alarm",
+        "name": "Technik",
+        "width": "50px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Ausgangsverzögerung",
+        "name": "verzoegerung_ausgang",
+        "width": "50px",
+        "add": true,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Eingangsverzögerung",
+        "name": "verzoegerung_eingang",
+        "width": "50px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "ist Extern",
+        "name": "istExtern",
+        "width": "50px",
+        "add": true,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }]
+},{
+    "type": "List",
+    "name": "melder",
+    "caption": "Ausgabe",
+    "rowCount": 2,
+    "add": true,
+    "delete": true,
     "columns": [{
         "caption": "Melder",
         "name": "InstanceID", 
@@ -20,36 +72,35 @@
             "type": "SelectVariable"
         }
     }, {
-        "caption": "24h",
+        "caption": "bei 24h-Alarm",
         "name": "24h",
-        "width": "50px",
-        "add": false,
-        "edit": {
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Ausgangsverzögerung",
-        "name": "verzoegerung_ausgang",
-        "width": "80px",
-        "add": true,
-        "edit": {
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Eingansverzögerung",
-        "name": "verzoegerung_eingang",
-        "width": "80px",
-        "add": false,
-        "edit": {
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "ist Extern",
-        "name": "istExtern",
         "width": "70px",
         "add": true,
         "edit": {
             "type": "CheckBox"
+        }
+    }, {
+        "caption": "bei Technik-Alarm",
+        "name": "Technik",
+        "width": "70px",
+        "add": true,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Typ",
+        "name": "typ",
+        "width": "150px",
+        "add": true,
+        "edit": {
+            "type": "Select",
+			"options": [
+				{ "caption": "Sirene", "value": 0 },
+				{ "caption": "Warnlicht", "value": 1 },
+				{ "caption": "Eingangwarnung", "value": 2 },
+				{ "caption": "Ausgangswarnung", "value": 3 },
+				{ "caption": "Alarmbeleuchtung", "value": 4 }
+				]
         }
     }]
 },
