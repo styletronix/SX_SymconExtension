@@ -128,7 +128,7 @@
 			// Alarmanlage im Wartungsmodus. Keine Auswertung der Sensoren durchführen.
 			if ($alarmmodus == 4){ return; }
 			
-			$DeviceParameters = $this->GetDeviceParameter($DeviceID)
+			$DeviceParameters = $this->GetDeviceParameter($DeviceID);
 			if ($DeviceParameters == null){ return; }
 			
 			$Status = GetValue($DeviceID);		
