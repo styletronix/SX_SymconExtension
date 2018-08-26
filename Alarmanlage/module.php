@@ -113,7 +113,7 @@
 			
 		}
 
-		public function UpdateDeviceStatus(int $InstanceID){
+		public function UpdateDeviceStatus(int $DeviceID){
 			
 		}
 
