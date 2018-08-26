@@ -90,45 +90,34 @@
 			$this->RegisterPropertyInteger("PresenceResetToTemplateTimeout", 0);
 			$this->RegisterPropertyInteger("BrightnessSegmentationLevel", 0);
 			
-            $this->RegisterPropertyInteger("DeviceCategory", null);
-			if ($this->ReadPropertyInteger("DeviceCategory") == null){
-                @$CategoryID = IPS_GetCategoryIDByName("Geraete", $this->InstanceID);
+			
+            @$CategoryID = IPS_GetCategoryIDByName("Geraete", $this->InstanceID);
                 if ($CategoryID == false){
                     $CategoryID = IPS_CreateCategory();
-                    IPS_SetName($CategoryID, "Geräte");
+                    IPS_SetName($CategoryID, "Geraete");
                     IPS_SetParent($CategoryID, $this->InstanceID);
                 }
-
-                IPS_SetProperty($this->InstanceID, "DeviceCategory", $CategoryID);
-				$ApplyChanges = true;
-            }
+            $this->RegisterPropertyInteger("DeviceCategory", $CategoryID);
 			
 			
-			$this->RegisterPropertyInteger("PresenceCategory", null);
-			if ($this->ReadPropertyInteger("PresenceCategory") == null){
+			
                 @$CategoryID = IPS_GetCategoryIDByName("Bewegungsmelder", $this->InstanceID);
                 if ($CategoryID == false){
                     $CategoryID = IPS_CreateCategory();
                     IPS_SetName($CategoryID, "Bewegungsmelder");
                     IPS_SetParent($CategoryID, $this->InstanceID);
-                }
-
-                IPS_SetProperty($this->InstanceID, "PresenceCategory", $CategoryID);
-				$ApplyChanges = true;
-            }
+                } 
+			$this->RegisterPropertyInteger("PresenceCategory", $CategoryID);
 			
-			$this->RegisterPropertyInteger("IlluminationCategory", null);
-			if ($this->ReadPropertyInteger("IlluminationCategory") == null){
+			
                 @$CategoryID = IPS_GetCategoryIDByName("Helligkeit", $this->InstanceID);
                 if ($CategoryID == false){
                     $CategoryID = IPS_CreateCategory();
                     IPS_SetName($CategoryID, "Helligkeit");
                     IPS_SetParent($CategoryID, $this->InstanceID);
                 }
-				
-				IPS_SetProperty($this->InstanceID, "IlluminationCategory", $CategoryID);
-				$ApplyChanges = true;
-			}	
+			$this->RegisterPropertyInteger("IlluminationCategory", $CategoryID);
+			
 			
 			$ScriptID = $this->RegisterScript("StoreCurrentAsPresenceStateTemplate", "Als Vorlage für Anwesenheit speichern", "<?\n\nSXGRP_StoreCurrentAsPresenceStateTemplate(".$this->InstanceID."); \n\n?>");
 			
