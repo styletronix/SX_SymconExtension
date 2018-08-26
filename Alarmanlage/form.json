@@ -16,7 +16,7 @@
             "type": "SelectVariable"
         }
     }, {
-        "caption": "ist 24h-Alarm (Sabotage / Technik)",
+        "caption": "24h-Alarm (Sabotage / Technik)",
         "name": "24h",
         "width": "100px",
         "add": false,
@@ -24,7 +24,7 @@
             "type": "CheckBox"
         }
     }, {
-        "caption": "ist Technik-Alarm",
+        "caption": "Technik-Alarm",
         "name": "Technik",
         "width": "100px",
         "add": false,
@@ -48,8 +48,8 @@
             "type": "CheckBox"
         }
     }, {
-        "caption": "ist Extern",
-        "name": "istExtern",
+        "caption": "Intern aktiv",
+        "name": "istInternAktiv",
         "width": "100px",
         "add": true,
         "edit": {
@@ -72,7 +72,7 @@
             "type": "SelectVariable"
         }
     }, {
-        "caption": "bei 24h-Alarm",
+        "caption": "24h-Alarm",
         "name": "24h",
         "width": "100px",
         "add": true,
@@ -80,8 +80,16 @@
             "type": "CheckBox"
         }
     }, {
-        "caption": "bei Technik-Alarm",
+        "caption": "Technik-Alarm",
         "name": "Technik",
+        "width": "100px",
+        "add": true,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Intern aktiv",
+        "name": "istInternAktiv",
         "width": "100px",
         "add": true,
         "edit": {

@@ -15,7 +15,7 @@
 				IPS_SetVariableProfileValues("Alarm.Modus", 0, 4, 0);
 				IPS_SetVariableProfileAssociation("SX_Alarm.Modus", 0, "Deaktiviert", "LockOpen", 0xFFFF00);
 				IPS_SetVariableProfileAssociation("SX_Alarm.Modus", 1, "Aktiviert", "LockClosed", 0x00FF00);
-				IPS_SetVariableProfileAssociation("SX_Alarm.Modus", 2, "Nur extern aktiviert", "LockClosed", 0x00FF00);
+				IPS_SetVariableProfileAssociation("SX_Alarm.Modus", 2, "Intern Aktiviert", "LockClosed", 0x00FF00);
 				IPS_SetVariableProfileAssociation("SX_Alarm.Modus", 3, "! ALARM !", "Alert", 0xFF0000);
 				IPS_SetVariableProfileAssociation("SX_Alarm.Modus", 4, "WARTUNG", "CloseAll", 0x0000FF);
 				IPS_SetVariableProfileIcon("SX_Alarm.Modus",  "Alert");
