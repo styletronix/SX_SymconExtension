@@ -3,7 +3,7 @@
     {
     "type": "List",
     "name": "devices",
-    "caption": "zu überwachende Geräte",
+    "caption": "Melder",
     "rowCount": 0,
     "add": true,
     "delete": true,
@@ -12,23 +12,42 @@
         "direction": "ascending"
     },
     "columns": [{
-        "caption": "InstanceID",
+        "caption": "Melder",
         "name": "InstanceID", 
-        "width": "75px",
+        "width": "auto",
         "add": 0,
         "edit": {
             "type": "SelectVariable"
         }
     }, {
-        "caption": "Name",
-        "name": "Name",
-        "width": "auto",
-        "add": ""
-    }, {
         "caption": "24h",
         "name": "24h",
-        "width": "75px",
+        "width": "50px",
         "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Ausgangsverzögerung",
+        "name": "verzoegerung_ausgang",
+        "width": "80px",
+        "add": true,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Eingansverzögerung",
+        "name": "verzoegerung_eingang",
+        "width": "80px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "ist Extern",
+        "name": "verzoegerung_eingang",
+        "width": "70px",
+        "add": true,
         "edit": {
             "type": "CheckBox"
         }
