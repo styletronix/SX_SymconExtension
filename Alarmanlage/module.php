@@ -223,7 +223,7 @@
 		public function onEntryTimer(){
 			$this->SetTimerInterval ("EntryTimer", 0);
 			
-			$DeviceParameters = json_decode(GetBuffer("DelayedAlertDevice"), true);
+			$DeviceParameters = json_decode(this->GetBuffer("DelayedAlertDevice"), true);
 			this->TriggerAlert($DeviceParameters);
 		}
 		
