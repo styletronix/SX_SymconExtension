@@ -165,7 +165,7 @@
 		public function Reset(){
 			$this->SetTimerInterval ("ArmDelay", 0);
 			
-			SetValueString($this->GetIDForIdent("deviceTriggered"), $DeviceParameters["Bezeichnung"]);
+			SetValueString($this->GetIDForIdent("deviceTriggered"), "");
 			SetValueBoolean($this->GetIDForIdent("alarm"), false);
 			SetValueBoolean($this->GetIDForIdent("technik_alarm"), false);
 			SetValueBoolean($this->GetIDForIdent("24h_alarm"), false);
@@ -180,7 +180,7 @@
 			switch($Modus) {
 				case 0:
 					// Deaktiviert
-					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Value);
+					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
 					$this->Reset();	
 					break;
 	
@@ -188,21 +188,20 @@
 					//Aktiviert
 				case 2:
 					//Intern Aktiviert
-					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Value);
+					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
 					$this->ArmSystemDelayed();
 					break;
 
 				case 4:
 					//Wartung
-					
+					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
 					$this->Reset();	
 					break;
 					
 				default:
 					throw new Exception("Ungültiger Modus");
     		}
-			
-			SetValueInteger($this->GetIDForIdent("alarmmodus"), $Value);
+						
 		}
 		
 		private function ArmSystemDelayed(){
