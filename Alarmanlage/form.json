@@ -1,0 +1,58 @@
+{
+  "elements": [
+    {
+    "type": "List",
+    "name": "devices",
+    "caption": "zu überwachende Geräte",
+    "rowCount": 0,
+    "add": true,
+    "delete": true,
+    "sort": {
+        "column": "Name",
+        "direction": "ascending"
+    },
+    "columns": [{
+        "caption": "InstanceID",
+        "name": "InstanceID", 
+        "width": "75px",
+        "add": 0,
+        "edit": {
+            "type": "SelectVariable"
+        }
+    }, {
+        "caption": "Name",
+        "name": "Name",
+        "width": "auto",
+        "add": ""
+    }, {
+        "caption": "24h",
+        "name": "24h",
+        "width": "75px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }]
+},
+{ "type": "NumberSpinner", "name": "dauer_alarmbeleuchtung", "caption": "Dauer der Alarmbeleuchtung", "suffix": "Sekunden"},
+{ "type": "NumberSpinner", "name": "dauer_sirene", "caption": "Dauer der Sirene", "suffix": "Sekunden"},
+{ "type": "NumberSpinner", "name": "dauer_warnlicht", "caption": "Dauer des Warnlichts", "suffix": "Sekunden"},
+{ "type": "NumberSpinner", "name": "retrigger", "caption": "Maximale erneute Auslösungen", "suffix": "mal"},
+{ "type": "NumberSpinner", "name": "verzoegerung_eingang", "caption": "Eingangsverzögerung", "suffix": "Sekunden"},
+{ "type": "NumberSpinner", "name": "verzoegerung_ausgang", "caption": "Ausgangsverzögerung", "suffix": "Sekunden"},
+  ],
+    "actions":
+    [
+      {
+        "type": "Button",
+        "label": "Aktualisieren",
+        "onClick": "SXALERT_Initialize($id);"
+      }
+    ],
+    "status":
+    [
+        { "code": 102, "icon": "active", "caption": "OK" },
+        { "code": 201, "icon": "error", "caption": "Authentication failed" },
+        { "code": 202, "icon": "error", "caption": "No credits left" }
+    ]
+}
