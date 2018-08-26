@@ -54,7 +54,7 @@
 			$this->RegisterPropertyInteger("verzoegerung_eingang", 30);
 			$this->RegisterPropertyInteger("verzoegerung_ausgang", 120);
 			
-			$ScriptID = $this->RegisterScript("UpdateDevice", "UpdateDevice", "<?\n\nSXALERT_UpdateDeviceStatus(".$this->InstanceID.", $_IPS[\'VARIABLE\']); \n\n?>"); 
+			$ScriptID = $this->RegisterScript("UpdateDevice", "UpdateDevice", "<?\n\nSXALERT_UpdateDeviceStatus(".$this->InstanceID.", $_IPS[\"VARIABLE\"]); \n\n?>"); 
 			IPS_SetHidden($ScriptID, true); 
 		
 
