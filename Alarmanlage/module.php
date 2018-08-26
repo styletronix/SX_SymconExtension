@@ -40,18 +40,16 @@
             $this->RegisterVariableBoolean("vorwarnung_aktiv", "Vorwarnung aktiv", "~Switch");
 			$this->RegisterVariableBoolean("eingangszeit_aktiv", "Einganszeit aktiv", "~Switch");
 			$this->RegisterVariableBoolean("ausgangszeit_aktiv", "Ausgangszeit aktiv", "~Switch");
-            $this->RegisterVariableString("deviceTriggered", "Auslösender Sensor");
+            $this->RegisterVariableString("deviceTriggered", "Auslösender Sensor", "");
 			
 			$this->RegisterVariableInteger("alarmmodus", "Status", "SX_Alarm.Modus");
 			$this->EnableAction("alarmmodus");
 			
 			$id = $this->RegisterVariableBoolean("alertactive", "Alarmmerker");
 			IPS_SetHidden($id, true); 
-			SetValueBoolean($id, false);
 			
 			$id = $this->RegisterVariableInteger("alertcount", "Alarmzähler");
 			IPS_SetHidden($id, true); 
-			SetValueInteger($id, 0);
 		
 			
 			//Eigenschaften registrieren
@@ -76,7 +74,7 @@
         public function ApplyChanges() {
             parent::ApplyChanges();
 
-			$this->Initialize();
+			// $this->Initialize();
 			$this->SetStatus(102);
         }
 
