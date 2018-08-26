@@ -72,7 +72,7 @@
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
 			}else{
-				$this->Initialize();
+				// $this->Initialize();
 			}
         }
         public function ApplyChanges() {
