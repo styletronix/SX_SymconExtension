@@ -224,7 +224,7 @@
 			$this->SetTimerInterval("EntryTimer", 0);
 			$arrString = $this->GetBuffer("DelayedAlertDevice");
 			$DeviceParameters = json_decode($arrString, true);
-			this->TriggerAlert($DeviceParameters);
+			$this->TriggerAlert($DeviceParameters);
 		}
 		
 		private function TriggerAlert($DeviceParameters){
