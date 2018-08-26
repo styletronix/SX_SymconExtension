@@ -27,6 +27,10 @@
             $this->EnableAction("AlertModeAktive");
 			
 			$this->RegisterVariableBoolean("PresenceDetected", "Anwesenheit", "~Presence");
+			
+			$this->RegisterVariableBoolean("ManualPresence", "manuelle Anwesenheit", "~Switch");
+            $this->EnableAction("ManualPresence");
+			
 			$this->RegisterVariableFloat("CurrentMinBrightness", "Aktuelle Helligkeit", "");
 			
 			if (IPS_VariableProfileExists ( "SXGRP.Profiles" ) == false){
@@ -86,45 +90,34 @@
 			$this->RegisterPropertyInteger("PresenceResetToTemplateTimeout", 0);
 			$this->RegisterPropertyInteger("BrightnessSegmentationLevel", 0);
 			
-            $this->RegisterPropertyInteger("DeviceCategory", null);
-			if ($this->ReadPropertyInteger("DeviceCategory") == null){
-                @$CategoryID = IPS_GetCategoryIDByName("Geräte", $this->InstanceID);
+			
+            @$CategoryID = IPS_GetCategoryIDByName("Geraete", $this->InstanceID);
                 if ($CategoryID == false){
                     $CategoryID = IPS_CreateCategory();
-                    IPS_SetName($CategoryID, "Geräte");
+                    IPS_SetName($CategoryID, "Geraete");
                     IPS_SetParent($CategoryID, $this->InstanceID);
                 }
-
-                IPS_SetProperty($this->InstanceID, "DeviceCategory", $CategoryID);
-				$ApplyChanges = true;
-            }
+            $this->RegisterPropertyInteger("DeviceCategory", $CategoryID);
 			
 			
-			$this->RegisterPropertyInteger("PresenceCategory", null);
-			if ($this->ReadPropertyInteger("PresenceCategory") == null){
+			
                 @$CategoryID = IPS_GetCategoryIDByName("Bewegungsmelder", $this->InstanceID);
                 if ($CategoryID == false){
                     $CategoryID = IPS_CreateCategory();
                     IPS_SetName($CategoryID, "Bewegungsmelder");
                     IPS_SetParent($CategoryID, $this->InstanceID);
-                }
-
-                IPS_SetProperty($this->InstanceID, "PresenceCategory", $CategoryID);
-				$ApplyChanges = true;
-            }
+                } 
+			$this->RegisterPropertyInteger("PresenceCategory", $CategoryID);
 			
-			$this->RegisterPropertyInteger("IlluminationCategory", null);
-			if ($this->ReadPropertyInteger("IlluminationCategory") == null){
+			
                 @$CategoryID = IPS_GetCategoryIDByName("Helligkeit", $this->InstanceID);
                 if ($CategoryID == false){
                     $CategoryID = IPS_CreateCategory();
                     IPS_SetName($CategoryID, "Helligkeit");
                     IPS_SetParent($CategoryID, $this->InstanceID);
                 }
-				
-				IPS_SetProperty($this->InstanceID, "IlluminationCategory", $CategoryID);
-				$ApplyChanges = true;
-			}	
+			$this->RegisterPropertyInteger("IlluminationCategory", $CategoryID);
+			
 			
 			$ScriptID = $this->RegisterScript("StoreCurrentAsPresenceStateTemplate", "Als Vorlage für Anwesenheit speichern", "<?\n\nSXGRP_StoreCurrentAsPresenceStateTemplate(".$this->InstanceID."); \n\n?>");
 			
@@ -290,13 +283,23 @@
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
 			
 			// Bricht ausführung ab wenn Bewegungsmelder deaktiviert sind. 
-			// Wird diese Option verwendet, so wird das Profil beim deasktivieren der Bewegungsmelder nicht auf "Abwesend" gesetzt sondern verbleibt im aktuellen zustand.
+			// Wird diese Option verwendet, so wird das Profil beim deaktivieren der Bewegungsmelder nicht auf "Abwesend" gesetzt sondern verbleibt im aktuellen zustand.
 			// if ($enabled == false){return;}	
 			
 			
 			$SkriptID = IPS_GetObjectIDByIdent("UpdateAnwesenheit", $this->InstanceID);
 			$PresenceOffDelayScriptID = IPS_GetObjectIDByIdent("PresenceOffDelayScript", $this->InstanceID);
-						
+					
+			
+			// Manuelle Anwesenheit überschreibt Bewegungsmelder
+			$ManualPresence = GetValueBoolean($this->GetIDForIdent("ManualPresence"));
+			if ($ManualPresence == true){
+				IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
+				$this->SetPresenceState(true);
+				return;
+			}
+
+					
 			$result = false;
 			$PresenceDetectorsExist = false;
 			$PresenceCategoryID = $this->ReadPropertyInteger("PresenceCategory");
@@ -376,8 +379,7 @@
 			
 			IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
 			
-			
-			
+						
 			if ($PresenceDetectorsExist == true){
 				if ($enabled == false){$result = false;}	//Setze Anwesenheit auf FALSCH wenn Bewegungsmelder deaktiviert wurden.
 				
@@ -563,6 +565,7 @@
 			$this->RefreshStatus();
         }
 
+		
 		public function SetAlertState(bool $Value){
 			IPS_SemaphoreEnter("SXGRP_AlertStateChange", 120 * 1000);
 			
@@ -596,6 +599,10 @@
 			}
 			
 			IPS_SemaphoreLeave("SXGRP_AlertStateChange");
+		}
+		public function SetManualPresence(bool $Value){
+			SetValueBoolean($this->GetIDForIdent("ManualPresence"), $Value);
+			$this->RefreshPresence();
 		}
 		public function SetPresenceState(bool $Value){
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
@@ -922,6 +929,10 @@
 			
 			case "AlertModeAktive":
 				$this->SetAlertState($Value);
+				break;
+			
+			case "ManualPresence":
+				$this->SetManualPresence($Value);
 				break;
 			
         	default:
