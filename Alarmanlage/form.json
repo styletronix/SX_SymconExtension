@@ -18,7 +18,7 @@
     }, {
         "caption": "ist 24h-Alarm (Sabotage / Technik)",
         "name": "24h",
-        "width": "50px",
+        "width": "100px",
         "add": false,
         "edit": {
             "type": "CheckBox"
@@ -26,7 +26,7 @@
     }, {
         "caption": "ist Technik-Alarm",
         "name": "Technik",
-        "width": "50px",
+        "width": "100px",
         "add": false,
         "edit": {
             "type": "CheckBox"
@@ -34,7 +34,7 @@
     }, {
         "caption": "Ausgangsverzögerung",
         "name": "verzoegerung_ausgang",
-        "width": "50px",
+        "width": "100px",
         "add": true,
         "edit": {
             "type": "CheckBox"
@@ -42,7 +42,7 @@
     }, {
         "caption": "Eingangsverzögerung",
         "name": "verzoegerung_eingang",
-        "width": "50px",
+        "width": "100px",
         "add": false,
         "edit": {
             "type": "CheckBox"
@@ -50,7 +50,7 @@
     }, {
         "caption": "ist Extern",
         "name": "istExtern",
-        "width": "50px",
+        "width": "100px",
         "add": true,
         "edit": {
             "type": "CheckBox"
@@ -60,7 +60,7 @@
     "type": "List",
     "name": "melder",
     "caption": "Ausgabe",
-    "rowCount": 2,
+    "rowCount": 5,
     "add": true,
     "delete": true,
     "columns": [{
@@ -74,7 +74,7 @@
     }, {
         "caption": "bei 24h-Alarm",
         "name": "24h",
-        "width": "70px",
+        "width": "100px",
         "add": true,
         "edit": {
             "type": "CheckBox"
@@ -82,7 +82,7 @@
     }, {
         "caption": "bei Technik-Alarm",
         "name": "Technik",
-        "width": "70px",
+        "width": "100px",
         "add": true,
         "edit": {
             "type": "CheckBox"
@@ -91,7 +91,7 @@
         "caption": "Typ",
         "name": "typ",
         "width": "150px",
-        "add": true,
+        "add": 0,
         "edit": {
             "type": "Select",
 			"options": [

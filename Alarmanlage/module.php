@@ -44,7 +44,9 @@
 			
 
 			//Eigenschaften registrieren
-			$this->RegisterPropertyString("devices", "");
+			$this->RegisterPropertyString("devices", null);
+			$this->RegisterPropertyString("melder", null);
+			
 			$this->RegisterPropertyInteger("dauer_alarmbeleuchtung", 900);
 			$this->RegisterPropertyInteger("dauer_sirene", 120);
 			$this->RegisterPropertyInteger("dauer_warnlicht", 900);
