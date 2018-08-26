@@ -79,123 +79,123 @@
         }
 
 		public function Initialize(){	
-			$arrString = $this->ReadPropertyString("devices");
-			$arr = json_decode($arrString, true);
+			// $arrString = $this->ReadPropertyString("devices");
+			// $arr = json_decode($arrString, true);
 					
-			$ScriptID = IPS_GetObjectIDByIdent("onDeviceStatusChanged", $this->InstanceID); 
+			// $ScriptID = IPS_GetObjectIDByIdent("onDeviceStatusChanged", $this->InstanceID); 
 			
-			$foundIDs = array();
+			// $foundIDs = array();
 			
-			foreach($arr as $key1) {
-				$key2 = $key1["InstanceID"];
+			// foreach($arr as $key1) {
+				// $key2 = $key1["InstanceID"];
 				
-				$itemObject = IPS_GetObject($key2);
-				$TargetID = $key2;
-				$TargetName = IPS_GetName($key2);
+				// $itemObject = IPS_GetObject($key2);
+				// $TargetID = $key2;
+				// $TargetName = IPS_GetName($key2);
 
-				if ($itemObject["ObjectType"] == 6){
-				   $TargetID = IPS_GetLink($key2)["TargetID"];
-				}
+				// if ($itemObject["ObjectType"] == 6){
+				   // $TargetID = IPS_GetLink($key2)["TargetID"];
+				// }
 
 
-				if ($TargetID > 0){
-					$EventName = "TargetID ".$TargetID;
-					$foundIDs[] = $EventName;
+				// if ($TargetID > 0){
+					// $EventName = "TargetID ".$TargetID;
+					// $foundIDs[] = $EventName;
 
-					@$EventID = IPS_GetEventIDByName($EventName, $ScriptID);
-					if ($EventID === false){
-						$EventID = IPS_CreateEvent(0);
-						IPS_SetEventTrigger($EventID, 0, $TargetID);
-						IPS_SetName($EventID, $EventName);
-						IPS_SetParent($EventID, $ScriptID);
-						IPS_SetEventActive($EventID, true);
-					}
-				}
-			}
+					// @$EventID = IPS_GetEventIDByName($EventName, $ScriptID);
+					// if ($EventID === false){
+						// $EventID = IPS_CreateEvent(0);
+						// IPS_SetEventTrigger($EventID, 0, $TargetID);
+						// IPS_SetName($EventID, $EventName);
+						// IPS_SetParent($EventID, $ScriptID);
+						// IPS_SetEventActive($EventID, true);
+					// }
+				// }
+			// }
 
-			foreach(IPS_GetChildrenIDs($ScriptID) as $key2) {
-				$EventName = IPS_GetName($key2);
-				if (!in_array ($EventName, $foundIDs)){
-					IPS_DeleteEvent($key2);
-				}
-			}
+			// foreach(IPS_GetChildrenIDs($ScriptID) as $key2) {
+				// $EventName = IPS_GetName($key2);
+				// if (!in_array ($EventName, $foundIDs)){
+					// IPS_DeleteEvent($key2);
+				// }
+			// }
 			
 		}
 
 		public function DeviceStatusChanged(int $DeviceID){
-			$alarmmodus = GetValue($this->GetIDForIdent("alarmmodus"));
+			// $alarmmodus = GetValue($this->GetIDForIdent("alarmmodus"));
 						
-			// Alarmanlage im Wartungsmodus. Keine Auswertung der Sensoren durchführen.
-			if ($alarmmodus == 4){ return; }
+			// // Alarmanlage im Wartungsmodus. Keine Auswertung der Sensoren durchführen.
+			// if ($alarmmodus == 4){ return; }
 			
-			$DeviceParameters = $this->GetDeviceParameter($DeviceID)
-			if ($DeviceParameters == null){ return; }
+			// $DeviceParameters = $this->GetDeviceParameter($DeviceID)
+			// if ($DeviceParameters == null){ return; }
 			
-			$Status = GetValue($DeviceID);		
-			// Gerät meldet false. Keine Auswertung durchführen.
-			if ($Status == false){ return; }
+			// $Status = GetValue($DeviceID);		
+			// // Gerät meldet false. Keine Auswertung durchführen.
+			// if ($Status == false){ return; }
 			
-			if ($DeviceParameters["24h"] == true){
-				$this->TriggerDeviceAlert($DeviceParameters);
-				return;
-			}
+			// if ($DeviceParameters["24h"] == true){
+				// $this->TriggerDeviceAlert($DeviceParameters);
+				// return;
+			// }
 
-			if ($DeviceParameters["verzoegerung_ausgang"] == true){
-				$ausgangszeit_aktiv = GetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"));
-				// Kein Alarm bei aktiver Ausgangszeit auslösen.
-				if ($ausgangszeit_aktiv == true){ return; }
-			}
+			// if ($DeviceParameters["verzoegerung_ausgang"] == true){
+				// $ausgangszeit_aktiv = GetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"));
+				// // Kein Alarm bei aktiver Ausgangszeit auslösen.
+				// if ($ausgangszeit_aktiv == true){ return; }
+			// }
 			
-			if ($alarmmodus == 2){
-				// Intern aktiviert
-				if ($DeviceParameters["istInternAktiv"] == true){
-					$this->TriggerDeviceAlert($DeviceParameters);
-					return;
-				}
-			}
+			// if ($alarmmodus == 2){
+				// // Intern aktiviert
+				// if ($DeviceParameters["istInternAktiv"] == true){
+					// $this->TriggerDeviceAlert($DeviceParameters);
+					// return;
+				// }
+			// }
 			
-			if ($alarmmodus == 1){
-				// Gesamt Aktiviert
-				$this->TriggerDeviceAlert($DeviceParameters);
-				return;
-			}
+			// if ($alarmmodus == 1){
+				// // Gesamt Aktiviert
+				// $this->TriggerDeviceAlert($DeviceParameters);
+				// return;
+			// }
 		}
 		
 		private function TriggerDeviceAlert($DeviceParameters){
-			$triggeredDeviceID = $this->GetIDForIdent("deviceTriggered");
-			$deviceTriggeredString = GetValueString($triggeredDeviceID);
-			SetValueString($triggeredDeviceID, .$deviceTriggeredString.$DeviceParameters["Bezeichnung"]."\n");
+			// $triggeredDeviceID = $this->GetIDForIdent("deviceTriggered");
+			// $deviceTriggeredString = GetValueString($triggeredDeviceID);
+			// SetValueString($triggeredDeviceID, .$deviceTriggeredString.$DeviceParameters["Bezeichnung"]."\n");
 			
-			if ($DeviceParameters["verzoegerung_eingang"] == true){
-				$this->TriggerDelayedAlert($DeviceParameter);
-			} else {
-				$this->TriggerAlert($DeviceParameter);
-			}
+			// if ($DeviceParameters["verzoegerung_eingang"] == true){
+				// $this->TriggerDelayedAlert($DeviceParameter);
+			// } else {
+				// $this->TriggerAlert($DeviceParameter);
+			// }
 		}
 		
 		private function TriggerDelayedAlert($DeviceParameters){
-			SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), true);
+			// SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), true);
 			
-			//TODO: Alarm verzögert
+			// //TODO: Alarm verzögert
 			
-			$this->TriggerAlert($DeviceParameters);
+			// $this->TriggerAlert($DeviceParameters);
 		}
 		
 		private function TriggerAlert($DeviceParameters){
-			$setAlert = true;
-			if ($DeviceParameters["24h"] == true){
-				SetValueBoolean($this->GetIDForIdent("24h_alarm"), true);
-				$setAlert = false;
-			}
-			if ($DeviceParameters["Technik"] == true){
-				SetValueBoolean($this->GetIDForIdent("technik_alarm"), true);
-				$setAlert = false;
-			}
-			if ($setAlert == True){
-				SetValueBoolean($this->GetIDForIdent("alarm"), true);
-			}
+			// $setAlert = true;
+			// if ($DeviceParameters["24h"] == true){
+				// SetValueBoolean($this->GetIDForIdent("24h_alarm"), true);
+				// $setAlert = false;
+			// }
+			// if ($DeviceParameters["Technik"] == true){
+				// SetValueBoolean($this->GetIDForIdent("technik_alarm"), true);
+				// $setAlert = false;
+			// }
+			// if ($setAlert == True){
+				// SetValueBoolean($this->GetIDForIdent("alarm"), true);
+			// }
 			
-			//TODO: Alarm
+			// //TODO: Alarm
 		}
 		
 
