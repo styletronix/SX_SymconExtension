@@ -27,6 +27,10 @@
             $this->EnableAction("AlertModeAktive");
 			
 			$this->RegisterVariableBoolean("PresenceDetected", "Anwesenheit", "~Presence");
+			
+			$this->RegisterVariableBoolean("ManualPresence", "manuelle Anwesenheit", "~Switch");
+            $this->EnableAction("ManualPresence");
+			
 			$this->RegisterVariableFloat("CurrentMinBrightness", "Aktuelle Helligkeit", "");
 			
 			if (IPS_VariableProfileExists ( "SXGRP.Profiles" ) == false){
@@ -290,13 +294,22 @@
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
 			
 			// Bricht ausführung ab wenn Bewegungsmelder deaktiviert sind. 
-			// Wird diese Option verwendet, so wird das Profil beim deasktivieren der Bewegungsmelder nicht auf "Abwesend" gesetzt sondern verbleibt im aktuellen zustand.
+			// Wird diese Option verwendet, so wird das Profil beim deaktivieren der Bewegungsmelder nicht auf "Abwesend" gesetzt sondern verbleibt im aktuellen zustand.
 			// if ($enabled == false){return;}	
 			
 			
 			$SkriptID = IPS_GetObjectIDByIdent("UpdateAnwesenheit", $this->InstanceID);
 			$PresenceOffDelayScriptID = IPS_GetObjectIDByIdent("PresenceOffDelayScript", $this->InstanceID);
-						
+					
+			
+			// Manuelle Anwesenheit überschreibt Bewegungsmelder
+			if ($ManualPresence == true){
+				IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
+				$this->SetPresenceState(true);
+				return;
+			}
+
+					
 			$result = false;
 			$PresenceDetectorsExist = false;
 			$PresenceCategoryID = $this->ReadPropertyInteger("PresenceCategory");
@@ -376,8 +389,7 @@
 			
 			IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
 			
-			
-			
+						
 			if ($PresenceDetectorsExist == true){
 				if ($enabled == false){$result = false;}	//Setze Anwesenheit auf FALSCH wenn Bewegungsmelder deaktiviert wurden.
 				
@@ -563,6 +575,7 @@
 			$this->RefreshStatus();
         }
 
+		
 		public function SetAlertState(bool $Value){
 			IPS_SemaphoreEnter("SXGRP_AlertStateChange", 120 * 1000);
 			
@@ -596,6 +609,10 @@
 			}
 			
 			IPS_SemaphoreLeave("SXGRP_AlertStateChange");
+		}
+		public function SetManualPresence(bool $Value){
+			SetValueBoolean($this->GetIDForIdent("ManualPresence"), $Value);
+			$this->RefreshPresence();
 		}
 		public function SetPresenceState(bool $Value){
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
@@ -922,6 +939,10 @@
 			
 			case "AlertModeAktive":
 				$this->SetAlertState($Value);
+				break;
+			
+			case "ManualPresence":
+				$this->SetManualPresence($Value);
 				break;
 			
         	default:
