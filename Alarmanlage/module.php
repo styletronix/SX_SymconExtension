@@ -213,7 +213,7 @@
 				if (GetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv")) == false ){
 					$this->SetBuffer("DelayedAlertDevice", json_encode($DeviceParameters));
 					SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), true);
-					$this->SetTimerInterval ("EntryTimer", $Delay * 1000);		
+					$this->SetTimerInterval("EntryTimer", $Delay * 1000);		
 				}					
 			}else{
 				$this->TriggerAlert($DeviceParameters);
@@ -221,9 +221,9 @@
 		}
 		
 		public function onEntryTimer(){
-			$this->SetTimerInterval ("EntryTimer", 0);
-			
-			$DeviceParameters = json_decode(this->GetBuffer("DelayedAlertDevice"), true);
+			$this->SetTimerInterval("EntryTimer", 0);
+			$arrString = $this->GetBuffer("DelayedAlertDevice");
+			$DeviceParameters = json_decode($arrString, true);
 			this->TriggerAlert($DeviceParameters);
 		}
 		
