@@ -16,6 +16,13 @@
             "type": "SelectVariable"
         }
     }, {
+        "caption": "Bezeichnung",
+        "name": "Bezeichnung",
+        "width": "200px",
+        "edit": {
+            "type": "ValidationTextBox"
+        }
+    }, {
         "caption": "24h-Alarm (Sabotage / Technik)",
         "name": "24h",
         "width": "100px",
