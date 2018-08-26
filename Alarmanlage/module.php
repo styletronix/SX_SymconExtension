@@ -131,9 +131,9 @@
 			$this->SetTimerInterval ("ArmDelay", 0);
 			$this->SetTimerInterval ("EntryTimer", 0);
 			
-			$this->SetBuffer("DelayedAlertDevice", null);
+			$this->SetBuffer("DelayedAlertDevice", "");
 			$this->SetBuffer("alertcount", 0);
-			$this->SetBuffer("alertactive", false);
+			$this->SetBuffer("alertactive", "false");
 			
 			SetValueString($this->GetIDForIdent("deviceTriggered"), "");
 			SetValueBoolean($this->GetIDForIdent("alarm"), false);
@@ -206,13 +206,13 @@
 		}
 		
 		private function TriggerDelayedAlert($DeviceParameters){
-			if ($this->GetBuffer("alertactive") == true){ return; }
+			if ($this->GetBuffer("alertactive") == "true"){ return; }
 				
 			$Delay = $this->ReadPropertyInteger("verzoegerung_eingang");
 			if ($Delay > 0){
 				if (GetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv")) == false ){
-					$this->SetBuffer("DelayedAlertDevice", json_encode($DeviceParameters));
 					SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), true);
+					$this->SetBuffer("DelayedAlertDevice", json_encode($DeviceParameters));
 					$this->SetTimerInterval("EntryTimer", $Delay * 1000);		
 				}					
 			}else{
@@ -243,8 +243,8 @@
 			}
 			
 
-			if ($this->GetBuffer("alertactive") == false){
-				$this->SetBuffer("alertactive", true);
+			if ($this->GetBuffer("alertactive") == "false"){
+				$this->SetBuffer("alertactive", "true");
 				$this->SetBuffer("alertcount", $this->GetBuffer("alertcount") + 1);
 			}
 			
