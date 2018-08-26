@@ -6,7 +6,6 @@
 		
         public function Create() {
             parent::Create();
-
 			$ApplyChanges = false;
 			
 			//Variablenprofile erstellen
