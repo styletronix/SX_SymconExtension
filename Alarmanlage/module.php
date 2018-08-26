@@ -54,7 +54,7 @@
 			$this->RegisterPropertyInteger("verzoegerung_eingang", 30);
 			$this->RegisterPropertyInteger("verzoegerung_ausgang", 120);
 			
-			$ScriptID = $this->RegisterScript('UpdateDevice', 'UpdateDevice', '<? SXALERT_UpdateDeviceStatus('.$this->InstanceID.', $_IPS[\"VARIABLE\"]); ?>'); 
+			$ScriptID = $this->RegisterScript('DeviceStatusChanged', 'DeviceStatusChanged', '<? SXALERT_DeviceStatusChanged('.$this->InstanceID.', $_IPS[\"VARIABLE\"]); ?>'); 
 			IPS_SetHidden($ScriptID, true); 
 		
 
@@ -73,7 +73,7 @@
 			$arrString = $this->ReadPropertyString("devices");
 			$arr = json_decode($arrString);
 
-			$ScriptID = IPS_GetObjectIDByIdent("UpdateDevice", $this->InstanceID); 
+			$ScriptID = IPS_GetObjectIDByIdent("DeviceStatusChanged", $this->InstanceID); 
 			
 			$foundIDs = array();
 
@@ -113,7 +113,7 @@
 			
 		}
 
-		public function UpdateDeviceStatus(int $DeviceID){
+		public function DeviceStatusChanged(int $DeviceID){
 			
 		}
 
