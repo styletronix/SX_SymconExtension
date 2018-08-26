@@ -46,11 +46,8 @@
 			$this->RegisterVariableInteger("alarmmodus", "Status", "SX_Alarm.Modus");
 			$this->EnableAction("alarmmodus");
 			
-			$id = $this->RegisterVariableBoolean("alertactive", "Alarmmerker");
-			IPS_SetHidden($id, true); 
-			
-			$id = $this->RegisterVariableInteger("alertcount", "Alarmzähler");
-			IPS_SetHidden($id, true); 
+			$this->SetBuffer("alertcount", 0);
+			$this->SetBuffer("alertactive", false);
 		
 			
 			//Eigenschaften registrieren
@@ -64,10 +61,9 @@
 			$this->RegisterPropertyInteger("verzoegerung_eingang", 30);
 			$this->RegisterPropertyInteger("verzoegerung_ausgang", 120);
 			
-			$ScriptID = $this->RegisterScript('onDeviceStatusChanged', 'onDeviceStatusChanged', '<? SXALERT_DeviceStatusChanged('.$this->InstanceID.', $_IPS["VARIABLE"]); ?>'); 
-			IPS_SetHidden($ScriptID, true); 
 		
 			$this->RegisterTimer("ArmDelay", 0, 'SXALERT_ArmSystem($_IPS["TARGET"]);');
+			$this->RegisterTimer("EntryTimer", 0, 'SXALERT_onEntryTimer($_IPS["TARGET"]);');
 
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
@@ -133,6 +129,11 @@
 		
 		public function Reset(){
 			$this->SetTimerInterval ("ArmDelay", 0);
+			$this->SetTimerInterval ("EntryTimer", 0);
+			
+			$this->SetBuffer("DelayedAlertDevice", null);
+			$this->SetBuffer("alertcount", 0);
+			$this->SetBuffer("alertactive", false);
 			
 			SetValueString($this->GetIDForIdent("deviceTriggered"), "");
 			SetValueBoolean($this->GetIDForIdent("alarm"), false);
@@ -141,8 +142,6 @@
 			SetValueBoolean($this->GetIDForIdent("vorwarnung_aktiv"), false);
 			SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), false);
 			SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), false);
-			SetValueBoolean($this->GetIDForIdent("alertactive"), false);
-			SetValueInteger($this->GetIDForIdent("alertcount"), 0);
 			SetValueBoolean($this->GetIDForIdent("alarmscharf"), false);
 		}
 		
@@ -189,6 +188,7 @@
 		}
 		
 		public function ArmSystem(){
+			$this->SetTimerInterval ("ArmDelay", 0);
 			SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), false);
 			SetValueBoolean($this->GetIDForIdent("alarmscharf"), true);			
 		}
@@ -199,22 +199,37 @@
 			SetValueString($triggeredDeviceID, $DeviceParameters["Bezeichnung"]);
 			
 			if ($DeviceParameters["verzoegerung_eingang"] == true){
-				$this->TriggerDelayedAlert($DeviceParameter);
+				$this->TriggerDelayedAlert($DeviceParameters);
 			} else {
-				$this->TriggerAlert($DeviceParameter);
+				$this->TriggerAlert($DeviceParameters);
 			}
 		}
 		
 		private function TriggerDelayedAlert($DeviceParameters){
-			SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), true);
+			if ($this->GetBuffer("alertactive") == true){ return; }
+				
+			$Delay = $this->ReadPropertyInteger("verzoegerung_eingang");
+			if ($Delay > 0){
+				if (GetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv")) == false ){
+					$this->SetBuffer("DelayedAlertDevice", json_encode($DeviceParameters));
+					SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), true);
+					$this->SetTimerInterval ("EntryTimer", $Delay * 1000);		
+				}					
+			}else{
+				$this->TriggerAlert($DeviceParameters);
+			}
+		}
+		
+		public function onEntryTimer(){
+			$this->SetTimerInterval ("EntryTimer", 0);
 			
-			//TODO: Alarm verzögert
-			
-			$this->TriggerAlert($DeviceParameters);
+			$DeviceParameters = json_decode(GetBuffer("DelayedAlertDevice"), true);
+			this->TriggerAlert($DeviceParameters);
 		}
 		
 		private function TriggerAlert($DeviceParameters){
 			$setAlert = true;
+			
 			if ($DeviceParameters["24h"] == true){
 				SetValueBoolean($this->GetIDForIdent("24h_alarm"), true);
 				$setAlert = false;
@@ -223,11 +238,17 @@
 				SetValueBoolean($this->GetIDForIdent("technik_alarm"), true);
 				$setAlert = false;
 			}
-			if ($setAlert == True){
+			if ($setAlert == true){
 				SetValueBoolean($this->GetIDForIdent("alarm"), true);
 			}
 			
-			//TODO: Alarm
+
+			if ($this->GetBuffer("alertactive") == false){
+				$this->SetBuffer("alertactive", true);
+				$this->SetBuffer("alertcount", $this->GetBuffer("alertcount") + 1);
+			}
+			
+			//TODO:Alarm
 		}
 		
 
