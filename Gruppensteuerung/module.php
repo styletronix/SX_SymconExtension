@@ -92,7 +92,7 @@
 			
             $this->RegisterPropertyInteger("DeviceCategory", null);
 			if ($this->ReadPropertyInteger("DeviceCategory") == null){
-                @$CategoryID = IPS_GetCategoryIDByName("Geräte", $this->InstanceID);
+                @$CategoryID = IPS_GetCategoryIDByName("Geraete", $this->InstanceID);
                 if ($CategoryID == false){
                     $CategoryID = IPS_CreateCategory();
                     IPS_SetName($CategoryID, "Geräte");
