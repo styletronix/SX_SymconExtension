@@ -54,6 +54,8 @@
 			$this->RegisterPropertyInteger("verzoegerung_eingang", 30);
 			$this->RegisterPropertyInteger("verzoegerung_ausgang", 120);
 			
+			$ScriptID = $this->RegisterScript("UpdateDeviceStatus", "UpdateDeviceStatus", "<?\n\nSXALERT_UpdateDeviceStatus(".$this->InstanceID.", $_IPS['VARIABLE']); \n\n?>"); 
+			IPS_SetHidden($ScriptID, true); 
 		
 
             if ($ApplyChanges == true){
@@ -71,10 +73,49 @@
 			$arrString = $this->ReadPropertyString("devices");
 			$arr = json_decode($arrString);
 
+			$ScriptID = IPS_GetObjectIDByIdent("UpdateDeviceStatus", $this->InstanceID); 
+			
+			$foundIDs = array();
 
+			foreach($arr as $key1) {
+				$key2 = $key1("InstanceID");
+				
+				$itemObject = IPS_GetObject($key2);
+				$TargetID = $key2;
+				$TargetName = IPS_GetName($key2);
+
+				if ($itemObject["ObjectType"] == 6){
+				   $TargetID = IPS_GetLink($key2)["TargetID"];
+				}
+
+
+				if ($TargetID > 0){
+					$EventName = "TargetID ".$TargetID;
+					$foundIDs[] = $EventName;
+
+					@$EventID = IPS_GetEventIDByName($EventName, $ScriptID);
+					if ($EventID === false){
+						$EventID = IPS_CreateEvent(0);
+						IPS_SetEventTrigger($EventID, 1, $TargetID);
+						IPS_SetName($EventID, $EventName);
+						IPS_SetParent($EventID, $ScriptID);
+						IPS_SetEventActive($EventID, true);
+					}
+				}
+			}
+
+			foreach(IPS_GetChildrenIDs($ScriptID) as $key2) {
+				$EventName = IPS_GetName($key2);
+				if (!in_array ($EventName, $foundIDs)){
+					IPS_DeleteEvent($key2);
+				}
+			}
 			
 		}
 
+		public function UpdateDeviceStatus($InstanceID int){
+			
+		}
 
 		public function RequestAction($Ident, $Value) {
 			switch($Ident) {
