@@ -101,6 +101,8 @@
 
 
 				if ($TargetID > 0){
+					$this->RegisterMessage($TargetID, 10603);
+					
 					$EventName = "TargetID ".$TargetID;
 					$foundIDs[] = $EventName;
 
@@ -118,6 +120,7 @@
 			foreach(IPS_GetChildrenIDs($ScriptID) as $key2) {
 				$EventName = IPS_GetName($key2);
 				if (!in_array ($EventName, $foundIDs)){
+					$this->UnregisterMessage($TargetID, 10603);
 					IPS_DeleteEvent($key2);
 				}
 			}
@@ -288,5 +291,9 @@
 
     		}
  		}
+		
+		public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
+			IPS_LogMessage("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
+		}
     }
 ?>
