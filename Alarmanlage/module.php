@@ -182,20 +182,20 @@
 		}
 		
 		private function TriggerAlert($DeviceParameters){
-			// $setAlert = true;
-			// if ($DeviceParameters["24h"] == true){
-				// SetValueBoolean($this->GetIDForIdent("24h_alarm"), true);
-				// $setAlert = false;
-			// }
-			// if ($DeviceParameters["Technik"] == true){
-				// SetValueBoolean($this->GetIDForIdent("technik_alarm"), true);
-				// $setAlert = false;
-			// }
-			// if ($setAlert == True){
-				// SetValueBoolean($this->GetIDForIdent("alarm"), true);
-			// }
+			$setAlert = true;
+			if ($DeviceParameters["24h"] == true){
+				SetValueBoolean($this->GetIDForIdent("24h_alarm"), true);
+				$setAlert = false;
+			}
+			if ($DeviceParameters["Technik"] == true){
+				SetValueBoolean($this->GetIDForIdent("technik_alarm"), true);
+				$setAlert = false;
+			}
+			if ($setAlert == True){
+				SetValueBoolean($this->GetIDForIdent("alarm"), true);
+			}
 			
-			// //TODO: Alarm
+			//TODO: Alarm
 		}
 		
 
