@@ -164,7 +164,7 @@
 		private function TriggerDeviceAlert($DeviceParameters){
 			$triggeredDeviceID = $this->GetIDForIdent("deviceTriggered");
 			$deviceTriggeredString = GetValueString($triggeredDeviceID);
-			SetValueString($triggeredDeviceID, $deviceTriggeredString.$DeviceParameters["Bezeichnung"]."\n");
+			SetValueString($triggeredDeviceID, $deviceTriggeredString."".$DeviceParameters["Bezeichnung"]."\n");
 			
 			if ($DeviceParameters["verzoegerung_eingang"] == true){
 				$this->TriggerDelayedAlert($DeviceParameter);
