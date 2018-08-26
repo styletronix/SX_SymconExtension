@@ -66,6 +66,8 @@
 			$ScriptID = $this->RegisterScript('onDeviceStatusChanged', 'onDeviceStatusChanged', '<? SXALERT_DeviceStatusChanged('.$this->InstanceID.', $_IPS["VARIABLE"]); ?>'); 
 			IPS_SetHidden($ScriptID, true); 
 		
+			$ScriptID = $this->RegisterTimer("ArmDelay", 0, 'SXALERT_ArmSystem('.$this->InstanceID.');');
+			IPS_SetHidden($ScriptID, true); 
 
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
@@ -161,6 +163,62 @@
 			}
 		}
 		
+		public function Reset(){
+			$this->SetTimerInterval ("ArmDelay", 0);
+			
+			SetValueString($this->GetIDForIdent("deviceTriggered"), $DeviceParameters["Bezeichnung"]);
+			SetValueBoolean($this->GetIDForIdent("alarm"), false);
+			SetValueBoolean($this->GetIDForIdent("technik_alarm"), false);
+			SetValueBoolean($this->GetIDForIdent("24h_alarm"), false);
+			SetValueBoolean($this->GetIDForIdent("vorwarnung_aktiv"), false);
+			SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), false);
+			SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), false);
+			SetValueBoolean($this->GetIDForIdent("alertactive"), false);
+			SetValueInteger($this->GetIDForIdent("alertcount"), 0);
+		}
+		
+		public function SetMode(int $Modus){
+			switch($Modus) {
+				case 0:
+					// Deaktiviert
+					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Value);
+					$this->Reset();	
+					break;
+	
+				case 1:
+					//Aktiviert
+				case 2:
+					//Intern Aktiviert
+					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Value);
+					$this->ArmSystemDelayed();
+					break;
+
+				case 4:
+					//Wartung
+					
+					$this->Reset();	
+					break;
+					
+				default:
+					throw new Exception("Ungültiger Modus");
+    		}
+			
+			SetValueInteger($this->GetIDForIdent("alarmmodus"), $Value);
+		}
+		
+		private function ArmSystemDelayed(){
+			$ExitDelay = $this->ReadPropertyInteger("verzoegerung_ausgang");
+			if ($ExitDelay > 0){
+				SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), true);
+			}
+			
+			$this->SetTimerInterval ("ArmDelay", $ExitDelay * 1000);
+		}
+		
+		public function ArmSystem(){
+			SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), false);
+		}
+		
 		private function TriggerDeviceAlert($DeviceParameters){
 			$triggeredDeviceID = $this->GetIDForIdent("deviceTriggered");
 			$deviceTriggeredString = GetValueString($triggeredDeviceID);
@@ -215,7 +273,7 @@
 		public function RequestAction($Ident, $Value) {
 			switch($Ident) {
 				case "alarmmodus":
-					SetValueInteger($this->GetIDForIdent($Ident), $Value);
+					$this->SetMode($Value);
 					break;
 	
 				default:
