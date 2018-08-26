@@ -54,7 +54,7 @@
 			$this->RegisterPropertyInteger("verzoegerung_eingang", 30);
 			$this->RegisterPropertyInteger("verzoegerung_ausgang", 120);
 			
-			$ScriptID = $this->RegisterScript('onDeviceStatusChanged', 'onDeviceStatusChanged', '<? SXALERT_DeviceStatusChanged('.$this->InstanceID.', $_IPS[\"VARIABLE\"]); ?>'); 
+			$ScriptID = $this->RegisterScript('onDeviceStatusChanged', 'onDeviceStatusChanged', '<? SXALERT_DeviceStatusChanged('.$this->InstanceID.', $_IPS["VARIABLE"]); ?>'); 
 			IPS_SetHidden($ScriptID, true); 
 		
 
@@ -71,14 +71,14 @@
 
 		public function Initialize(){	
 			$arrString = $this->ReadPropertyString("devices");
-			$arr = json_decode($arrString);
-
+			$arr = json_decode($arrString, true);
+					
 			$ScriptID = IPS_GetObjectIDByIdent("onDeviceStatusChanged", $this->InstanceID); 
 			
 			$foundIDs = array();
-
+			
 			foreach($arr as $key1) {
-				$key2 = $key1("InstanceID");
+				$key2 = $key1["InstanceID"];
 				
 				$itemObject = IPS_GetObject($key2);
 				$TargetID = $key2;
@@ -96,7 +96,7 @@
 					@$EventID = IPS_GetEventIDByName($EventName, $ScriptID);
 					if ($EventID === false){
 						$EventID = IPS_CreateEvent(0);
-						IPS_SetEventTrigger($EventID, 1, $TargetID);
+						IPS_SetEventTrigger($EventID, 0, $TargetID);
 						IPS_SetName($EventID, $EventName);
 						IPS_SetParent($EventID, $ScriptID);
 						IPS_SetEventActive($EventID, true);
