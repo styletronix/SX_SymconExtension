@@ -280,9 +280,11 @@
 			$arrString = $this->ReadPropertyString("melder");
 			$arr = json_decode($arrString, true);
 			
+			$modus = GetValueInteger($this->GetIDForIdent("alarmmodus");
+			
 			$is24h = GetValueBoolean($this->GetIDForIdent("24h_alarm"));
-			$isINTERN = (GetValueBoolean($this->GetIDForIdent("alarmmodus") == 2));
-			$isEXTERN = (GetValueBoolean($this->GetIDForIdent("alarmmodus") == 1));
+			$isINTERN = ($modus == 2);
+			$isEXTERN = ($modus == 1));
 			$isEinbruch = GetValueBoolean($this->GetIDForIdent("alarm"));
 			$isTechnik = GetValueBoolean($this->GetIDForIdent("technik_alarm"));
 			
