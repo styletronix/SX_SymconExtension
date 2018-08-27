@@ -261,7 +261,7 @@
 				$AlertCount = GetValueInteger($this->GetIDForIdent("alarm_count"));
 				$retrigger = $this->ReadPropertyInteger("retrigger");			
 				if ($AlertCount >= $retrigger and $retrigger > 0){
-					break;
+					return;
 				}
 				
 				SetValueInteger($this->GetIDForIdent("alarm_count"), $AlertCount + 1);
