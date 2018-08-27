@@ -231,6 +231,7 @@
 		}
 		
 		public function onEntryTimer(){
+			SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), false);
 			$this->SetTimerInterval("EntryTimer", 0);
 			$arrString = $this->GetBuffer("DelayedAlertDevice");
 			$DeviceParameters = json_decode($arrString, true);
