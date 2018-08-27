@@ -42,6 +42,7 @@
 			$this->RegisterVariableBoolean("eingangszeit_aktiv", "Einganszeit aktiv", "~Switch");
 			$this->RegisterVariableBoolean("ausgangszeit_aktiv", "Ausgangszeit aktiv", "~Switch");
             $this->RegisterVariableString("deviceTriggered", "Auslösender Sensor", "");
+			$this->RegisterVariableInteger("alarm_count", "Alarm Anzahl", 0);
 			
 			$this->RegisterVariableInteger("alarmmodus", "Status", "SX_Alarm.Modus");
 			$this->EnableAction("alarmmodus");
@@ -140,9 +141,9 @@
 			$this->SetTimerInterval("DisableTimer3", 0);	
 			
 			$this->SetBuffer("DelayedAlertDevice", "");
-			$this->SetBuffer("alertcount", 0);
 			$this->SetBuffer("alertactive", "false");
 			
+			SetValueInteger($this->GetIDForIdent("alarm_count"), 0);
 			SetValueString($this->GetIDForIdent("deviceTriggered"), "");
 			SetValueBoolean($this->GetIDForIdent("alarm"), false);
 			SetValueBoolean($this->GetIDForIdent("technik_alarm"), false);
@@ -256,8 +257,14 @@
 
 			if ($this->GetBuffer("alertactive") == "false"){
 				$this->SetBuffer("alertactive", "true");
-				$this->SetBuffer("alertcount", $this->GetBuffer("alertcount") + 1);
+				$AlertCount = GetValueInteger($this->GetIDForIdent("alarm_count"));
+				$retrigger = $this->ReadPropertyInteger("retrigger");
 				
+				if ($AlertCount >= $retrigger and $retrigger > 0){
+					break;
+				}
+				
+				SetValueInteger($this->GetIDForIdent("alarm_count"), $AlertCount + 1);
 			}
 			
 			
@@ -265,15 +272,15 @@
 		}
 		
 		private function onTriggerAlert1($DeviceParameters){
+			$this->SetBuffer("AlertDevice", json_encode($DeviceParameters));
+			
 			$Delay = $this->ReadPropertyInteger("verzoegerung_alarm");
 			if ($Delay > 0){
 				if (GetValueBoolean($this->GetIDForIdent("vorwarnung_aktiv")) == false ){
 					SetValueBoolean($this->GetIDForIdent("vorwarnung_aktiv"), true);
-					$this->SetBuffer("AlertDevice", json_encode($DeviceParameters));
 					$this->SetTimerInterval("TriggerAlert2Timer", $Delay * 1000);		
 				}					
 			}else{
-				$this->SetBuffer("AlertDevice", json_encode($DeviceParameters));
 				$this->onTriggerAlert2();
 			}
 			
@@ -281,11 +288,15 @@
 		}
 		public function onTriggerAlert2(){
 			
-			$this->SetTimerInterval("DisableTimer1", $this->ReadPropertyInteger("dauer_sirene"));	
-			$this->SetTimerInterval("DisableTimer2", $this->ReadPropertyInteger("dauer_warnlicht"));
-			$this->SetTimerInterval("DisableTimer3", $this->ReadPropertyInteger("dauer_alarmbeleuchtung"));				
+			SetValueBoolean($this->GetIDForIdent("vorwarnung_aktiv"), false);
 			
 			$this->ActivateDeviceByDelayMode(true);
+			
+			$this->SetTimerInterval("DisableTimer1", $this->ReadPropertyInteger("dauer_sirene") * 1000);	
+			$this->SetTimerInterval("DisableTimer2", $this->ReadPropertyInteger("dauer_warnlicht") * 1000);
+			$this->SetTimerInterval("DisableTimer3", $this->ReadPropertyInteger("dauer_alarmbeleuchtung") * 1000);	
+
+			$this->SetTimerInterval("TriggerAlert2Timer", 0);					
 		}
 		
 		private function ActivateDeviceByDelayMode($delayed){
@@ -373,6 +384,7 @@
 				}			
 			}
 			
+			SetBuffer("alertactive", "false");
 			$this->SetTimerInterval("DisableTimer1", 0);		
 		}
 		
