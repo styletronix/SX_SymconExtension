@@ -66,8 +66,10 @@
 			$this->RegisterTimer("ArmDelay", 0, 'SXALERT_ArmSystem($_IPS["TARGET"]);');
 			$this->RegisterTimer("EntryTimer", 0, 'SXALERT_onEntryTimer($_IPS["TARGET"]);');			
 			$this->RegisterTimer("TriggerAlert2Timer", 0, 'SXALERT_onTriggerAlert2($_IPS["TARGET"]);');
+			$this->RegisterTimer("DisableTimer1", 0, 'SXALERT_onDisableTimer1($_IPS["TARGET"]);');
+			$this->RegisterTimer("DisableTimer2", 0, 'SXALERT_onDisableTimer2($_IPS["TARGET"]);');
+			$this->RegisterTimer("DisableTimer3", 0, 'SXALERT_onDisableTimer3($_IPS["TARGET"]);');
 			
-
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
 			}else{
@@ -133,6 +135,9 @@
 		public function Reset(){
 			$this->SetTimerInterval ("ArmDelay", 0);
 			$this->SetTimerInterval ("EntryTimer", 0);
+			$this->SetTimerInterval("DisableTimer1", 0);	
+			$this->SetTimerInterval("DisableTimer2", 0);	
+			$this->SetTimerInterval("DisableTimer3", 0);	
 			
 			$this->SetBuffer("DelayedAlertDevice", "");
 			$this->SetBuffer("alertcount", 0);
@@ -273,6 +278,11 @@
 			$this->ActivateDeviceByDelayMode(false);
 		}
 		public function onTriggerAlert2(){
+			
+			$this->SetTimerInterval("DisableTimer1", $this->ReadPropertyInteger("dauer_sirene"));	
+			$this->SetTimerInterval("DisableTimer2", $this->ReadPropertyInteger("dauer_warnlicht"));
+			$this->SetTimerInterval("DisableTimer3", $this->ReadPropertyInteger("dauer_alarmbeleuchtung"));				
+			
 			$this->ActivateDeviceByDelayMode(true);
 		}
 		
@@ -290,7 +300,7 @@
 			$isTechnik = GetValueBoolean($this->GetIDForIdent("technik_alarm"));
 			
 			foreach($arr as $key1) {
-				if($key1["delayed"] == $delayed and ($key1["typ"] == 0 or $key1["typ"] == 1)){
+				if($key1["delayed"] == $delayed and ($key1["typ"] == 0 or $key1["typ"] == 1 or $key1["typ"] == 4)){
 					if ($is24h == true and $key1 ["24h"] == true){
 						$this->setDeviceStatus($key1["InstanceID"], true);
 						continue;
@@ -348,6 +358,48 @@
 			}
 			
 			return null;
+		}
+		
+		public function onDisableTimer1(){
+			$arrString = $this->ReadPropertyString("melder");
+			$arr = json_decode($arrString, true);
+			
+			foreach($arr as $key1) {
+				if ($key1["typ"] == 0){
+					// Sirene
+					$this->setDeviceStatus($key1["InstanceID"], false);	
+				}			
+			}
+			
+			$this->SetTimerInterval("DisableTimer1", 0);		
+		}
+		
+		public function onDisableTimer2(){
+			$arrString = $this->ReadPropertyString("melder");
+			$arr = json_decode($arrString, true);
+			
+			foreach($arr as $key1) {
+				if ($key1["typ"] == 1){
+					// Warnlicht
+					$this->setDeviceStatus($key1["InstanceID"], false);	
+				}			
+			}
+			
+			$this->SetTimerInterval("DisableTimer2", 0);		
+		}
+		
+		public function onDisableTimer3(){
+			$arrString = $this->ReadPropertyString("melder");
+			$arr = json_decode($arrString, true);
+			
+			foreach($arr as $key1) {
+				if ($key1["typ"] == 4){
+					// Alarmbeleuchtung
+					$this->setDeviceStatus($key1["InstanceID"], false);	
+				}			
+			}
+			
+			$this->SetTimerInterval("DisableTimer3", 0);		
 		}
 		
 		public function RequestAction($Ident, $Value) {

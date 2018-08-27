@@ -129,7 +129,8 @@
 				{ "caption": "Sirene", "value": 0 },
 				{ "caption": "Warnlicht", "value": 1 },
 				{ "caption": "Eingangswarnung", "value": 2 },
-				{ "caption": "Ausgangswarnung", "value": 3 }
+				{ "caption": "Ausgangswarnung", "value": 3 },
+				{ "caption": "Alarmbeleuchtung", "value": 4 },
 				]
         }
     }]
