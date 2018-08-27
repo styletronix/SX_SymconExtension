@@ -103,6 +103,22 @@
             "type": "CheckBox"
         }
     }, {
+        "caption": "Extern aktiv",
+        "name": "istExternAktiv",
+        "width": "100px",
+        "add": true,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Verzögert",
+        "name": "delayed",
+        "width": "100px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
         "caption": "Typ",
         "name": "typ",
         "width": "150px",
@@ -113,9 +129,7 @@
 				{ "caption": "Sirene", "value": 0 },
 				{ "caption": "Warnlicht", "value": 1 },
 				{ "caption": "Eingangswarnung", "value": 2 },
-				{ "caption": "Ausgangswarnung", "value": 3 },
-				{ "caption": "Alarmbeleuchtung", "value": 4 },
-				{ "caption": "Vorwarnung", "value": 5 }
+				{ "caption": "Ausgangswarnung", "value": 3 }
 				]
         }
     }]
