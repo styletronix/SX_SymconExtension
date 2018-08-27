@@ -130,7 +130,7 @@
 				{ "caption": "Warnlicht", "value": 1 },
 				{ "caption": "Eingangswarnung", "value": 2 },
 				{ "caption": "Ausgangswarnung", "value": 3 },
-				{ "caption": "Alarmbeleuchtung", "value": 4 },
+				{ "caption": "Alarmbeleuchtung", "value": 4 }
 				]
         }
     }]
