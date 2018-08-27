@@ -47,7 +47,6 @@
 			$this->RegisterVariableInteger("alarmmodus", "Status", "SX_Alarm.Modus");
 			$this->EnableAction("alarmmodus");
 			
-			$this->SetBuffer("alertcount", 0);
 			$this->SetBuffer("alertactive", false);
 		
 			
@@ -141,6 +140,7 @@
 			$this->SetTimerInterval("DisableTimer3", 0);	
 			
 			$this->SetBuffer("DelayedAlertDevice", "");
+			$this->SetBuffer("AlertDevice", "");
 			$this->SetBuffer("alertactive", "false");
 			
 			SetValueInteger($this->GetIDForIdent("alarm_count"), 0);
@@ -257,9 +257,9 @@
 
 			if ($this->GetBuffer("alertactive") == "false"){
 				$this->SetBuffer("alertactive", "true");
-				$AlertCount = GetValueInteger($this->GetIDForIdent("alarm_count"));
-				$retrigger = $this->ReadPropertyInteger("retrigger");
 				
+				$AlertCount = GetValueInteger($this->GetIDForIdent("alarm_count"));
+				$retrigger = $this->ReadPropertyInteger("retrigger");			
 				if ($AlertCount >= $retrigger and $retrigger > 0){
 					break;
 				}
@@ -384,7 +384,7 @@
 				}			
 			}
 			
-			SetBuffer("alertactive", "false");
+			$this->SetBuffer("alertactive", "false");
 			$this->SetTimerInterval("DisableTimer1", 0);		
 		}
 		
