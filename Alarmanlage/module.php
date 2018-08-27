@@ -42,7 +42,7 @@
 			$this->RegisterVariableBoolean("eingangszeit_aktiv", "Einganszeit aktiv", "~Switch");
 			$this->RegisterVariableBoolean("ausgangszeit_aktiv", "Ausgangszeit aktiv", "~Switch");
             $this->RegisterVariableString("deviceTriggered", "Auslösender Sensor", "");
-			$this->RegisterVariableInteger("alarm_count", "Alarm Anzahl", 0);
+			$this->RegisterVariableInteger("alarm_count", "Alarm Anzahl", "");
 			
 			$this->RegisterVariableInteger("alarmmodus", "Status", "SX_Alarm.Modus");
 			$this->EnableAction("alarmmodus");
