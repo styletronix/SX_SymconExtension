@@ -60,7 +60,7 @@
 			$this->RegisterPropertyInteger("retrigger", 2);
 			$this->RegisterPropertyInteger("verzoegerung_eingang", 30);
 			$this->RegisterPropertyInteger("verzoegerung_ausgang", 120);
-			$this->RegisterPropertyInteger("verzoegerung_alarm", 120);
+			$this->RegisterPropertyInteger("verzoegerung_alarm", 30);
 			
 		
 			$this->RegisterTimer("ArmDelay", 0, 'SXALERT_ArmSystem($_IPS["TARGET"]);');
@@ -256,6 +256,7 @@
 			if ($this->GetBuffer("alertactive") == "false"){
 				$this->SetBuffer("alertactive", "true");
 				$this->SetBuffer("alertcount", $this->GetBuffer("alertcount") + 1);
+				
 			}
 			
 			

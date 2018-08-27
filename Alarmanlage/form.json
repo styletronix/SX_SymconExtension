@@ -140,7 +140,8 @@
 { "type": "NumberSpinner", "name": "dauer_warnlicht", "caption": "Dauer des Warnlichts", "suffix": "Sekunden"},
 { "type": "NumberSpinner", "name": "retrigger", "caption": "Maximale erneute Auslösungen", "suffix": "mal"},
 { "type": "NumberSpinner", "name": "verzoegerung_eingang", "caption": "Eingangsverzögerung", "suffix": "Sekunden"},
-{ "type": "NumberSpinner", "name": "verzoegerung_ausgang", "caption": "Ausgangsverzögerung", "suffix": "Sekunden"}
+{ "type": "NumberSpinner", "name": "verzoegerung_ausgang", "caption": "Ausgangsverzögerung", "suffix": "Sekunden"},
+{ "type": "NumberSpinner", "name": "verzoegerung_alarm", "caption": "Alarmverzögerung", "suffix": "Sekunden"}
   ],
     "actions":
     [
