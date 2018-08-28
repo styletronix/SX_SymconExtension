@@ -20,6 +20,10 @@ Der Status der Geräte kann in Profilen gespeichert werden. Wobei für jedes Pro
 Profile können per Event ausgewählt werden. z.B. ist es möglich für Tags und für Nachts getrennte Profile zu speichern und diese nach Zeit oder einen externen Helligkeitssensor umzuschalten. So geht im Wohnzimmer Tags das Licht mit voller Helligkeit an. Und abends z.b. nur die Stehlampe und das Hauptlicht auf 10% gedimmt.
 Ist das Licht bereits durch Bewegungsmelder aktiviert worden, führt ein Wechsel des Profils per Event auch zum sofortigen Umschalten der aktuellen Beleuchtung. Ist das Licht ausgeschaltet führt ein Profilwechsel per Event zu keiner Änderung, bis Bewegung im Raum erkannt wurde.
 
+Profile können über das WebFront oder Befehle (siehe Befehlsreferenz) gespeichert und geladen werden.
+
+
+
 ### Bewegungsmelder
 Es werden Bewegungsmelder unterstützt. Sobald Bewegung erkannt wird kann die Gruppe entweder ein-, ausgeschaltet, auf ein bestimmtes Profil gesetzt werden oder den Zustand annehmen in dem sich Geräte zuletzt befanden, als die Bewegung erkannt wurde. Als Bewegungsmelder kann nahezu jedes Gerät verwendet werden, das entweder Abwesend / Anwesend meldet oder nur den Status aktualisiert. So können auch Taster verwendet werden um die Gruppe für eine voreingestellte Zeit einzuschalten. Zusätzlich überwacht die Gruppensteuerung, ob ein Bewegungsmelder auf grund von Störung nicht mehr von Anwesend auf Abwesend meldet. Verbleibt ein Bewegungsmelder also ohne erneute Aktualisierung der Variable auf "Anwesend" wird die Gruppe nach einer einstellbaren Zeit auf "Abwesend" gesetzt.
 
@@ -36,12 +40,16 @@ Bewegungsmelder können mit einem Helligkeitssensor kombiniert werden, damit das
 ### Alarmbeleuchtung
 Die Gruppen verfügen über eine "Alarmbeleuchtung". Wird diese Funktion aktiviert, werden alle Geräte eingeschaltet und können über die Gruppenfunktion nicht mehr abgeschaltet werden. Nach deaktivierung der alarmbeleuchtung kehren alle Geräte in den Zustand vor der aktivierung der Alarmfunktion zurück.
 
+Die Alarmbeleuchtung kann über das WebFront oder den Befehl `SXGRP_SetAlertState(int $InstanceID, bool $Value);` geschaltet werden.
+
 ### Manuelle Steuerung
-Zur manuellen Steuerung gibt es sowohl einen Schieberegler für Dimmbare Geräte, als auch einen Ein/Aus Schalter für nicht dimmbare Geräte in der Weboberfläche. Werden mehrere Gerätearten in einer Gruppe kombiniert, wird ein dimmen >= 1% automatisch alle nicht dimmbaren Geräte einschalten.
+Zur manuellen Steuerung gibt es sowohl einen Schieberegler für Dimmbare Geräte, als auch einen Ein/Aus Schalter für nicht dimmbare Geräte im WebFront. Werden mehrere Gerätearten in einer Gruppe kombiniert, wird ein dimmen >= 1% automatisch alle nicht dimmbaren Geräte einschalten.
+
+Dies entspricht den Befehlen `SXGRP_SetState(int $InstanceID, bool $Value);` , `SXGRP_SetStateFloat(int InstanceID, float $Value);` und `SXGRP_SetStateInteger(int $InstanceID, int $Value); `
 
 Werden einzelne Geräte nicht über die Gruppe gesteuert, so zeigt die Gruppensteuerung als Status den höchsten Dimm-Wert der Geräte an.
 
-## Verfügbare Befehle
+## Befehlsreferenz
 ```
 SXGRP_UpdateEvents(int $InstanceID);
 ```
