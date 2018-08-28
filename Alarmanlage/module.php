@@ -70,8 +70,6 @@
 			$this->RegisterTimer("DisableTimer2", 0, 'SXALERT_onDisableTimer2($_IPS["TARGET"]);');
 			$this->RegisterTimer("DisableTimer3", 0, 'SXALERT_onDisableTimer3($_IPS["TARGET"]);');
 			
-			$this->RegisterTimer("TestTimer", 0, 'SXALERT_onTestTimer($_IPS["TARGET"]);');
-			
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
 			}else{
@@ -94,13 +92,7 @@
 			}
 
 		}
-		public function StartTestTimer(){
-			$this->SetTimerInterval("TestTimer", 2000);
-		}
-		
-		protected function onTestTimer(){
-			$this->SetTimerInterval("TestTimer", 0);
-		}
+
 		
 		private function DeviceStatusChanged($DeviceID){
 			$alarmmodus = GetValue($this->GetIDForIdent("alarmmodus"));
