@@ -35,9 +35,9 @@
 			
 			//Variablen registrieren
 			$this->RegisterVariableBoolean("alarmscharf", "Alarmanlage aktiviert", "~Switch");
-			$this->RegisterVariableBoolean("alarm", "Einbruch-Alarm ausgelöst", "~Switch");
-			$this->RegisterVariableBoolean("technik_alarm", "Technik-Alarm ausgelöst", "~Switch");
-			$this->RegisterVariableBoolean("24h_alarm", "24h-Alarm ausgelöst", "~Switch");
+			$this->RegisterVariableBoolean("alarm", "Einbruch-Alarm ausgelöst", "~Alert");
+			$this->RegisterVariableBoolean("technik_alarm", "Technik-Alarm ausgelöst", "~Alert");
+			$this->RegisterVariableBoolean("24h_alarm", "24h-Alarm ausgelöst", "~Alert");
             $this->RegisterVariableBoolean("vorwarnung_aktiv", "Vorwarnung aktiv", "~Switch");
 			$this->RegisterVariableBoolean("eingangszeit_aktiv", "Einganszeit aktiv", "~Switch");
 			$this->RegisterVariableBoolean("ausgangszeit_aktiv", "Ausgangszeit aktiv", "~Switch");
@@ -70,6 +70,8 @@
 			$this->RegisterTimer("DisableTimer2", 0, 'SXALERT_onDisableTimer2($_IPS["TARGET"]);');
 			$this->RegisterTimer("DisableTimer3", 0, 'SXALERT_onDisableTimer3($_IPS["TARGET"]);');
 			
+			$this->RegisterTimer("TestTimer", 0, '$this->onTestTimer();');
+			
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
 			}else{
@@ -92,7 +94,14 @@
 			}
 
 		}
-
+		public function StartTestTimer(){
+			$this->SetTimerInterval("TestTimer", 2000);
+		}
+		
+		protected function onTestTimer(){
+			$this->SetTimerInterval("TestTimer", 0);
+		}
+		
 		private function DeviceStatusChanged($DeviceID){
 			$alarmmodus = GetValue($this->GetIDForIdent("alarmmodus"));
 						
@@ -193,6 +202,7 @@
 			if ($ExitDelay > 0){
 				SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), true);
 				$this->SetTimerInterval ("ArmDelay", $ExitDelay * 1000);
+				
 			}else{
 				$this->ArmSystem();
 			}
@@ -429,8 +439,6 @@
  		}
 		
 		public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
-			IPS_LogMessage("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
-			
 			if ($Message == 10603){
 				$this->DeviceStatusChanged($SenderID);
 			}
