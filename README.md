@@ -7,4 +7,4 @@ Die Gruppensteuerung ermöglicht das gleichzeitige Schalten mehrerer Endgeräte.
 
 Die Gruppensteuerung kann für komplexe Aufgaben kaskadiert werden. Das bedeutet dass eine Gruppe aus mehreren Untergruppen bestehen kann.
 
-[Weitere Details]{https://github.com/styletronix/SX_SymconExtension/blob/alpha/Gruppensteuerung/Readme.md}
+[Weitere Details zur Gruppensteuerung](https://github.com/styletronix/SX_SymconExtension/blob/alpha/Gruppensteuerung/Readme.md)
