@@ -70,7 +70,7 @@
 			$this->RegisterTimer("DisableTimer2", 0, 'SXALERT_onDisableTimer2($_IPS["TARGET"]);');
 			$this->RegisterTimer("DisableTimer3", 0, 'SXALERT_onDisableTimer3($_IPS["TARGET"]);');
 			
-			$this->RegisterTimer("TestTimer", 0, '$this->onTestTimer();');
+			$this->RegisterTimer("TestTimer", 0, 'SXALERT_onTestTimer($_IPS["TARGET"]);');
 			
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
