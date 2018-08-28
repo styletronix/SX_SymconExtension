@@ -296,7 +296,7 @@ class KeyMatic extends IPSModule {
 			}
 		}
 
-		public function SetAutoLockState(boolean $value){
+		public function SetAutoLockState(bool $value){
 			SetValue($this->GetIDForIdent("AutoLock"), $value);
 			if ($value == true){
 				$this->LockDoor();
@@ -326,7 +326,7 @@ class KeyMatic extends IPSModule {
             }
         }
 		
-		public function OpenDoor(boolean $keepopen){
+		public function OpenDoor(bool $keepopen){
 			set_time_limit(30);
 			//Sicherstellen, dass Türe nicht per AutoTimer geschlossen wird
 			$this->SetTimerInterval("AutoLockDelay", 0);
