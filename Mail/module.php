@@ -91,7 +91,7 @@
 	   }
 	   
 
-		public function SetAlertState(boolean $Value){
+		public function SetAlertState(bool $Value){
 			IPS_SemaphoreEnter("SXGRP_AlertStateChange", 120 * 1000);
 			
             $data = $this->ReadSettings();

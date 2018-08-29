@@ -55,7 +55,7 @@ class JalousieControl extends IPSModule {
          return true;
         }
         
-			public function StorePosition(integer $StorageID){
+			public function StorePosition(int $StorageID){
 			   $Umkehr = $this->ReadPropertyBoolean("POSITION_umkehr");
 			   $PositionDiff = $this->ReadPropertyFloat("PositionDiff") / 100;
 			   
@@ -79,7 +79,7 @@ class JalousieControl extends IPSModule {
          	return true;
 			}
 			
-			public function RecallPosition(integer $StorageID){
+			public function RecallPosition(int $StorageID){
 				$LevelName = "Storage".$StorageID."_LEVEL";
 				$PositionName = "Storage".$StorageID."_POSITION";
 

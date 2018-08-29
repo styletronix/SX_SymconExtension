@@ -35,14 +35,15 @@
 			
 			//Variablen registrieren
 			$this->RegisterVariableBoolean("alarmscharf", "Alarmanlage aktiviert", "~Switch");
-			$this->RegisterVariableBoolean("alarm", "Einbruch-Alarm ausgelöst", "~Switch");
-			$this->RegisterVariableBoolean("technik_alarm", "Technik-Alarm ausgelöst", "~Switch");
-			$this->RegisterVariableBoolean("24h_alarm", "24h-Alarm ausgelöst", "~Switch");
+			$this->RegisterVariableBoolean("alarm", "Einbruch-Alarm ausgelöst", "~Alert");
+			$this->RegisterVariableBoolean("technik_alarm", "Technik-Alarm ausgelöst", "~Alert");
+			$this->RegisterVariableBoolean("24h_alarm", "24h-Alarm ausgelöst", "~Alert");
             $this->RegisterVariableBoolean("vorwarnung_aktiv", "Vorwarnung aktiv", "~Switch");
 			$this->RegisterVariableBoolean("eingangszeit_aktiv", "Einganszeit aktiv", "~Switch");
 			$this->RegisterVariableBoolean("ausgangszeit_aktiv", "Ausgangszeit aktiv", "~Switch");
             $this->RegisterVariableString("deviceTriggered", "Auslösender Sensor", "");
 			$this->RegisterVariableInteger("alarm_count", "Alarm Anzahl", "");
+			$this->RegisterVariableString("TTS_output", "TTS Ausgabetext", "");
 			
 			$this->RegisterVariableInteger("alarmmodus", "Status", "SX_Alarm.Modus");
 			$this->EnableAction("alarmmodus");
@@ -60,15 +61,14 @@
 			$this->RegisterPropertyInteger("retrigger", 2);
 			$this->RegisterPropertyInteger("verzoegerung_eingang", 30);
 			$this->RegisterPropertyInteger("verzoegerung_ausgang", 120);
-			$this->RegisterPropertyInteger("verzoegerung_alarm", 30);
-			
+			$this->RegisterPropertyInteger("verzoegerung_alarm", 30);			
 		
-			$this->RegisterTimer("ArmDelay", 0, 'SXALERT_ArmSystem($_IPS["TARGET"]);');
-			$this->RegisterTimer("EntryTimer", 0, 'SXALERT_onEntryTimer($_IPS["TARGET"]);');			
-			$this->RegisterTimer("TriggerAlert2Timer", 0, 'SXALERT_onTriggerAlert2($_IPS["TARGET"]);');
-			$this->RegisterTimer("DisableTimer1", 0, 'SXALERT_onDisableTimer1($_IPS["TARGET"]);');
-			$this->RegisterTimer("DisableTimer2", 0, 'SXALERT_onDisableTimer2($_IPS["TARGET"]);');
-			$this->RegisterTimer("DisableTimer3", 0, 'SXALERT_onDisableTimer3($_IPS["TARGET"]);');
+			$this->RegisterTimer("ArmDelay", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"ArmDelay");');
+			$this->RegisterTimer("EntryTimer", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"EntryTimer");');			
+			$this->RegisterTimer("TriggerAlert2Timer", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"TriggerAlert2Timer");');
+			$this->RegisterTimer("DisableTimer1", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"DisableTimer1");');
+			$this->RegisterTimer("DisableTimer2", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"DisableTimer2");');
+			$this->RegisterTimer("DisableTimer3", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"DisableTimer3");');
 			
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
@@ -83,16 +83,15 @@
 			$this->SetStatus(102);
         }
 
-		public function Initialize(){	
-			$arrString = $this->ReadPropertyString("devices");
-			$arr = json_decode($arrString, true);
-					
-			foreach($arr as $key1) {
-				$this->RegisterMessage($key1["InstanceID"], 10603);
-			}
-
+		public function Initialize(){
+			$arr = $this->GetDeviceParameters();	
+			if ($arr){
+				foreach($arr as $key1) {
+					$this->RegisterMessage($key1["InstanceID"], 10603);
+				}
+			}	
 		}
-
+		
 		private function DeviceStatusChanged($DeviceID){
 			$alarmmodus = GetValue($this->GetIDForIdent("alarmmodus"));
 						
@@ -102,9 +101,12 @@
 			$DeviceParameters = $this->GetDeviceParameter($DeviceID);
 			if ($DeviceParameters == null){ return; }
 			
-			$Status = GetValue($DeviceID);		
-			// Gerät meldet false. Keine Auswertung durchführen.
-			if ($Status == false){ return; }
+			//Prüfen, ob auch einfache Aktualisierung einen Alarm auslösen soll.
+			if ($DeviceParameters["TriggerOnRefresh"] == false){
+				$Status = GetValue($DeviceID);		
+				// Gerät meldet false. Keine Auswertung durchführen.
+				if ($Status == false){ return; }
+			}
 			
 			if ($DeviceParameters["24h"] == true){
 				$this->TriggerDeviceAlert($DeviceParameters);
@@ -167,6 +169,7 @@
 				case 0:
 					// Deaktiviert
 					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
+					SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage wurde deaktiviert.");
 					break;
 	
 				case 1:
@@ -180,28 +183,76 @@
 				case 4:
 					//Wartung
 					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
+					SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage ist im Wartungsmodus.");
+					
 					break;
 					
 				default:
 					throw new Exception("Ungültiger Modus");
+    		}					
+		}
+		
+		public Function onTimerElapsed(string $Timer){
+			$this->SetTimerInterval ($Timer, 0);
+			
+			switch($Timer) {
+				case "ArmDelay":
+					$this->ArmSystem();
+					break;
+					
+				case "EntryTimer":
+					$this->onEntryTimer();
+					break;
+					
+				case "TriggerAlert2Timer":
+					$this->onTriggerAlert2();
+					break;
+	
+				case "DisableTimer1":
+					$this->onDisableTimer1();
+					break;
+					
+				case "DisableTimer2":
+					$this->onDisableTimer2();
+					break;
+					
+				case "DisableTimer3":
+					$this->onDisableTimer3();
+					break;
+					
+				default:
+					throw new Exception("Invalid Ident");
+
     		}
-						
 		}
 		
 		private function ArmSystemDelayed(){
 			$ExitDelay = $this->ReadPropertyInteger("verzoegerung_ausgang");
 			if ($ExitDelay > 0){
-				SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), true);
+				SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), true);				
+				SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage wird in " . $ExitDelay . " Sekunden aktiviert.");
+				
 				$this->SetTimerInterval ("ArmDelay", $ExitDelay * 1000);
+				
 			}else{
 				$this->ArmSystem();
 			}
 		}
 		
-		public function ArmSystem(){
-			$this->SetTimerInterval ("ArmDelay", 0);
+		private function ArmSystem(){
 			SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), false);
-			SetValueBoolean($this->GetIDForIdent("alarmscharf"), true);			
+			SetValueBoolean($this->GetIDForIdent("alarmscharf"), true);	
+			
+			$Mode = GetValueInteger($this->GetIDForIdent("alarmmodus"));
+			switch($Mode){
+				case 1:
+					SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage wurde gesamt aktiviert.");		
+					break;
+					
+				case 2:
+					SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage wurde Intern aktiviert.");		
+					break;
+			}				
 		}
 		
 		private function TriggerDeviceAlert($DeviceParameters){
@@ -224,37 +275,24 @@
 				if (GetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv")) == false ){
 					SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), true);
 					$this->SetBuffer("DelayedAlertDevice", json_encode($DeviceParameters));
-					$this->SetTimerInterval("EntryTimer", $Delay * 1000);		
-				}					
+					$this->SetTimerInterval("EntryTimer", $Delay * 1000);	
+					
+					SetValueString($this->GetIDForIdent("TTS_output"), "In " . $Delay . " Sekunden wird Alarm ausgelöst.");	
+				}				
+				
 			}else{
 				$this->TriggerAlert($DeviceParameters);
 			}
 		}
 		
-		public function onEntryTimer(){
+		private function onEntryTimer(){
 			SetValueBoolean($this->GetIDForIdent("eingangszeit_aktiv"), false);
-			$this->SetTimerInterval("EntryTimer", 0);
 			$arrString = $this->GetBuffer("DelayedAlertDevice");
 			$DeviceParameters = json_decode($arrString, true);
 			$this->TriggerAlert($DeviceParameters);
 		}
 		
 		private function TriggerAlert($DeviceParameters){
-			$setAlert = true;
-			
-			if ($DeviceParameters["24h"] == true){
-				SetValueBoolean($this->GetIDForIdent("24h_alarm"), true);
-				$setAlert = false;
-			}
-			if ($DeviceParameters["Technik"] == true){
-				SetValueBoolean($this->GetIDForIdent("technik_alarm"), true);
-				$setAlert = false;
-			}
-			if ($setAlert == true){
-				SetValueBoolean($this->GetIDForIdent("alarm"), true);
-			}
-			
-
 			if ($this->GetBuffer("alertactive") == "false"){
 				$this->SetBuffer("alertactive", "true");
 				
@@ -267,9 +305,66 @@
 				SetValueInteger($this->GetIDForIdent("alarm_count"), $AlertCount + 1);
 			}
 			
+			$setAlert = true;
 			
+			if ($DeviceParameters["24h"] == true){
+				SetValueBoolean($this->GetIDForIdent("24h_alarm"), true);
+				SetValueString($this->GetIDForIdent("TTS_output"), "Warnung: Es wurde ein 24 Stunden Alarm ausgelöst. Auslösung erfolgte durch ". $DeviceParameters["Bezeichnung"]);	
+				$setAlert = false;
+			}
+			if ($DeviceParameters["Technik"] == true){
+				SetValueBoolean($this->GetIDForIdent("technik_alarm"), true);
+				SetValueString($this->GetIDForIdent("TTS_output"), "Warnung: Es wurde ein Technikalarm ausgelöst. Auslösung erfolgte durch ". $DeviceParameters["Bezeichnung"]);	
+				$setAlert = false;
+			}
+			if ($setAlert == true){
+				SetValueBoolean($this->GetIDForIdent("alarm"), true);
+				SetValueString($this->GetIDForIdent("TTS_output"), "Warnung: Es wurde ein Einbruch Alarm ausgelöst. Auslösung erfolgte durch ". $DeviceParameters["Bezeichnung"]);	
+			}
+
 			$this->onTriggerAlert1($DeviceParameters);
 		}
+		
+		private function GetDeviceParameters(){
+			$arrString = $this->ReadPropertyString("devices");
+			if ($arrString){
+				$arr = json_decode($arrString, true);
+								
+				// foreach($arr as $key1) {
+					// TODO: Prüfen ob InstanceID existiert...
+				//}
+				
+				return $arr;
+			}	
+			return null;
+		}
+		private function GetDeviceParameter(int $DeviceID){
+			
+			$arr = $this->GetDeviceParameters();
+			if ($arr){
+				foreach($arr as $key1) {
+					if($key1["InstanceID"] == $DeviceID){
+						return $key1;
+					}
+				}
+			}			
+						
+			return null;
+		}
+		private function GetOutputDeviceParameters(){
+			$arrString = $this->ReadPropertyString("melder");
+			if ($arrString){
+				$arr = json_decode($arrString, true);
+								
+				// foreach($arr as $key1) {
+					// TODO: Prüfen ob InstanceID existiert...
+				//}
+				
+				return $arr;
+			}	
+			return null;
+		}
+		
 		
 		private function onTriggerAlert1($DeviceParameters){
 			$this->SetBuffer("AlertDevice", json_encode($DeviceParameters));
@@ -286,7 +381,7 @@
 			
 			$this->ActivateDeviceByDelayMode(false);
 		}
-		public function onTriggerAlert2(){
+		private function onTriggerAlert2(){
 			
 			SetValueBoolean($this->GetIDForIdent("vorwarnung_aktiv"), false);
 			
@@ -294,14 +389,13 @@
 			
 			$this->SetTimerInterval("DisableTimer1", $this->ReadPropertyInteger("dauer_sirene") * 1000);	
 			$this->SetTimerInterval("DisableTimer2", $this->ReadPropertyInteger("dauer_warnlicht") * 1000);
-			$this->SetTimerInterval("DisableTimer3", $this->ReadPropertyInteger("dauer_alarmbeleuchtung") * 1000);	
-
-			$this->SetTimerInterval("TriggerAlert2Timer", 0);					
+			$this->SetTimerInterval("DisableTimer3", $this->ReadPropertyInteger("dauer_alarmbeleuchtung") * 1000);						
 		}
 		
 		private function ActivateDeviceByDelayMode($delayed){
 			$arrString = $this->ReadPropertyString("melder");
 			$arr = json_decode($arrString, true);
+			if (!$arr){ return;}
 			
 			$modus = GetValueInteger($this->GetIDForIdent("alarmmodus"));
 			$isINTERN = ($modus == 2);
@@ -341,79 +435,61 @@
 			}
 		}
 		private function deactivateAllDevices(){
-			$arrString = $this->ReadPropertyString("melder");
-			$arr = json_decode($arrString, true);
+			$arr = $this->GetOutputDeviceParameters();
+			if (!$arr){ return; }
 			
 			foreach($arr as $key1) {
 				$this->setDeviceStatus($key1["InstanceID"], false);				
 			}
 		}
 			
-		private function setDeviceStatus($TargetID, $value){
+		private function setDeviceStatus(int $TargetID, bool $Value){
+			if (!IPS_VariableExists($TargetID)){ return; }
+			$actionValue = $Value;
+			
 			$pID = IPS_GetParent($TargetID);
             $obj = IPS_GetObject($TargetID);
 			$VariableName = $obj["ObjectIdent"];
 					
-			$var = IPS_GetVariable ($TargetID);
-			if (@IPS_RequestAction($pID, $VariableName, $value) == false){
-				SetValue($TargetID, $value);
+
+			if (@IPS_RequestAction($pID, $VariableName, $Value) == false){
+				SetValue($TargetID, $Value);
 			}
 		}
-		
-		private function GetDeviceParameter(int $DeviceID){
-			$arrString = $this->ReadPropertyString("devices");
-			$arr = json_decode($arrString, true);
+				
+		private function onDisableTimer1(){
+			$this->SetBuffer("alertactive", "false");
 			
-			foreach($arr as $key1) {
-				if($key1["InstanceID"] == $DeviceID){
-					return $key1;
-				}
-			}
-			
-			return null;
-		}
-		
-		public function onDisableTimer1(){
-			$arrString = $this->ReadPropertyString("melder");
-			$arr = json_decode($arrString, true);
+			$arr = $this->GetOutputDeviceParameters();
+			if (!$arr){ return; }
 			
 			foreach($arr as $key1) {
 				if ($key1["typ"] == 0){
-					// Sirene
 					$this->setDeviceStatus($key1["InstanceID"], false);	
 				}			
-			}
-			
-			$this->SetBuffer("alertactive", "false");
-			$this->SetTimerInterval("DisableTimer1", 0);		
+			}		
 		}
 		
-		public function onDisableTimer2(){
-			$arrString = $this->ReadPropertyString("melder");
-			$arr = json_decode($arrString, true);
+		private function onDisableTimer2(){
+			$arr = $this->GetOutputDeviceParameters();
+			if (!$arr){ return; }
 			
 			foreach($arr as $key1) {
 				if ($key1["typ"] == 1){
-					// Warnlicht
 					$this->setDeviceStatus($key1["InstanceID"], false);	
 				}			
 			}
-			
-			$this->SetTimerInterval("DisableTimer2", 0);		
 		}
 		
-		public function onDisableTimer3(){
-			$arrString = $this->ReadPropertyString("melder");
-			$arr = json_decode($arrString, true);
+		private function onDisableTimer3(){
+			$arr = $this->GetOutputDeviceParameters();
+			if (!$arr){ return; }
 			
 			foreach($arr as $key1) {
 				if ($key1["typ"] == 4){
-					// Alarmbeleuchtung
 					$this->setDeviceStatus($key1["InstanceID"], false);	
 				}			
-			}
-			
-			$this->SetTimerInterval("DisableTimer3", 0);		
+			}		
 		}
 		
 		public function RequestAction($Ident, $Value) {
@@ -429,11 +505,10 @@
  		}
 		
 		public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
-			IPS_LogMessage("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
-			
 			if ($Message == 10603){
 				$this->DeviceStatusChanged($SenderID);
 			}
 		}
+
     }
 ?>

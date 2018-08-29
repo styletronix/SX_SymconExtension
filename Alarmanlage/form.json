@@ -39,6 +39,14 @@
             "type": "CheckBox"
         }
     }, {
+        "caption": "Bei jeder Aktualisierung auslösen",
+        "name": "TriggerOnRefresh",
+        "width": "100px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
         "caption": "Ausgangsverzögerung",
         "name": "verzoegerung_ausgang",
         "width": "100px",
@@ -147,8 +155,8 @@
     [
       {
         "type": "Button",
-        "label": "Aktualisieren",
-        "onClick": "SXALERT_Initialize($id);"
+        "label": "Anlage RESET (nach Alarm oder Störung)",
+        "onClick": "SXALERT_Reset($id);"
       }
     ],
     "status":
