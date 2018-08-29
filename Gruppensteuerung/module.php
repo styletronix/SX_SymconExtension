@@ -179,7 +179,7 @@
 						}
 						
 						if ($actorExists == false){
-							$arr[] = {"InstanceID": $TargetID}
+							$arr[] = array("InstanceID" => $TargetID);
 							$actorsChanged = true;
 						}
 					}
