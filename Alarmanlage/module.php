@@ -83,15 +83,14 @@
 			$this->SetStatus(102);
         }
 
-		public function Initialize(){	
-			$arrString = $this->ReadPropertyString("devices");
-			$arr = json_decode($arrString, true);
-					
-			foreach($arr as $key1) {
-				$this->RegisterMessage($key1["InstanceID"], 10603);
-			}
+		public function Initialize(){
+			$arr = $this->GetDeviceParameters();	
+			if ($arr){
+				foreach($arr as $key1) {
+					$this->RegisterMessage($key1["InstanceID"], 10603);
+				}
+			}	
 		}
-
 		
 		private function DeviceStatusChanged($DeviceID){
 			$alarmmodus = GetValue($this->GetIDForIdent("alarmmodus"));
@@ -190,8 +189,7 @@
 					
 				default:
 					throw new Exception("Ungültiger Modus");
-    		}
-						
+    		}					
 		}
 		
 		public Function onTimerElapsed($Timer){
@@ -244,7 +242,17 @@
 		private function ArmSystem(){
 			SetValueBoolean($this->GetIDForIdent("ausgangszeit_aktiv"), false);
 			SetValueBoolean($this->GetIDForIdent("alarmscharf"), true);	
-			SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage wurde aktiviert.");			
+			
+			$Mode = GetValueInteger($this->GetIDForIdent("alarmmodus"));
+			switch($Mode){
+				case 1:
+					SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage wurde gesamt aktiviert.");		
+					break;
+					
+				case 2:
+					SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage wurde Intern aktiviert.");		
+					break;
+			}				
 		}
 		
 		private function TriggerDeviceAlert($DeviceParameters){
@@ -317,6 +325,47 @@
 			$this->onTriggerAlert1($DeviceParameters);
 		}
 		
+		private function GetDeviceParameters(){
+			$arrString = $this->ReadPropertyString("devices");
+			if ($arrString){
+				$arr = json_decode($arrString, true);
+								
+				// foreach($arr as $key1) {
+					// TODO: Prüfen ob InstanceID existiert...
+				//}
+				
+				return $arr;
+			}	
+			return null;
+		}
+		private function GetDeviceParameter(int $DeviceID){
+			
+			$arr = $this->GetDeviceParameters();
+			if ($arr){
+				foreach($arr as $key1) {
+					if($key1["InstanceID"] == $DeviceID){
+						return $key1;
+					}
+				}
+			}			
+						
+			return null;
+		}
+		private function GetOutputDeviceParameters(){
+			$arrString = $this->ReadPropertyString("melder");
+			if ($arrString){
+				$arr = json_decode($arrString, true);
+								
+				// foreach($arr as $key1) {
+					// TODO: Prüfen ob InstanceID existiert...
+				//}
+				
+				return $arr;
+			}	
+			return null;
+		}
+		
+		
 		private function onTriggerAlert1($DeviceParameters){
 			$this->SetBuffer("AlertDevice", json_encode($DeviceParameters));
 			
@@ -346,6 +395,7 @@
 		private function ActivateDeviceByDelayMode($delayed){
 			$arrString = $this->ReadPropertyString("melder");
 			$arr = json_decode($arrString, true);
+			if (!$arr){ return;}
 			
 			$modus = GetValueInteger($this->GetIDForIdent("alarmmodus"));
 			$isINTERN = ($modus == 2);
@@ -385,76 +435,61 @@
 			}
 		}
 		private function deactivateAllDevices(){
-			$arrString = $this->ReadPropertyString("melder");
-			$arr = json_decode($arrString, true);
+			$arr = $this->GetOutputDeviceParameters();
+			if (!$arr){ return; }
 			
 			foreach($arr as $key1) {
 				$this->setDeviceStatus($key1["InstanceID"], false);				
 			}
 		}
 			
-		private function setDeviceStatus($TargetID, $value){
+		private function setDeviceStatus(int $TargetID, bool $Value){
+			if (!IPS_VariableExists($TargetID){ return; }
+			$actionValue = $Value;
+			
 			$pID = IPS_GetParent($TargetID);
             $obj = IPS_GetObject($TargetID);
 			$VariableName = $obj["ObjectIdent"];
 					
-			$var = IPS_GetVariable ($TargetID);
-			if (@IPS_RequestAction($pID, $VariableName, $value) == false){
-				SetValue($TargetID, $value);
+
+			if (@IPS_RequestAction($pID, $VariableName, $Value) == false){
+				SetValue($TargetID, $Value);
 			}
 		}
-		
-		private function GetDeviceParameter(int $DeviceID){
-			$arrString = $this->ReadPropertyString("devices");
-			$arr = json_decode($arrString, true);
-			
-			foreach($arr as $key1) {
-				if($key1["InstanceID"] == $DeviceID){
-					return $key1;
-				}
-			}
-			
-			return null;
-		}
-		
+				
 		private function onDisableTimer1(){
-			$arrString = $this->ReadPropertyString("melder");
-			$arr = json_decode($arrString, true);
+			$this->SetBuffer("alertactive", "false");
+			
+			$arr = $this->GetOutputDeviceParameters();
+			if (!$arr){ return; }
 			
 			foreach($arr as $key1) {
 				if ($key1["typ"] == 0){
-					// Sirene
 					$this->setDeviceStatus($key1["InstanceID"], false);	
 				}			
-			}
-			
-			$this->SetBuffer("alertactive", "false");		
+			}		
 		}
 		
 		private function onDisableTimer2(){
-			$arrString = $this->ReadPropertyString("melder");
-			$arr = json_decode($arrString, true);
+			$arr = $this->GetOutputDeviceParameters();
+			if (!$arr){ return; }
 			
 			foreach($arr as $key1) {
 				if ($key1["typ"] == 1){
-					// Warnlicht
 					$this->setDeviceStatus($key1["InstanceID"], false);	
 				}			
 			}
 		}
 		
 		private function onDisableTimer3(){
-			$arrString = $this->ReadPropertyString("melder");
-			$arr = json_decode($arrString, true);
+			$arr = $this->GetOutputDeviceParameters();
+			if (!$arr){ return; }
 			
 			foreach($arr as $key1) {
 				if ($key1["typ"] == 4){
-					// Alarmbeleuchtung
 					$this->setDeviceStatus($key1["InstanceID"], false);	
 				}			
-			}
-			
-			$this->SetTimerInterval("DisableTimer3", 0);		
+			}		
 		}
 		
 		public function RequestAction($Ident, $Value) {
@@ -474,5 +509,6 @@
 				$this->DeviceStatusChanged($SenderID);
 			}
 		}
+
     }
 ?>

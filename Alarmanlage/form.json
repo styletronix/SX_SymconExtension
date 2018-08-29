@@ -155,8 +155,8 @@
     [
       {
         "type": "Button",
-        "label": "Aktualisieren",
-        "onClick": "SXALERT_Initialize($id);"
+        "label": "Anlage RESET (nach Alarm oder Störung)",
+        "onClick": "SXALERT_Reset($id);"
       }
     ],
     "status":
