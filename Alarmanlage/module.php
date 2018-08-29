@@ -444,7 +444,7 @@
 		}
 			
 		private function setDeviceStatus(int $TargetID, bool $Value){
-			if (!IPS_VariableExists($TargetID){ return; }
+			if (!IPS_VariableExists($TargetID)){ return; }
 			$actionValue = $Value;
 			
 			$pID = IPS_GetParent($TargetID);
