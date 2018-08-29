@@ -192,7 +192,7 @@
     		}					
 		}
 		
-		public Function onTimerElapsed($Timer){
+		public Function onTimerElapsed(string $Timer){
 			$this->SetTimerInterval ($Timer, 0);
 			
 			switch($Timer) {
