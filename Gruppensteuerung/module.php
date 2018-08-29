@@ -98,7 +98,7 @@
                     IPS_SetParent($CategoryID, $this->InstanceID);
                 }
             $this->RegisterPropertyInteger("DeviceCategory", $CategoryID);
-			
+			$this->RegisterPropertyString("actors", "");
 			
 			
                 @$CategoryID = IPS_GetCategoryIDByName("Bewegungsmelder", $this->InstanceID);
@@ -108,7 +108,7 @@
                     IPS_SetParent($CategoryID, $this->InstanceID);
                 } 
 			$this->RegisterPropertyInteger("PresenceCategory", $CategoryID);
-			
+			$this->RegisterPropertyString("sensors", "");
 			
                 @$CategoryID = IPS_GetCategoryIDByName("Helligkeit", $this->InstanceID);
                 if ($CategoryID == false){
@@ -117,6 +117,7 @@
                     IPS_SetParent($CategoryID, $this->InstanceID);
                 }
 			$this->RegisterPropertyInteger("IlluminationCategory", $CategoryID);
+			$this->RegisterPropertyString("brightness", "");
 			
 			
 			$ScriptID = $this->RegisterScript("StoreCurrentAsPresenceStateTemplate", "Als Vorlage für Anwesenheit speichern", "<?\n\nSXGRP_StoreCurrentAsPresenceStateTemplate(".$this->InstanceID."); \n\n?>");
@@ -152,6 +153,58 @@
 			$this->SetStatus(102);
         }
 
+		public function UpgradeToNewVersion(){
+			$actorsChanged = false;
+			$CategoryID = $this->ReadPropertyInteger("DeviceCategory");
+			if ($CategoryID > 0){
+				$arr = $this->GetListItems("actors");
+				
+				foreach(IPS_GetChildrenIDs($CategoryID) as $key2) {
+					$itemObject = IPS_GetObject($key2);
+					$TargetID = $key2;
+					
+					if ($itemObject["ObjectType"] == 6){
+						$TargetID = IPS_GetLink($key2)["TargetID"];
+					}
+
+					if ($TargetID > 0){
+						$actorExists = false;
+						
+						if ($arr){
+							foreach($arr as $actor) {
+								if($actor["InstanceID"] == $TargetID){
+									$actorExists = true;
+								}
+							}
+						}
+						
+						if ($actorExists == false){
+							$arr[] = {"InstanceID": $TargetID}
+							$actorsChanged = true;
+						}
+					}
+				}	
+				
+				if ($actorsChanged == true){
+					$jsonString = json_encode($arr);
+					IPS_SetProperty($this->InstanceID, "actors", $jsonString);
+				}
+			}
+
+			if (IPS_HasChanges($this->InstanceID)){
+				IPS_ApplyChanges($this->InstanceID);
+			}			
+		}
+		private function GetListItems($List){
+			$arrString = $this->ReadPropertyString($List);
+			if ($arrString){
+				$arr = json_decode($arrString, true);
+				
+				return $arr;
+			}	
+			return null;
+		}
+		
 		public function UpdateEvents(){			
 			$ScriptID = IPS_GetObjectIDByIdent("Update", $this->InstanceID); 
 			
