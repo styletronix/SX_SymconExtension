@@ -683,7 +683,7 @@
 				$arr = $this->GetListItems("actors");
 				if ($arr){
 					foreach($arr as $device){
-						SetObjectValue($device["InstanceID"], $Value, 100, 1.0, false, false);
+						$this->SetObjectValue($device["InstanceID"], $Value, 100, 1.0, false, false);
 					}
 				}
 
