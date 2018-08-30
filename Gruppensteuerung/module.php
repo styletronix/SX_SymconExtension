@@ -255,10 +255,10 @@
 			
 			//Delete old scripts
 			$oldScript = IPS_GetObjectIDByIdent("Update", $this->InstanceID);
-			if ($oldScript){ IPS_DeleteScript($oldScript); }			
+			if ($oldScript){ IPS_DeleteScript($oldScript, true); }			
 			
 			$oldScript = IPS_GetObjectIDByIdent("RefreshIlluminationLevel", $this->InstanceID);
-			if ($oldScript){ IPS_DeleteScript($oldScript); }		
+			if ($oldScript){ IPS_DeleteScript($oldScript, true); }		
 			
 			$oldScript = IPS_GetObjectIDByIdent("UpdateAnwesenheit", $this->InstanceID);
 			if ($oldScript) {
