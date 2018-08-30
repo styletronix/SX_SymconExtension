@@ -52,7 +52,7 @@
     "add": true,
     "delete": true,
     "columns": [{
-        "caption": "Sensoren",
+        "caption": "Helligkeitssensoren",
         "name": "InstanceID", 
         "width": "auto",
         "add": 0,
