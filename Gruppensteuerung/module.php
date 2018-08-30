@@ -156,7 +156,10 @@
         }
 
 		public function UpgradeToNewVersion(){
-			if ($this->ReadPropertyInteger("IsVersion") >= 1){ return(); }
+			$vers = $this->ReadPropertyInteger("IsVersion");
+			if ($vers >= 1){ 
+				return; 
+			}
 			
 			$actorsChanged = false;
 			$CategoryID = $this->ReadPropertyInteger("DeviceCategory");
