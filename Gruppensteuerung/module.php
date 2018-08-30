@@ -1078,8 +1078,7 @@
 		private function SetObjectValue(int $key, bool $value, int $valueInteger, float $valueFloat, bool $lowerOnly, bool $higherOnly){
 			set_time_limit(30);
 
-				$itemObject = IPS_GetObject($key2);
-				$TargetID = 0;
+				$itemObject = IPS_GetObject($key);
 				$TargetID = $key;
 
 
