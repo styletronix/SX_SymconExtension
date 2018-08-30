@@ -92,32 +92,14 @@
 			
 			$this->RegisterPropertyInteger("IsVersion", 0);
 			
-            @$CategoryID = IPS_GetCategoryIDByName("Geraete", $this->InstanceID);
-                if ($CategoryID == false){
-                    $CategoryID = IPS_CreateCategory();
-                    IPS_SetName($CategoryID, "Geraete");
-                    IPS_SetParent($CategoryID, $this->InstanceID);
-                }
-            $this->RegisterPropertyInteger("DeviceCategory", $CategoryID);
+
+            $this->RegisterPropertyInteger("DeviceCategory", 0); // Veraltet
 			$this->RegisterPropertyString("actors", "");
 			
-			
-                @$CategoryID = IPS_GetCategoryIDByName("Bewegungsmelder", $this->InstanceID);
-                if ($CategoryID == false){
-                    $CategoryID = IPS_CreateCategory();
-                    IPS_SetName($CategoryID, "Bewegungsmelder");
-                    IPS_SetParent($CategoryID, $this->InstanceID);
-                } 
-			$this->RegisterPropertyInteger("PresenceCategory", $CategoryID);
+			$this->RegisterPropertyInteger("PresenceCategory", 0); // Veraltet
 			$this->RegisterPropertyString("sensors", "");
 			
-                @$CategoryID = IPS_GetCategoryIDByName("Helligkeit", $this->InstanceID);
-                if ($CategoryID == false){
-                    $CategoryID = IPS_CreateCategory();
-                    IPS_SetName($CategoryID, "Helligkeit");
-                    IPS_SetParent($CategoryID, $this->InstanceID);
-                }
-			$this->RegisterPropertyInteger("IlluminationCategory", $CategoryID);
+			$this->RegisterPropertyInteger("IlluminationCategory", 0); // Veraltet
 			$this->RegisterPropertyString("brightness", "");
 			
 			
@@ -276,7 +258,7 @@
 
 			IPS_SetProperty($this->InstanceID, "IsVersion", 1);
 			
-			if (IPS_HasChanges($this->InstanceID)){
+			if (IPS_HasChanges($this->InstanceID)){		
 				IPS_ApplyChanges($this->InstanceID);
 			}			
 		}
