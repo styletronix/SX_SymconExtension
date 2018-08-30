@@ -135,7 +135,7 @@
 
 		public function UpgradeToNewVersion(){
 			$vers = $this->ReadPropertyInteger("IsVersion");
-			if ($vers >= 2){ 
+			if ($vers >= 3){ 
 				return; 
 			}
 			
@@ -255,10 +255,20 @@
 			
 			//Delete old scripts
 			$oldScript = IPS_GetObjectIDByIdent("Update", $this->InstanceID);
-			if ($oldScript){ IPS_DeleteScript($oldScript, true); }			
+			if ($oldScript){ 
+				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
+					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
+				}
+				IPS_DeleteScript($oldScript, true); 
+			}			
 			
 			$oldScript = IPS_GetObjectIDByIdent("RefreshIlluminationLevel", $this->InstanceID);
-			if ($oldScript){ IPS_DeleteScript($oldScript, true); }		
+			if ($oldScript){ 
+				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
+					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
+				}
+				IPS_DeleteScript($oldScript, true); 
+			}		
 			
 			$oldScript = IPS_GetObjectIDByIdent("UpdateAnwesenheit", $this->InstanceID);
 			if ($oldScript) {
@@ -267,7 +277,7 @@
 				}
 			}
 			
-			IPS_SetProperty($this->InstanceID, "IsVersion", 2);
+			IPS_SetProperty($this->InstanceID, "IsVersion", 3);
 			
 			if (IPS_HasChanges($this->InstanceID)){		
 				IPS_ApplyChanges($this->InstanceID);
