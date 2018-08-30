@@ -103,13 +103,11 @@
 			$this->RegisterPropertyString("brightness", "");
 			
 			
-			$ScriptID = $this->RegisterScript("StoreCurrentAsPresenceStateTemplate", "Als Vorlage für Anwesenheit speichern", "<?\n\nSXGRP_StoreCurrentAsPresenceStateTemplate(".$this->InstanceID."); \n\n?>");
-			
-			$ScriptID = $this->RegisterScript("Update", "Update", "<?\n\nSXGRP_RefreshStatus(".$this->InstanceID."); \n\n?>"); 
-			IPS_SetHidden($ScriptID, true); 
+			$ScriptID = $this->RegisterScript("StoreCurrentAsPresenceStateTemplate", "Als Vorlage für Anwesenheit speichern", "<?\n\nSXGRP_StoreCurrentAsPresenceStateTemplate(".$this->InstanceID."); \n\n?>");			
 			
 			$ScriptID = $this->RegisterScript("UpdateAnwesenheit", "UpdateAnwesenheit", "<?\n\nSXGRP_RefreshPresence(".$this->InstanceID."); \n\n?>");
 			IPS_SetHidden($ScriptID, true); 
+
 			
 			$ScriptID = $this->RegisterScript("PresenceTimeoutOff", "PresenceTimeoutOff", "<?\n\nSXGRP_PresenceTimeoutOff(".$this->InstanceID."); \n\n?>");
 			IPS_SetHidden($ScriptID, true); 
@@ -120,8 +118,6 @@
 			$ScriptID = $this->RegisterScript("ResetPresenceStateToTemplate", "ResetPresenceStateToTemplate", "<?\n\nSXGRP_ResetPresenceStateToTemplate(".$this->InstanceID."); \n\n?>");
 			IPS_SetHidden($ScriptID, true); 
 			
-			$ScriptID = $this->RegisterScript("RefreshIlluminationLevel", "RefreshIlluminationLevel", "<?\n\nSXGRP_RefreshIlluminationLevel(".$this->InstanceID."); \n\n?>");
-			IPS_SetHidden($ScriptID, true); 
 			
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
@@ -139,7 +135,7 @@
 
 		public function UpgradeToNewVersion(){
 			$vers = $this->ReadPropertyInteger("IsVersion");
-			if ($vers >= 1){ 
+			if ($vers >= 2){ 
 				return; 
 			}
 			
@@ -256,7 +252,22 @@
 				}
 			}
 
-			IPS_SetProperty($this->InstanceID, "IsVersion", 1);
+			
+			//Delete old scripts
+			$oldScript = IPS_GetObjectIDByIdent("Update", $this->InstanceID);
+			if ($oldScript){ IPS_DeleteScript($oldScript); }			
+			
+			$oldScript = IPS_GetObjectIDByIdent("RefreshIlluminationLevel", $this->InstanceID);
+			if ($oldScript){ IPS_DeleteScript($oldScript); }		
+			
+			$oldScript = IPS_GetObjectIDByIdent("UpdateAnwesenheit", $this->InstanceID);
+			if ($oldScript) {
+				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
+					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
+				}
+			}
+			
+			IPS_SetProperty($this->InstanceID, "IsVersion", 2);
 			
 			if (IPS_HasChanges($this->InstanceID)){		
 				IPS_ApplyChanges($this->InstanceID);
