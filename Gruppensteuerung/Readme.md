@@ -9,8 +9,8 @@ Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, k
 
 ## Änderungen
 30.08.2018  
-- Umstellung zur Nutzung von Listen im Instanzeditor, der seit IP-Symcon 5.0 verfügbar ist.
-- Entfernung nicht mehr benötigter Funktionen.
+- Umstellung zur Nutzung von Listen im Instanzeditor die seit IP-Symcon 5.0 verfügbar sind.
+- Entfernung nicht mehr benötigter Funktionen und Kategorien.
 
 
 ## Installation
