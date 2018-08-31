@@ -14,6 +14,11 @@ Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, k
 3. Speichern Sie die Änderungen und prüfen Sie die Funktion durch betätigen der Taset "An" und "Aus" im Instanzeditor.
 4. Fügen Sie gegebenenfalls Bewegungsmelder und Helligkeitssensoren in der entsprechenden Liste hinzu.
 
+## Unterstützte Variablen und Geräte
+Es werden alle Geräte bzw. Variablen unterstützt, welche auch per WebFront geschaltet werden können und folgende Bedingungen erfüllen:
+Variable des Typs boolean (false = Aus / true = Ein)
+Variable des Typs float (Dimmbar / 0.0 = Aus / 1.0 = Ein)
+Variable des Typs integer (Dimmbar / 0 = Aus / 100 = Ein)
 
 ## Profile
 Der Status der Geräte kann in Profilen gespeichert werden. Wobei für jedes Profil der einzelstatus der Geräte gespeichert wird. Wird z.b. in einem Profil die Lampe1 auf 50% und die Lampe2 auf 100% gesetzt, wird genau dieser Zustand wiederhergestellt, sobald das Profil wieder aufgerufen wird.
