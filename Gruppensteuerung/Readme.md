@@ -7,6 +7,11 @@ Die Gruppensteuerung kann für komplexe Aufgaben kaskadiert werden. Das bedeutet
 ## Update-Hinweis
 Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, könne Sie die Kategorien "Geräte", "Helligkeit" und "Bewegung" in der Instanz löschen, sofern Sie darin nur Verknüpfungen abgelegt hatten.
 
+## Änderungen
+30.08.2018  
+- Umstellung zur Nutzung von Listen im Instanzeditor, der seit IP-Symcon 5.0 verfügbar ist.
+- Entfernung nicht mehr benötigter Funktionen.
+
 
 ## Installation
 1.  Fügen Sie SX_SymconExtension zu den Modulen von IP-Symcon hinzu.
