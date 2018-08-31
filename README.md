@@ -8,7 +8,7 @@ Die Gruppensteuerung ermöglicht das gleichzeitige Schalten mehrerer Endgeräte.
 
 Die Gruppensteuerung kann für komplexe Aufgaben kaskadiert werden. Das bedeutet dass eine Gruppe aus mehreren Untergruppen bestehen kann.
 
-[Weitere Details zur Gruppensteuerung](https://github.com/styletronix/SX_SymconExtension/Gruppensteuerung/Readme.md)
+[Weitere Details zur Gruppensteuerung](/Gruppensteuerung/Readme.md)
 
 ## Alarmanlage
 Die Alarmanlage wurde einer klassischen Alarmanlage nachempfunden und bietet unter anderem folgende Möglichkeiten.
@@ -21,4 +21,4 @@ Alarm-Sperre bei zu häufiger auslösung bis zum Reset. (gesetzlich vorgeschrieb
 Betriebsmodus: Deaktiviert, Aktiviert, Intern Aktiviert und Wartung.
 Statustext zur Nutzung in Text-To-Speech systemen oder Anzeige auf einem Display.
 
-[Weitere Details zur Alarmanlage](https://github.com/styletronix/SX_SymconExtension/Alarmanlage/Readme.md)
+[Weitere Details zur Alarmanlage](/Alarmanlage/Readme.md)
