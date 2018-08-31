@@ -10,8 +10,8 @@ Die Alarmanlage wurde einer klassischen Alarmanlage nachempfunden und bietet unt
 - Betriebsmodus: Deaktiviert, Aktiviert, Intern Aktiviert und Wartung.
 - Statustext zur Nutzung in Text-To-Speech systemen oder Anzeige auf einem Display.
 
-## Update-Verlauf
-30.08.2018
+## Änderungen
+31.08.2018
 - Erstes öffentliches Release
 
 28.08.2018
