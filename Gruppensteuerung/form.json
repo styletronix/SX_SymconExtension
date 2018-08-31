@@ -1,32 +1,66 @@
 {
   "elements": [
-    {
-      "type": "Label",
-      "label": "Geben Sie eine Kategorie oder Instanz an, die Verknüpfungen mit Variablen enthält, die als Gruppe geschaltet werden sollen."
-    },
-    {
-      "type": "SelectObject",
-      "name": "DeviceCategory",
-      "caption": "Geräteliste"
-    },
-	{
-      "type": "Label",
-      "label": "Geben Sie eine Kategorie oder Instanz an, die Verknüpfungen mit Variablen enthält, die als Anwesenheitsmeldung verwendet werden sollen."
-    },
-    {
-      "type": "SelectObject",
-      "name": "PresenceCategory",
-      "caption": "Anwesenheitsmelder"
-    },
-	{
-      "type": "Label",
-      "label": "Geben Sie eine Kategorie oder Instanz an, die Verknüpfungen mit Variablen enthält, die als Helligkeit verwendet werden sollen."
-    },
-    {
-      "type": "SelectObject",
-      "name": "IlluminationCategory",
-      "caption": "Helligkeit"
-    },
+  {
+    "type": "List",
+    "name": "actors",
+    "caption": "Aktoren",
+    "rowCount": 5,
+    "add": true,
+    "delete": true,
+    "columns": [{
+        "caption": "Aktor",
+        "name": "InstanceID", 
+        "width": "auto",
+        "add": 0,
+        "edit": {
+            "type": "SelectVariable"
+        }
+    }]
+},{
+    "type": "List",
+    "name": "sensors",
+    "caption": "Sensoren",
+    "rowCount": 5,
+    "add": true,
+    "delete": true,
+    "columns": [{
+        "caption": "Sensoren",
+        "name": "InstanceID", 
+        "width": "auto",
+        "add": 0,
+        "edit": {
+            "type": "SelectVariable"
+        }
+    }, {
+        "caption": "Typ",
+        "name": "typ",
+        "width": "150px",
+        "add": 0,
+        "edit": {
+            "type": "Select",
+			"options": [
+				{ "caption": "Bewegung", "value": 0 },
+				{ "caption": "Taster", "value": 1 }
+				]
+        }
+    }]
+},{
+    "type": "List",
+    "name": "brightness",
+    "caption": "Helligkeit",
+    "rowCount": 5,
+    "add": true,
+    "delete": true,
+    "columns": [{
+        "caption": "Helligkeitssensoren",
+        "name": "InstanceID", 
+        "width": "auto",
+        "add": 0,
+        "edit": {
+            "type": "SelectVariable"
+        }
+    }]
+},
 	{
       "type": "Label",
       "label": "0 = Helligkeit und Bewegung werden nur Global ausgewertet und nicht auf einzelne Bereiche aufgeteilt, 1 = Helligkeit und Bewegung werden pro Geräteinstanz ausgewertet."
