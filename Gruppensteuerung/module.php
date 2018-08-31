@@ -92,13 +92,12 @@
 			
 			$this->RegisterPropertyInteger("IsVersion", 0);
 			
-
-            $this->RegisterPropertyInteger("DeviceCategory", 0); // Veraltet
+       $this->RegisterPropertyInteger("DeviceCategory", 0); // Veraltet
 			$this->RegisterPropertyString("actors", "");
 			
 			$this->RegisterPropertyInteger("PresenceCategory", 0); // Veraltet
 			$this->RegisterPropertyString("sensors", "");
-			
+
 			$this->RegisterPropertyInteger("IlluminationCategory", 0); // Veraltet
 			$this->RegisterPropertyString("brightness", "");
 			

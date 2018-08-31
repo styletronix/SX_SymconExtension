@@ -1,4 +1,3 @@
-
 # Gruppensteuerung
 Die Gruppensteuerung ermöglicht das gleichzeitige Schalten mehrerer Endgeräte. Der primäre Zweck ist die Steuerung von Beleuchtung oder Rollos. Allerdings kann die Gruppensteuerung auch universell für andere Zwecke eingesetzt werden. z.B. überall dort, wo der Maximalwert mehrerer Geräte benötigt wird.
 
@@ -33,8 +32,7 @@ Ist das Licht bereits durch Bewegungsmelder aktiviert worden, führt ein Wechsel
 
 Profile können über das WebFront oder Befehle (siehe Befehlsreferenz) gespeichert und geladen werden.
 
-
-## Bewegungsmelder
+### Bewegungsmelder
 Es werden Bewegungsmelder unterstützt. Sobald Bewegung erkannt wird kann die Gruppe entweder ein-, ausgeschaltet, auf ein bestimmtes Profil gesetzt werden oder den Zustand annehmen in dem sich Geräte zuletzt befanden, als die Bewegung erkannt wurde. Als Bewegungsmelder kann nahezu jedes Gerät verwendet werden, das entweder Abwesend / Anwesend meldet oder nur den Status aktualisiert. So können auch Taster verwendet werden um die Gruppe für eine voreingestellte Zeit einzuschalten. Zusätzlich überwacht die Gruppensteuerung, ob ein Bewegungsmelder auf grund von Störung nicht mehr von Anwesend auf Abwesend meldet. Verbleibt ein Bewegungsmelder also ohne erneute Aktualisierung der Variable auf "Anwesend" wird die Gruppe nach einer einstellbaren Zeit auf "Abwesend" gesetzt.
 
 Vor der Abschaltung der Gruppe kann eine Zeitspanne und ein Level angegeben werden auf das vor der Abschaltung gedimmt werden soll. Wird keine Bewegung mehr erkannt, kann die Gruppe z.b. 20 Sekunden warten, dann die Helligkeit auf 10% stellen, dort nochmals 30 Sekunden warten und dann das Licht ausschalten. So vermeidet man es unerwartet im dunkeln zu stehen.
@@ -43,6 +41,7 @@ Bewegungsmelder können über die GUI aktiviert und deaktiviert werden.
 
 Beispiel:
 Ist das Profil für Anwesend "Automatik" und für Abwesend auf "Aus" gestellt, verhält sich die Steuerung wie folgt: Wenn Bewegung erkannt wird (z.B. durch betreten eines Raumes), geschieht erst ein mal nichts. Schaltet man nun das Licht manuell ein, wird dieser Zustand gespeichert. Meldet der Bewegungsmelder nun "Abwesend", wird das Licht im Raum ausgeschaltet. Beim nächsten betreten des Raumes wird das Licht nun in den Zustand gesetzt, wie er zuletzt vor verlassen des Raumes war. Das Licht wird wieder eingeschaltet. Der Status wird dabei für jedes Gerät, welcher der Gruppe zugeordnet ist einzeln gespeichert. Jedes Licht in der Gruppe kann also einen anderen Zustand haben. Dies ist z.b. für Schlafzimmer interessant wo man nachts bei Bewegung nicht unbedingt licht möchte aber dennoch sichergehen will, dass niemand vergisst das licht auszuschalten wenn niemand mehr im Raum ist.
+
 
 ## Steuerung nach Helligkeit
 Bewegungsmelder können mit einem Helligkeitssensor kombiniert werden, damit das Licht nur aktiviert wird, wenn dies erforderlich ist. Als Helligkeitssensor kann entweder ein eigener Sensor verwendet werden, oder einen im Bewegungsmelder integrierte Sensor. Wenn der Sensor integriert ist und man für einen Raum (z.b. Treppenhaus) mehrere Bewegungsmelder für eine Gruppe verwendet, kann die Gruppensteuerung so eingestellt werden, dass die Beleuchtung nur aktiviert wird, wenn an dem Bewegungsmelder, welcher die Bewegung erkannt hat, auch die Helligkeit zum einschalten unterschritten wurde. Eine Bewegung im Obergeschoss führt so Tagsüber nicht zu einem einschalten der Gruppe, im dunkeln Keller wird eine Bewegung aber dennoch das Treppenhauslicht aktivieren.
