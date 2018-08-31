@@ -1,0 +1,168 @@
+{
+  "elements": [
+    {
+    "type": "List",
+    "name": "devices",
+    "caption": "Sensoren",
+    "rowCount": 5,
+    "add": true,
+    "delete": true,
+    "columns": [{
+        "caption": "Sensoren",
+        "name": "InstanceID", 
+        "width": "auto",
+        "add": 0,
+        "edit": {
+            "type": "SelectVariable"
+        }
+    }, {
+        "caption": "Bezeichnung",
+        "name": "Bezeichnung",
+        "width": "200px",
+        "edit": {
+            "type": "ValidationTextBox"
+        }
+    }, {
+        "caption": "24h-Alarm (Sabotage / Technik)",
+        "name": "24h",
+        "width": "100px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Technik-Alarm",
+        "name": "Technik",
+        "width": "100px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Bei jeder Aktualisierung auslösen",
+        "name": "TriggerOnRefresh",
+        "width": "100px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Ausgangsverzögerung",
+        "name": "verzoegerung_ausgang",
+        "width": "100px",
+        "add": true,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Eingangsverzögerung",
+        "name": "verzoegerung_eingang",
+        "width": "100px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Intern aktiv",
+        "name": "istInternAktiv",
+        "width": "100px",
+        "add": true,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }]
+},{
+    "type": "List",
+    "name": "melder",
+    "caption": "Ausgabe",
+    "rowCount": 5,
+    "add": true,
+    "delete": true,
+    "columns": [{
+        "caption": "Melder",
+        "name": "InstanceID", 
+        "width": "auto",
+        "add": 0,
+        "edit": {
+            "type": "SelectVariable"
+        }
+    }, {
+        "caption": "24h-Alarm",
+        "name": "24h",
+        "width": "100px",
+        "add": true,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Technik-Alarm",
+        "name": "Technik",
+        "width": "100px",
+        "add": true,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Intern aktiv",
+        "name": "istInternAktiv",
+        "width": "100px",
+        "add": true,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Extern aktiv",
+        "name": "istExternAktiv",
+        "width": "100px",
+        "add": true,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Verzögert",
+        "name": "delayed",
+        "width": "100px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Typ",
+        "name": "typ",
+        "width": "150px",
+        "add": 0,
+        "edit": {
+            "type": "Select",
+			"options": [
+				{ "caption": "Sirene", "value": 0 },
+				{ "caption": "Warnlicht", "value": 1 },
+				{ "caption": "Eingangswarnung", "value": 2 },
+				{ "caption": "Ausgangswarnung", "value": 3 },
+				{ "caption": "Alarmbeleuchtung", "value": 4 }
+				]
+        }
+    }]
+},
+{ "type": "NumberSpinner", "name": "dauer_alarmbeleuchtung", "caption": "Dauer der Alarmbeleuchtung", "suffix": "Sekunden"},
+{ "type": "NumberSpinner", "name": "dauer_sirene", "caption": "Dauer der Sirene", "suffix": "Sekunden"},
+{ "type": "NumberSpinner", "name": "dauer_warnlicht", "caption": "Dauer des Warnlichts", "suffix": "Sekunden"},
+{ "type": "NumberSpinner", "name": "retrigger", "caption": "Maximale erneute Auslösungen", "suffix": "mal"},
+{ "type": "NumberSpinner", "name": "verzoegerung_eingang", "caption": "Eingangsverzögerung", "suffix": "Sekunden"},
+{ "type": "NumberSpinner", "name": "verzoegerung_ausgang", "caption": "Ausgangsverzögerung", "suffix": "Sekunden"},
+{ "type": "NumberSpinner", "name": "verzoegerung_alarm", "caption": "Alarmverzögerung", "suffix": "Sekunden"}
+  ],
+    "actions":
+    [
+      {
+        "type": "Button",
+        "label": "Anlage RESET (nach Alarm oder Störung)",
+        "onClick": "SXALERT_Reset($id);"
+      }
+    ],
+    "status":
+    [
+        { "code": 102, "icon": "active", "caption": "OK" },
+        { "code": 201, "icon": "error", "caption": "Authentication failed" },
+        { "code": 202, "icon": "error", "caption": "No credits left" }
+    ]
+}

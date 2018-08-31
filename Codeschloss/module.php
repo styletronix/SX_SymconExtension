@@ -65,7 +65,7 @@ class Codeschloss extends IPSModule {
         SetValue($this->GetIDForIdent("Input"), "");
     }
 
-    public function SetActiveState(boolean $Active){
+    public function SetActiveState(bool $Active){
         $PinCache = GetValue($this->GetIDForIdent("Input"));
         $Benutzer = "unbekannt";
 
@@ -78,7 +78,7 @@ class Codeschloss extends IPSModule {
         }
         SetValue($this->GetIDForIdent("Input"), "");
     }
-    public function ExecuteSkript(integer $SkriptID){
+    public function ExecuteSkript(int $SkriptID){
         $PinCache = GetValue($this->GetIDForIdent("Input"));
         $Benutzer = "unbekannt";
 
