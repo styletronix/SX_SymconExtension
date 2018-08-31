@@ -21,4 +21,4 @@ Alarm-Sperre bei zu häufiger auslösung bis zum Reset. (gesetzlich vorgeschrieb
 Betriebsmodus: Deaktiviert, Aktiviert, Intern Aktiviert und Wartung.
 Statustext zur Nutzung in Text-To-Speech systemen oder Anzeige auf einem Display.
 
-[Weitere Details zur Alarmanlage](/Alarmanlage/Readme.md)
+[Weitere Details zur Alarmanlage](/Alarmanlage/readme.md)
