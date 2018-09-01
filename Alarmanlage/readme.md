@@ -72,6 +72,7 @@ Ein Sensor mit deaktivierter Eingangsverzögerung löst bei aktivierung sofort e
 Die Alarmanlage kann "aktiviert" und "intern aktiviert" werden. Im Zustand "aktiviert" werden alle Sensoren überwacht, während im Zustand "intern aktiviert" nur Sensoren überwacht werden, bei denen die Option "Intern aktiv" aktiviert wurde.
 
 Bei Sensoren welche im Wohnbereich angebracht sind sollte die Option "intern aktiv" deaktiviert und bei Sensoren, welche den aussenbereich überwachen aktiviert sein.
+
 ---
 
 
@@ -96,11 +97,11 @@ Der Melder wird nach einem Alarm mit einer einstellbaren Verzögerung ausgelöst
 Hierdurch kann z.b. eine interne Sirene sofrt, und eine externe Sirene nach einer kurzen Verzögerung aktiviert werden.
 
 #### Typ
--Sirene:
+- Sirene:
 
 Die gesetzlichen Bestimmungen in Deutschland regeln die maximale Zeit die eine Sirene im aussenbereich aktiv sein darf. Die einschaltdauer der Sirene kann im Instanzeditor eingestellt werden. Empfohlene maximalzeit ist 180 Sekunden.
 
--Warnlicht:
+- Warnlicht:
 
 Das Warnlicht verfügt über eine eigene maximale Einschaltdauer, welche im Instanzeditor eingestellt werden kann. Eine Einstellung von 0 Sekunden deaktiviert die automatische Abschaltung und das Warnlicht bleibt dauerhaft an.
 
