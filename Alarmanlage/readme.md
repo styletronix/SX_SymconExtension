@@ -8,7 +8,8 @@
 2. [Systemanforderungen](#2-systemanforderungen)
 3. [Installation](#3-installation)
 4. [Sensoren](#4-sensoren)
-5. [Melder](#4-melder)
+5. [Melder](#5-melder)
+6. [weitere Optionen](#6-weitere optionen)
 ---
 
 
@@ -104,9 +105,43 @@ Das Warnlicht verfügt über eine eigene maximale Einschaltdauer, welche im Inst
 Dieser Typ ist für Beleuchtung gedacht, welche während einem Alarm aktiviert werden soll. Auch hierfür kann die maximale Einschaltdauer im Instanzeditor eingestellt werden. Eine Einstellung von 0 Sekunden deaktiviert die automatische abschaltung.
 In Kombination mit dem Modul "Gruppensteuerung" kann eine effektive Steuerung der Beleuchtung bei Alarm realisiert werden. Hierzu kann als Melder direkt die Variable "Alarmbeleuchtung aktiviert" der Gruppensteuerung verknüpft werden.
 
-4. Eingangswarnung / Ausgangswarnung
-Diese Melder werden nur aktiviert, solange die Eingans- oder Ausganszeit aktiv ist. Sie sind zur optischen oder akustischen Signalisierung des Systemzustandes gedacht. So kann ein Melder des Typs "Eingangswarnung" als vorwarnung vor dem eigentlichen Alarm genutzt werden.
---
+4. Eingangswarnung
+Diese Melder werden nur aktiviert, solange die Einganszeit aktiv ist. Sie sind zur optischen oder akustischen Signalisierung des Systemzustandes gedacht. So kann ein Melder des Typs "Eingangswarnung" als vorwarnung vor dem eigentlichen Alarm genutzt werden.
+
+5. Ausgangswarnung
+-> siehe Eingangswarnung
+---
+
+
+# 6. weitere Optionen
+1. Dauer der Alarmbeleuchtung
+Nach der hier eingestellten Zeit werden Melder vom Typ "Alarmbeleuchtung" deaktiviert.
+Der Ablauf der eingestellten Zeit beginnt nach Ablauf der "Alarmverzögerung". Die Tatsächliche Meldedauer ist bei deaktivierung der Option "verzögert" also die hier eingestellte Zeit + "Alarmverzögerung".
+
+2. Dauer der Sirene
+Nach der hier eingestellten Zeit werden Melder vom Typ "Sirene" deaktiviert.
+Der Ablauf der eingestellten Zeit beginnt nach Ablauf der "Alarmverzögerung". Die Tatsächliche Meldedauer ist bei deaktivierung der Option "verzögert" also die hier eingestellte Zeit + "Alarmverzögerung".
+
+3. Dauer des Warnlichts
+Nach der hier eingestellten Zeit werden Melder vom Typ "Warnlicht" deaktiviert.
+Der Ablauf der eingestellten Zeit beginnt nach Ablauf der "Alarmverzögerung". Die Tatsächliche Meldedauer ist bei deaktivierung der Option "verzögert" also die hier eingestellte Zeit + "Alarmverzögerung".
+
+4. Maximale erneute Auslösungen
+Die Alarmanlage kann nach Ablauf der "Dauer der Sirene" erneut aktiviert werden und dadurch erneut einen Alarm mit Sirene auslösen. Um zu häufiges aktivieren, z.b. durch einen defekten Sensor, zu unterbinden, kann hier eine Anzahl angegeben werden, wie oft eine erneute aktivierung möglich ist, bevor die Alarmanlage über einen Reset zurückgesetzt werden muss. Ein Reset kann dabei durch den Befehl `SXALERT_Reset(int $InstanceID);` oder durch "deaktivieren" der Anlage erfolgen.
+
+5. Eingangsverzögerung
+Hier wird die Verzögerung angegeben, mit welcher ein Sensor mit aktiver "Eingangsverzögerung" einen Alarm auslöst.
+
+6. Ausgangsverzögerung
+Hier wird die Verzögerung angegeben, mit welcher ein Sensor mit aktiver "Ausgangsverzögerung" wartet, bevor er nach aktivieren der Alarmanlage scharf geschaltet wird.
+
+7. Alarmverzögerung
+Bei einem Alarm werden Melder mit aktiver Option "Verzögert" nach dieser Zeitspanne aktiviert.
+---
+
+
+
+
 
 
 ## Änderungen
