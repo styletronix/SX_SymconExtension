@@ -10,6 +10,7 @@
 4. [Sensoren](#4-sensoren)
 5. [Melder](#5-melder)
 6. [weitere Optionen](#6-weitere-optionen)
+7. [Betriebsmodus](#7-betriebsmodus)
 ---
 
 
@@ -95,11 +96,11 @@ Der Melder wird nach einem Alarm mit einer einstellbaren Verzögerung ausgelöst
 Hierdurch kann z.b. eine interne Sirene sofrt, und eine externe Sirene nach einer kurzen Verzögerung aktiviert werden.
 
 #### Typ
-1. Sirene:
+-Sirene:
 
 Die gesetzlichen Bestimmungen in Deutschland regeln die maximale Zeit die eine Sirene im aussenbereich aktiv sein darf. Die einschaltdauer der Sirene kann im Instanzeditor eingestellt werden. Empfohlene maximalzeit ist 180 Sekunden.
 
-2. Warnlicht:
+-Warnlicht:
 
 Das Warnlicht verfügt über eine eigene maximale Einschaltdauer, welche im Instanzeditor eingestellt werden kann. Eine Einstellung von 0 Sekunden deaktiviert die automatische Abschaltung und das Warnlicht bleibt dauerhaft an.
 
@@ -153,7 +154,14 @@ Bei einem Alarm werden Melder mit aktiver Option "Verzögert" nach dieser Zeitsp
 
 ---
 
+## 7. Betriebsmodus
+Der Betriebsmodus wird über die Variable "Status" im WebFront oder den Befehl `SXALERT_SetMode(int $InstanceID, int $Modus);` geändert.
 
+Es stehen folgende Betriebsarten zur Verfügung:
+-Deaktiviert
+-Aktiviert
+-Intern aktiviert
+-WARTUNG
 
 
 
@@ -168,14 +176,3 @@ Bei einem Alarm werden Melder mit aktiver Option "Verzögert" nach dieser Zeitsp
 
 
 
-## Betriebsmodus
-TODO
-
-## Sensoren
-TODO
-
-## Aktoren
-TODO
-
-## PHP-Funktionen
-TODO
