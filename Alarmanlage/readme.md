@@ -95,20 +95,25 @@ Der Melder wird nach einem Alarm mit einer einstellbaren Verzögerung ausgelöst
 Hierdurch kann z.b. eine interne Sirene sofrt, und eine externe Sirene nach einer kurzen Verzögerung aktiviert werden.
 
 #### Typ
-1. Sirene
+1. Sirene:
+
 Die gesetzlichen Bestimmungen in Deutschland regeln die maximale Zeit die eine Sirene im aussenbereich aktiv sein darf. Die einschaltdauer der Sirene kann im Instanzeditor eingestellt werden. Empfohlene maximalzeit ist 180 Sekunden.
 
-2. Warnlicht
+2. Warnlicht:
+
 Das Warnlicht verfügt über eine eigene maximale Einschaltdauer, welche im Instanzeditor eingestellt werden kann. Eine Einstellung von 0 Sekunden deaktiviert die automatische Abschaltung und das Warnlicht bleibt dauerhaft an.
 
-3. Alarmbeleuchtung
+3. Alarmbeleuchtung:
+
 Dieser Typ ist für Beleuchtung gedacht, welche während einem Alarm aktiviert werden soll. Auch hierfür kann die maximale Einschaltdauer im Instanzeditor eingestellt werden. Eine Einstellung von 0 Sekunden deaktiviert die automatische abschaltung.
 In Kombination mit dem Modul "Gruppensteuerung" kann eine effektive Steuerung der Beleuchtung bei Alarm realisiert werden. Hierzu kann als Melder direkt die Variable "Alarmbeleuchtung aktiviert" der Gruppensteuerung verknüpft werden.
 
-4. Eingangswarnung
+4. Eingangswarnung:
+
 Diese Melder werden nur aktiviert, solange die Einganszeit aktiv ist. Sie sind zur optischen oder akustischen Signalisierung des Systemzustandes gedacht. So kann ein Melder des Typs "Eingangswarnung" als vorwarnung vor dem eigentlichen Alarm genutzt werden.
 
-5. Ausgangswarnung
+5. Ausgangswarnung:
+
 -> siehe Eingangswarnung
 ---
 
