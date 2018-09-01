@@ -114,34 +114,43 @@ Diese Melder werden nur aktiviert, solange die Einganszeit aktiv ist. Sie sind z
 
 5. Ausgangswarnung:
 
--> siehe Eingangswarnung
+siehe Eingangswarnung
+
 ---
 
 
 # 6. weitere Optionen
 1. Dauer der Alarmbeleuchtung
+
 Nach der hier eingestellten Zeit werden Melder vom Typ "Alarmbeleuchtung" deaktiviert.
 Der Ablauf der eingestellten Zeit beginnt nach Ablauf der "Alarmverzögerung". Die Tatsächliche Meldedauer ist bei deaktivierung der Option "verzögert" also die hier eingestellte Zeit + "Alarmverzögerung".
 
 2. Dauer der Sirene
+
 Nach der hier eingestellten Zeit werden Melder vom Typ "Sirene" deaktiviert.
 Der Ablauf der eingestellten Zeit beginnt nach Ablauf der "Alarmverzögerung". Die Tatsächliche Meldedauer ist bei deaktivierung der Option "verzögert" also die hier eingestellte Zeit + "Alarmverzögerung".
 
 3. Dauer des Warnlichts
+
 Nach der hier eingestellten Zeit werden Melder vom Typ "Warnlicht" deaktiviert.
 Der Ablauf der eingestellten Zeit beginnt nach Ablauf der "Alarmverzögerung". Die Tatsächliche Meldedauer ist bei deaktivierung der Option "verzögert" also die hier eingestellte Zeit + "Alarmverzögerung".
 
 4. Maximale erneute Auslösungen
+
 Die Alarmanlage kann nach Ablauf der "Dauer der Sirene" erneut aktiviert werden und dadurch erneut einen Alarm mit Sirene auslösen. Um zu häufiges aktivieren, z.b. durch einen defekten Sensor, zu unterbinden, kann hier eine Anzahl angegeben werden, wie oft eine erneute aktivierung möglich ist, bevor die Alarmanlage über einen Reset zurückgesetzt werden muss. Ein Reset kann dabei durch den Befehl `SXALERT_Reset(int $InstanceID);` oder durch "deaktivieren" der Anlage erfolgen.
 
 5. Eingangsverzögerung
+
 Hier wird die Verzögerung angegeben, mit welcher ein Sensor mit aktiver "Eingangsverzögerung" einen Alarm auslöst.
 
 6. Ausgangsverzögerung
+
 Hier wird die Verzögerung angegeben, mit welcher ein Sensor mit aktiver "Ausgangsverzögerung" wartet, bevor er nach aktivieren der Alarmanlage scharf geschaltet wird.
 
 7. Alarmverzögerung
+
 Bei einem Alarm werden Melder mit aktiver Option "Verzögert" nach dieser Zeitspanne aktiviert.
+
 ---
 
 
