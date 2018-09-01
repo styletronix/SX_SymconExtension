@@ -9,7 +9,7 @@
 3. [Installation](#3-installation)
 4. [Sensoren](#4-sensoren)
 5. [Melder](#5-melder)
-6. [weitere Optionen](#6-weitere optionen)
+6. [weitere Optionen](#6-weitere)
 ---
 
 
