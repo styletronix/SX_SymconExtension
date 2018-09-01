@@ -182,5 +182,3 @@ Die Alarmanlage ist vollständig deaktiviert und löst auch bei 24h-Alarm keinen
 
 28.08.2018
 - Erste Beta-Version
-
-
