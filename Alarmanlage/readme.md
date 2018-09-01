@@ -11,6 +11,7 @@
 5. [Melder](#5-melder)
 6. [weitere Optionen](#6-weitere-optionen)
 7. [Betriebsmodus](#7-betriebsmodus)
+8. [Änderungen](#8-änderungen)
 ---
 
 
@@ -105,16 +106,16 @@ Die gesetzlichen Bestimmungen in Deutschland regeln die maximale Zeit die eine S
 
 Das Warnlicht verfügt über eine eigene maximale Einschaltdauer, welche im Instanzeditor eingestellt werden kann. Eine Einstellung von 0 Sekunden deaktiviert die automatische Abschaltung und das Warnlicht bleibt dauerhaft an.
 
-3. Alarmbeleuchtung:
+- Alarmbeleuchtung:
 
 Dieser Typ ist für Beleuchtung gedacht, welche während einem Alarm aktiviert werden soll. Auch hierfür kann die maximale Einschaltdauer im Instanzeditor eingestellt werden. Eine Einstellung von 0 Sekunden deaktiviert die automatische abschaltung.
 In Kombination mit dem Modul "Gruppensteuerung" kann eine effektive Steuerung der Beleuchtung bei Alarm realisiert werden. Hierzu kann als Melder direkt die Variable "Alarmbeleuchtung aktiviert" der Gruppensteuerung verknüpft werden.
 
-4. Eingangswarnung:
+- Eingangswarnung:
 
 Diese Melder werden nur aktiviert, solange die Einganszeit aktiv ist. Sie sind zur optischen oder akustischen Signalisierung des Systemzustandes gedacht. So kann ein Melder des Typs "Eingangswarnung" als vorwarnung vor dem eigentlichen Alarm genutzt werden.
 
-5. Ausgangswarnung:
+- Ausgangswarnung:
 
 siehe Eingangswarnung
 
@@ -122,17 +123,17 @@ siehe Eingangswarnung
 
 
 # 6. weitere Optionen
-1. Dauer der Alarmbeleuchtung
+- Dauer der Alarmbeleuchtung
 
 Nach der hier eingestellten Zeit werden Melder vom Typ "Alarmbeleuchtung" deaktiviert.
 Der Ablauf der eingestellten Zeit beginnt nach Ablauf der "Alarmverzögerung". Die Tatsächliche Meldedauer ist bei deaktivierung der Option "verzögert" also die hier eingestellte Zeit + "Alarmverzögerung".
 
-2. Dauer der Sirene
+- Dauer der Sirene
 
 Nach der hier eingestellten Zeit werden Melder vom Typ "Sirene" deaktiviert.
 Der Ablauf der eingestellten Zeit beginnt nach Ablauf der "Alarmverzögerung". Die Tatsächliche Meldedauer ist bei deaktivierung der Option "verzögert" also die hier eingestellte Zeit + "Alarmverzögerung".
 
-3. Dauer des Warnlichts
+- Dauer des Warnlichts
 
 Nach der hier eingestellten Zeit werden Melder vom Typ "Warnlicht" deaktiviert.
 Der Ablauf der eingestellten Zeit beginnt nach Ablauf der "Alarmverzögerung". Die Tatsächliche Meldedauer ist bei deaktivierung der Option "verzögert" also die hier eingestellte Zeit + "Alarmverzögerung".
@@ -141,33 +142,41 @@ Der Ablauf der eingestellten Zeit beginnt nach Ablauf der "Alarmverzögerung". D
 
 Die Alarmanlage kann nach Ablauf der "Dauer der Sirene" erneut aktiviert werden und dadurch erneut einen Alarm mit Sirene auslösen. Um zu häufiges aktivieren, z.b. durch einen defekten Sensor, zu unterbinden, kann hier eine Anzahl angegeben werden, wie oft eine erneute aktivierung möglich ist, bevor die Alarmanlage über einen Reset zurückgesetzt werden muss. Ein Reset kann dabei durch den Befehl `SXALERT_Reset(int $InstanceID);` oder durch "deaktivieren" der Anlage erfolgen.
 
-5. Eingangsverzögerung
+- Eingangsverzögerung
 
 Hier wird die Verzögerung angegeben, mit welcher ein Sensor mit aktiver "Eingangsverzögerung" einen Alarm auslöst.
 
-6. Ausgangsverzögerung
+- Ausgangsverzögerung
 
 Hier wird die Verzögerung angegeben, mit welcher ein Sensor mit aktiver "Ausgangsverzögerung" wartet, bevor er nach aktivieren der Alarmanlage scharf geschaltet wird.
 
-7. Alarmverzögerung
+- Alarmverzögerung
 
 Bei einem Alarm werden Melder mit aktiver Option "Verzögert" nach dieser Zeitspanne aktiviert.
 
 ---
 
 ## 7. Betriebsmodus
-Der Betriebsmodus wird über die Variable "Status" im WebFront oder den Befehl `SXALERT_SetMode(int $InstanceID, int $Modus);` geändert.
+Der Betriebsmodus wird über die Variable `Status` im WebFront oder den Befehl `SXALERT_SetMode(int $InstanceID, int $Modus);` geändert.
 
 Es stehen folgende Betriebsarten zur Verfügung:
--Deaktiviert
--Aktiviert
--Intern aktiviert
--WARTUNG
+- Deaktiviert
+Die Alarmanlage löst nur Alarm aus, wenn ein Sensor mit aktiver Option "24h-Alarm" aktiv wird.
+
+- Aktiviert
+Die Alarmierung erfolgt durch alle Sensoren.
+
+- Intern aktiviert
+Die Alarmierung erfolgt nur durch Sensoren mit aktiver Option "24h-Alarm" und "intern aktiv".
+
+- WARTUNG
+Die Alarmanlage ist vollständig deaktiviert und löst auch bei 24h-Alarm keinen Alarm aus.
 
 
 
 
-## Änderungen
+
+## 8. Änderungen
 31.08.2018
 - Erstes öffentliches Release
 
