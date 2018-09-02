@@ -126,7 +126,7 @@
 
 		public function UpgradeToNewVersion(){
 			$vers = $this->ReadPropertyInteger("IsVersion");
-			if ($vers >= 4){ 
+			if ($vers >= 5){ 
 				return; 
 			}
 			
@@ -299,7 +299,7 @@
 				IPS_DeleteScript($oldScript, true); 
 			}
 			
-			IPS_SetProperty($this->InstanceID, "IsVersion", 4);
+			IPS_SetProperty($this->InstanceID, "IsVersion", 5);
 			
 			if (IPS_HasChanges($this->InstanceID)){		
 				IPS_ApplyChanges($this->InstanceID);
