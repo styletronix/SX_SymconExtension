@@ -245,7 +245,8 @@
 
 			
 			//Delete old scripts
-			$oldScript = IPS_GetObjectIDByIdent("Update", $this->InstanceID);
+			$oldScript = false;
+			$oldScript = @IPS_GetObjectIDByIdent("Update", $this->InstanceID);
 			if ($oldScript){ 
 				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
 					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
@@ -253,7 +254,8 @@
 				IPS_DeleteScript($oldScript, true); 
 			}			
 			
-			$oldScript = IPS_GetObjectIDByIdent("RefreshIlluminationLevel", $this->InstanceID);
+			$oldScript = false;
+			$oldScript = @IPS_GetObjectIDByIdent("RefreshIlluminationLevel", $this->InstanceID);
 			if ($oldScript){ 
 				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
 					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
@@ -261,7 +263,8 @@
 				IPS_DeleteScript($oldScript, true); 
 			}		
 			
-			$oldScript = IPS_GetObjectIDByIdent("UpdateAnwesenheit", $this->InstanceID);
+			$oldScript = false;
+			$oldScript = @IPS_GetObjectIDByIdent("UpdateAnwesenheit", $this->InstanceID);
 			if ($oldScript) {
 				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
 					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
@@ -269,7 +272,8 @@
 				IPS_DeleteScript($oldScript, true); 
 			}
 			
-			$oldScript = IPS_GetObjectIDByIdent("PresenceTimeoutOff", $this->InstanceID);
+			$oldScript = false;
+			$oldScript = @IPS_GetObjectIDByIdent("PresenceTimeoutOff", $this->InstanceID);
 			if ($oldScript) {
 				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
 					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
@@ -277,7 +281,8 @@
 				IPS_DeleteScript($oldScript, true); 
 			}
 			
-			$oldScript = IPS_GetObjectIDByIdent("PresenceOffDelayScript", $this->InstanceID);
+			$oldScript = false;
+			$oldScript = @IPS_GetObjectIDByIdent("PresenceOffDelayScript", $this->InstanceID);
 			if ($oldScript) {
 				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
 					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
@@ -285,7 +290,8 @@
 				IPS_DeleteScript($oldScript, true); 
 			}
 			
-			$oldScript = IPS_GetObjectIDByIdent("ResetPresenceStateToTemplate", $this->InstanceID);
+			$oldScript = false;
+			$oldScript = @IPS_GetObjectIDByIdent("ResetPresenceStateToTemplate", $this->InstanceID);
 			if ($oldScript) {
 				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
 					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
