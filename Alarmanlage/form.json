@@ -70,6 +70,14 @@
         "edit": {
             "type": "CheckBox"
         }
+    }, {
+        "caption": "Aktivierung verhindern",
+        "name": "preventActivation",
+        "width": "100px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
     }]
 },{
     "type": "List",

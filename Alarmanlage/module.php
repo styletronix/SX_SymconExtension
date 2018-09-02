@@ -6,8 +6,6 @@
 		
         public function Create() {
             parent::Create();
-
-			$ApplyChanges = false;
 			
 			//Variablenprofile erstellen
 			if (IPS_VariableProfileExists("SX_Alarm.Modus") == false){
@@ -62,20 +60,15 @@
 			$this->RegisterPropertyInteger("verzoegerung_eingang", 30);
 			$this->RegisterPropertyInteger("verzoegerung_ausgang", 120);
 			$this->RegisterPropertyInteger("verzoegerung_alarm", 30);			
-		
-			$this->RegisterTimer("ArmDelay", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"ArmDelay");');
-			$this->RegisterTimer("EntryTimer", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"EntryTimer");');			
-			$this->RegisterTimer("TriggerAlert2Timer", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"TriggerAlert2Timer");');
-			$this->RegisterTimer("DisableTimer1", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"DisableTimer1");');
-			$this->RegisterTimer("DisableTimer2", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"DisableTimer2");');
-			$this->RegisterTimer("DisableTimer3", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"DisableTimer3");');
-			
-            if ($ApplyChanges == true){
-				IPS_ApplyChanges($this->InstanceID);
-			}else{
-				// $this->Initialize();
-			}
+					
+			$this->RegisterTimer("ArmDelay",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ArmDelay");');
+			$this->RegisterTimer("EntryTimer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "EntryTimer");');						
+			$this->RegisterTimer("TriggerAlert2Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "TriggerAlert2Timer");');						
+			$this->RegisterTimer("DisableTimer1",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "DisableTimer1");');		
+			$this->RegisterTimer("DisableTimer2",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "DisableTimer2");');	
+			$this->RegisterTimer("DisableTimer3",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "DisableTimer3");');
         }
+		
         public function ApplyChanges() {
             parent::ApplyChanges();
 
@@ -135,8 +128,8 @@
 		}
 		
 		public function Reset(){
-			$this->SetTimerInterval ("ArmDelay", 0);
-			$this->SetTimerInterval ("EntryTimer", 0);
+			$this->SetTimerInterval("ArmDelay", 0);
+			$this->SetTimerInterval("EntryTimer", 0);
 			$this->SetTimerInterval("DisableTimer1", 0);	
 			$this->SetTimerInterval("DisableTimer2", 0);	
 			$this->SetTimerInterval("DisableTimer3", 0);	
@@ -168,14 +161,40 @@
 			switch($Modus) {
 				case 0:
 					// Deaktiviert
+					$currentMode = GetValueInteger($this->GetIDForIdent("alarmmodus"));
+					$disabled = $this->IsLeaveMaintenanceDisabled();
+					if ($currentMode == 4 and $disabled != false){
+						SetValueString($this->GetIDForIdent("TTS_output"), "Verlassen des Wartungsmodus ist nicht möglich, da ".$disabled." dies verhindert.");
+						echo("Verlassen des Wartungsmodus ist nicht möglich, da ".$disabled." dies verhindert.");
+						return;
+					}
+					
 					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
 					SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage wurde deaktiviert.");
 					break;
 	
 				case 1:
 					//Aktiviert
+					$disabled = $this->IsActivationDisabled();
+					if ($disabled){
+						SetValueString($this->GetIDForIdent("TTS_output"), "Aktivierung ist nicht möglich, da ".$disabled." dies verhindert.");
+						echo("Aktivierung ist nicht möglich, da ".$disabled." dies verhindert.");
+						return;
+					}
+					
+					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
+					$this->ArmSystemDelayed();
+					break;
+					
 				case 2:
 					//Intern Aktiviert
+					$disabled = $this->IsInternalActivationDisabled();
+					if ($disabled){
+						SetValueString($this->GetIDForIdent("TTS_output"), "Aktivierung ist nicht möglich, da ".$disabled." dies verhindert.");
+						echo("Aktivierung ist nicht möglich, da ".$disabled." dies verhindert.");
+						return;
+					}
+					
 					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
 					$this->ArmSystemDelayed();
 					break;
@@ -183,8 +202,7 @@
 				case 4:
 					//Wartung
 					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
-					SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage ist im Wartungsmodus.");
-					
+					SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage ist im Wartungsmodus.");					
 					break;
 					
 				default:
@@ -192,7 +210,7 @@
     		}					
 		}
 		
-		public Function onTimerElapsed(string $Timer){
+		private Function onTimerElapsed(string $Timer){
 			$this->SetTimerInterval ($Timer, 0);
 			
 			switch($Timer) {
@@ -224,6 +242,60 @@
 					throw new Exception("Invalid Ident");
 
     		}
+		}
+		public function IsActivationDisabled(){
+			$result = false;
+			
+			$DeviceParameters = $this->GetDeviceParameters();
+			
+			foreach($DeviceParameters as $device){
+				if ($device["preventActivation"] == true){
+					$DeviceID = $device["InstanceID"];
+					if (IPS_VariableExists($DeviceID)){
+						if (GetValue($DeviceID) == true){ 
+							$result = $device["Bezeichnung"];
+						}
+					}				
+				}
+			}
+			
+			return $result;
+		}
+		public function IsInternalActivationDisabled(){
+			$result = false;
+			
+			$DeviceParameters = $this->GetDeviceParameters();
+			
+			foreach($DeviceParameters as $device){
+				if ($device["preventActivation"] == true and $device["istInternAktiv"] == true){
+					$DeviceID = $device["InstanceID"];
+					if (IPS_VariableExists($DeviceID)){
+						if (GetValue($DeviceID) == true){ 
+							$result = $device["Bezeichnung"];
+						}
+					}				
+				}
+			}
+			
+			return $result;
+		}
+		public function IsLeaveMaintenanceDisabled(){
+			$result = false;
+			
+			$DeviceParameters = $this->GetDeviceParameters();
+			
+			foreach($DeviceParameters as $device){
+				if ($device["preventActivation"] == true and $device["24h"] == true){
+					$DeviceID = $device["InstanceID"];
+					if (IPS_VariableExists($DeviceID)){
+						if (GetValue($DeviceID) == true){ 
+							$result = $device["Bezeichnung"];
+						}
+					}				
+				}
+			}
+			
+			return $result;
 		}
 		
 		private function ArmSystemDelayed(){
@@ -498,6 +570,10 @@
 					$this->SetMode($Value);
 					break;
 	
+				case "TimerCallback":
+					$this->onTimerElapsed($Value);
+					break;
+				
 				default:
 					throw new Exception("Invalid Ident");
 
