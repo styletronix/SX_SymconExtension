@@ -1,0 +1,61 @@
+{
+  "elements": [
+    {
+    "type": "List",
+    "name": "triggers",
+    "caption": "Schalter",
+    "rowCount": 5,
+    "add": true,
+    "delete": true,
+    "columns": [{
+        "caption": "Schalter",
+        "name": "InstanceID", 
+        "width": "auto",
+        "add": 0,
+        "edit": {
+            "type": "SelectVariable"
+        }
+    }, {
+        "caption": "Bei jeder Aktualisierung Timer neu starten",
+        "name": "triggerOnEachUpdate",
+        "width": "100px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }]
+},{
+    "type": "List",
+    "name": "devices",
+    "caption": "Ausgabe",
+    "rowCount": 5,
+    "add": true,
+    "delete": true,
+    "columns": [{
+        "caption": "Geräte",
+        "name": "InstanceID", 
+        "width": "auto",
+        "add": 0,
+        "edit": {
+            "type": "SelectVariable"
+        }
+    }]
+},
+{ "type": "NumberSpinner", "name": "on_time", "caption": "Einschaltdauer", "suffix": "Sekunden"},
+{ "type": "NumberSpinner", "name": "off_warning_time", "caption": "Dauer der Ausschaltvorwarnung", "suffix": "Sekunden"}
+  ],
+    "actions":
+    [
+      {
+        "type": "Button",
+        "label": "Einschalten",
+        "onClick": "SXTRP_Trigger($id);"
+      }
+    ],
+    "status":
+    [
+        { "code": 102, "icon": "active", "caption": "OK" },
+        { "code": 201, "icon": "error", "caption": "Authentication failed" },
+        { "code": 202, "icon": "error", "caption": "No credits left" }
+    ]
+}
