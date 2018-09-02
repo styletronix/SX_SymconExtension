@@ -1095,7 +1095,7 @@
 				$this->SetTimerInterval($Value, 0);
 				
 				switch($Value){
-					case "UpdatePresence_Timer"
+					case "UpdatePresence_Timer":
 						$this->RefreshPresence();
 						break;
 						
