@@ -162,7 +162,7 @@
 				case 0:
 					// Deaktiviert
 					$currentMode = GetValueInteger($this->GetIDForIdent("alarmmodus"));
-					$disabled = $this->IsLeaveMaintenanceDisabled()
+					$disabled = $this->IsLeaveMaintenanceDisabled();
 					if ($currentMode == 4 and $disabled != false){
 						SetValueString($this->GetIDForIdent("TTS_output"), "Verlassen des Wartungsmodus ist nicht möglich, da ".$disabled." dies verhindert.");
 						throw new Exception("Verlassen des Wartungsmodus ist nicht möglich, da ".$disabled." dies verhindert.");
