@@ -62,13 +62,14 @@
 			$this->RegisterPropertyInteger("verzoegerung_eingang", 30);
 			$this->RegisterPropertyInteger("verzoegerung_ausgang", 120);
 			$this->RegisterPropertyInteger("verzoegerung_alarm", 30);			
+					
+			$this->RegisterTimer("ArmDelay",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ArmDelay");');
+			$this->RegisterTimer("EntryTimer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "EntryTimer");');						
+			$this->RegisterTimer("TriggerAlert2Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "TriggerAlert2Timer");');						
+			$this->RegisterTimer("DisableTimer1",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "DisableTimer1");');		
+			$this->RegisterTimer("DisableTimer2",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "DisableTimer2");');	
+			$this->RegisterTimer("DisableTimer3",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "DisableTimer3");');
 		
-			$this->RegisterTimer("ArmDelay", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"ArmDelay");');
-			$this->RegisterTimer("EntryTimer", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"EntryTimer");');			
-			$this->RegisterTimer("TriggerAlert2Timer", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"TriggerAlert2Timer");');
-			$this->RegisterTimer("DisableTimer1", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"DisableTimer1");');
-			$this->RegisterTimer("DisableTimer2", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"DisableTimer2");');
-			$this->RegisterTimer("DisableTimer3", 0, 'SXALERT_onTimerElapsed($_IPS["TARGET"],"DisableTimer3");');
 			
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
@@ -192,7 +193,7 @@
     		}					
 		}
 		
-		public Function onTimerElapsed(string $Timer){
+		private Function onTimerElapsed(string $Timer){
 			$this->SetTimerInterval ($Timer, 0);
 			
 			switch($Timer) {
@@ -498,6 +499,10 @@
 					$this->SetMode($Value);
 					break;
 	
+				case "TimerCallback":
+					$this->onTimerElapsed($Value);
+					break;
+				
 				default:
 					throw new Exception("Invalid Ident");
 
