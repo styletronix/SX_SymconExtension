@@ -104,10 +104,10 @@
 			
 			$ScriptID = $this->RegisterScript("StoreCurrentAsPresenceStateTemplate", "Als Vorlage für Anwesenheit speichern", "<?\n\nSXGRP_StoreCurrentAsPresenceStateTemplate(".$this->InstanceID."); \n\n?>");			
 					
-			$this-RegisterTimer("UpdatePresence_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "UpdatePresence_Timer");');
-			$this-RegisterTimer("PresenceTimeoutOff_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceTimeoutOff_Timer");');
-			$this-RegisterTimer("PresenceOffDelayScript_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceOffDelayScript_Timer");');
-			$this-RegisterTimer("ResetPresenceStateToTemplate_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ResetPresenceStateToTemplate_Timer");');
+			$this->RegisterTimer("UpdatePresence_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "UpdatePresence_Timer");');
+			$this->RegisterTimer("PresenceTimeoutOff_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceTimeoutOff_Timer");');
+			$this->RegisterTimer("PresenceOffDelayScript_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceOffDelayScript_Timer");');
+			$this->RegisterTimer("ResetPresenceStateToTemplate_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ResetPresenceStateToTemplate_Timer");');
 			
 			
             if ($ApplyChanges == true){
