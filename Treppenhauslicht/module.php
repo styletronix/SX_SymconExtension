@@ -1,5 +1,5 @@
 <?
-    class Alarmanlage extends IPSModule {
+    class Treppenhauslicht extends IPSModule {
         public function __construct($InstanceID) {
             parent::__construct($InstanceID);
         }
