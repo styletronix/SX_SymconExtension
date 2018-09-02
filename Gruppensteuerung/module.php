@@ -1123,7 +1123,6 @@
 						$this->ResetPresenceStateToTemplat();
 						break;
 				}				
-				break;
 		}
 		public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
 			if ($Message == 10603){
