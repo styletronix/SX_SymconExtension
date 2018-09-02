@@ -6,8 +6,6 @@
 		
         public function Create() {
             parent::Create();
-
-			$ApplyChanges = false;
 			
 			//Variablenprofile erstellen
 			if (IPS_VariableProfileExists("SX_Alarm.Modus") == false){
@@ -69,14 +67,8 @@
 			$this->RegisterTimer("DisableTimer1",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "DisableTimer1");');		
 			$this->RegisterTimer("DisableTimer2",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "DisableTimer2");');	
 			$this->RegisterTimer("DisableTimer3",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "DisableTimer3");');
-		
-			
-            if ($ApplyChanges == true){
-				IPS_ApplyChanges($this->InstanceID);
-			}else{
-				// $this->Initialize();
-			}
         }
+		
         public function ApplyChanges() {
             parent::ApplyChanges();
 
@@ -136,8 +128,8 @@
 		}
 		
 		public function Reset(){
-			$this->SetTimerInterval ("ArmDelay", 0);
-			$this->SetTimerInterval ("EntryTimer", 0);
+			$this->SetTimerInterval("ArmDelay", 0);
+			$this->SetTimerInterval("EntryTimer", 0);
 			$this->SetTimerInterval("DisableTimer1", 0);	
 			$this->SetTimerInterval("DisableTimer2", 0);	
 			$this->SetTimerInterval("DisableTimer3", 0);	
@@ -169,6 +161,13 @@
 			switch($Modus) {
 				case 0:
 					// Deaktiviert
+					$currentMode = GetValueInteger($this->GetIDForIdent("alarmmodus"));
+					$disabled = $this->IsLeaveMaintenanceDisabled()
+					if ($currentMode == 4 and $disabled != false){
+						SetValueString($this->GetIDForIdent("TTS_output"), "Verlassen des Wartungsmodus ist nicht möglich, da ".$disabled." dies verhindert.");
+						throw new Exception("Verlassen des Wartungsmodus ist nicht möglich, da ".$disabled." dies verhindert.");
+					}
+					
 					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
 					SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage wurde deaktiviert.");
 					break;
@@ -177,6 +176,12 @@
 					//Aktiviert
 				case 2:
 					//Intern Aktiviert
+					$disabled = $this->IsActivationDisabled();
+					if ($disabled){
+						SetValueString($this->GetIDForIdent("TTS_output"), "Verlassen des Wartungsmodus ist nicht möglich, da ".$disabled." dies verhindert.");
+						throw new Exception("Aktivierung ist nicht möglich, da ".$disabled." dies verhindert.");
+					}
+					
 					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
 					$this->ArmSystemDelayed();
 					break;
@@ -184,8 +189,7 @@
 				case 4:
 					//Wartung
 					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
-					SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage ist im Wartungsmodus.");
-					
+					SetValueString($this->GetIDForIdent("TTS_output"), "Alarmanlage ist im Wartungsmodus.");					
 					break;
 					
 				default:
@@ -225,6 +229,42 @@
 					throw new Exception("Invalid Ident");
 
     		}
+		}
+		public function IsActivationDisabled(){
+			$result = false;
+			
+			$DeviceParameters = $this->GetDeviceParameters();
+			
+			foreach($DeviceParameters as $device){
+				if ($device["preventActivation"] == true){
+					$DeviceID = $device["InstanceID"];
+					if (IPS_VariableExists($DeviceID)){
+						if (GetValue($DeviceID) == true){ 
+							$result = $device["Bezeichnung"];
+						}
+					}				
+				}
+			}
+			
+			return $result;
+		}
+		public function IsLeaveMaintenanceDisabled(){
+			$result = false;
+			
+			$DeviceParameters = $this->GetDeviceParameters();
+			
+			foreach($DeviceParameters as $device){
+				if ($device["preventActivation"] == true and $device["24h"] == true){
+					$DeviceID = $device["InstanceID"];
+					if (IPS_VariableExists($DeviceID)){
+						if (GetValue($DeviceID) == true){ 
+							$result = $device["Bezeichnung"];
+						}
+					}				
+				}
+			}
+			
+			return $result;
 		}
 		
 		private function ArmSystemDelayed(){
