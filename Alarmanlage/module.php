@@ -178,7 +178,7 @@
 					//Intern Aktiviert
 					$disabled = $this->IsActivationDisabled();
 					if ($disabled){
-						SetValueString($this->GetIDForIdent("TTS_output"), "Verlassen des Wartungsmodus ist nicht möglich, da ".$disabled." dies verhindert.");
+						SetValueString($this->GetIDForIdent("TTS_output"), "Aktivierung ist nicht möglich, da ".$disabled." dies verhindert.");
 						throw new Exception("Aktivierung ist nicht möglich, da ".$disabled." dies verhindert.");
 					}
 					
