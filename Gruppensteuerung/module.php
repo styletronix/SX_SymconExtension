@@ -104,10 +104,10 @@
 			
 			$ScriptID = $this->RegisterScript("StoreCurrentAsPresenceStateTemplate", "Als Vorlage für Anwesenheit speichern", "<?\n\nSXGRP_StoreCurrentAsPresenceStateTemplate(".$this->InstanceID."); \n\n?>");			
 					
-			$this->RegisterTimer("UpdatePresence_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "UpdatePresence_Timer");');
-			$this->RegisterTimer("PresenceTimeoutOff_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceTimeoutOff_Timer");');
-			$this->RegisterTimer("PresenceOffDelayScript_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceOffDelayScript_Timer");');
-			$this->RegisterTimer("ResetPresenceStateToTemplate_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ResetPresenceStateToTemplate_Timer");');
+			$this->RegisterTimer("UpdatePresence_Timer",0,'SXGRP_TimerCallback($_IPS["TARGET"], "UpdatePresence_Timer");');
+			$this->RegisterTimer("PresenceTimeoutOff_Timer",0,'SXGRP_TimerCallback($_IPS["TARGET"], "PresenceTimeoutOff_Timer");');
+			$this->RegisterTimer("PresenceOffDelayScript_Timer",0,'SXGRP_TimerCallback($_IPS["TARGET"], "PresenceOffDelayScript_Timer");');
+			$this->RegisterTimer("ResetPresenceStateToTemplate_Timer",0,'SXGRP_TimerCallback($_IPS["TARGET"], "ResetPresenceStateToTemplate_Timer");');
 			
 			
             if ($ApplyChanges == true){
@@ -1097,10 +1097,16 @@
 				$this->SetManualPresence($Value);
 				break;
 			
-			case "TimerCallback":
-				$this->SetTimerInterval($Value, 0);
+        	default:
+	            throw new Exception("Invalid Ident");
+
+    		}
+ 		}
+		
+		public function TimerCallback(string $TimerID){
+			$this->SetTimerInterval($TimerID, 0);
 				
-				switch($Value){
+				switch($TimerID){
 					case "UpdatePresence_Timer":
 						$this->RefreshPresence();
 						break;
@@ -1118,13 +1124,7 @@
 						break;
 				}				
 				break;
-			
-        	default:
-	            throw new Exception("Invalid Ident");
-
-    		}
- 		}
-		
+		}
 		public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
 			if ($Message == 10603){
 				$this->DeviceStatusChanged($SenderID);
