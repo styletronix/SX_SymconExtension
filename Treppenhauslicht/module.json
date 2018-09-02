@@ -1,0 +1,13 @@
+{
+    "id": "{8FF5D3C1-1C7E-4806-9F5C-89C761EF7DCA}",
+    "name": "Treppenhauslicht",
+    "type": 3,
+    "vendor": "Styletronix.net",
+  "aliases": [
+    "Treppenhauslicht"
+  ],  
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "SXTRP"
+}
