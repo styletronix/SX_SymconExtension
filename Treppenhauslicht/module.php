@@ -55,7 +55,7 @@
 			$arr = $this->GetDeviceParameters("devices");	
 			if ($arr){
 				foreach($arr as $key1) {
-					$this->setDeviceStatus($key["InstanceID"], $Value);
+					$this->setDeviceStatus($key1["InstanceID"], $Value);
 				}
 			}
 		}
