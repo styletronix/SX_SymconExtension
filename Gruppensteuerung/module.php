@@ -92,30 +92,22 @@
 			
 			$this->RegisterPropertyInteger("IsVersion", 0);
 			
-       $this->RegisterPropertyInteger("DeviceCategory", 0); // Veraltet
+
+            $this->RegisterPropertyInteger("DeviceCategory", 0); // Veraltet
 			$this->RegisterPropertyString("actors", "");
 			
 			$this->RegisterPropertyInteger("PresenceCategory", 0); // Veraltet
 			$this->RegisterPropertyString("sensors", "");
-
-			$this->RegisterPropertyInteger("IlluminationCategory", 0); // Veraltet
-			$this->RegisterPropertyString("brightness", "");
 			
+			$this->RegisterPropertyInteger("IlluminationCategory", 0); // Veraltet
+			$this->RegisterPropertyString("brightness", "");			
 			
 			$ScriptID = $this->RegisterScript("StoreCurrentAsPresenceStateTemplate", "Als Vorlage für Anwesenheit speichern", "<?\n\nSXGRP_StoreCurrentAsPresenceStateTemplate(".$this->InstanceID."); \n\n?>");			
-			
-			$ScriptID = $this->RegisterScript("UpdateAnwesenheit", "UpdateAnwesenheit", "<?\n\nSXGRP_RefreshPresence(".$this->InstanceID."); \n\n?>");
-			IPS_SetHidden($ScriptID, true); 
-
-			
-			$ScriptID = $this->RegisterScript("PresenceTimeoutOff", "PresenceTimeoutOff", "<?\n\nSXGRP_PresenceTimeoutOff(".$this->InstanceID."); \n\n?>");
-			IPS_SetHidden($ScriptID, true); 
-			
-			$ScriptID = $this->RegisterScript("PresenceOffDelayScript", "PresenceOffDelay", "<?\n\nSXGRP_SetPresenceState(".$this->InstanceID.", false); \n\n?>");
-			IPS_SetHidden($ScriptID, true); 
-			
-			$ScriptID = $this->RegisterScript("ResetPresenceStateToTemplate", "ResetPresenceStateToTemplate", "<?\n\nSXGRP_ResetPresenceStateToTemplate(".$this->InstanceID."); \n\n?>");
-			IPS_SetHidden($ScriptID, true); 
+					
+			$this-RegisterTimer("UpdatePresence_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "UpdatePresence_Timer");');
+			$this-RegisterTimer("PresenceTimeoutOff_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceTimeoutOff_Timer");');
+			$this-RegisterTimer("PresenceOffDelayScript_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceOffDelayScript_Timer");');
+			$this-RegisterTimer("ResetPresenceStateToTemplate_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ResetPresenceStateToTemplate_Timer");');
 			
 			
             if ($ApplyChanges == true){
@@ -134,13 +126,13 @@
 
 		public function UpgradeToNewVersion(){
 			$vers = $this->ReadPropertyInteger("IsVersion");
-			if ($vers >= 3){ 
+			if ($vers >= 4){ 
 				return; 
 			}
 			
 			$actorsChanged = false;
 			$CategoryID = $this->ReadPropertyInteger("DeviceCategory");
-			if ($CategoryID > 0){
+			if ($CategoryID > 0 and IPS_CategoryExists($CategoryID)){
 				$arr = $this->GetListItems("actors");
 				
 				foreach(IPS_GetChildrenIDs($CategoryID) as $key2) {
@@ -178,7 +170,7 @@
 			
 			$sensorsChanged = false;
 			$CategoryID = $this->ReadPropertyInteger("PresenceCategory");
-			if ($CategoryID > 0){
+			if ($CategoryID > 0 and IPS_CategoryExists($CategoryID)){
 				$arr = $this->GetListItems("sensors");
 				
 				foreach(IPS_GetChildrenIDs($CategoryID) as $key2) {
@@ -216,7 +208,7 @@
 			
 			$sensorsChanged = false;
 			$CategoryID = $this->ReadPropertyInteger("IlluminationCategory");
-			if ($CategoryID > 0){
+			if ($CategoryID > 0 and IPS_CategoryExists($CategoryID)){
 				$arr = $this->GetListItems("brightness");
 				
 				foreach(IPS_GetChildrenIDs($CategoryID) as $key2) {
@@ -274,9 +266,34 @@
 				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
 					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
 				}
+				IPS_DeleteScript($oldScript, true); 
 			}
 			
-			IPS_SetProperty($this->InstanceID, "IsVersion", 3);
+			$oldScript = IPS_GetObjectIDByIdent("PresenceTimeoutOff", $this->InstanceID);
+			if ($oldScript) {
+				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
+					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
+				}
+				IPS_DeleteScript($oldScript, true); 
+			}
+			
+			$oldScript = IPS_GetObjectIDByIdent("PresenceOffDelayScript", $this->InstanceID);
+			if ($oldScript) {
+				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
+					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
+				}
+				IPS_DeleteScript($oldScript, true); 
+			}
+			
+			$oldScript = IPS_GetObjectIDByIdent("ResetPresenceStateToTemplate", $this->InstanceID);
+			if ($oldScript) {
+				foreach(IPS_GetChildrenIDs($oldScript) as $key) {
+					if(IPS_EventExists($key)){ IPS_DeleteEvent($key); }
+				}
+				IPS_DeleteScript($oldScript, true); 
+			}
+			
+			IPS_SetProperty($this->InstanceID, "IsVersion", 4);
 			
 			if (IPS_HasChanges($this->InstanceID)){		
 				IPS_ApplyChanges($this->InstanceID);
@@ -358,7 +375,7 @@
 			$this->RefreshPresence();
 		}
 
-		public function RefreshPresence() {
+		private function RefreshPresence() {
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
 			
 			// Bricht ausführung ab wenn Bewegungsmelder deaktiviert sind. 
@@ -366,14 +383,15 @@
 			// if ($enabled == false){return;}	
 			
 			
-			$SkriptID = IPS_GetObjectIDByIdent("UpdateAnwesenheit", $this->InstanceID);
-			$PresenceOffDelayScriptID = IPS_GetObjectIDByIdent("PresenceOffDelayScript", $this->InstanceID);
+			// $SkriptID = IPS_GetObjectIDByIdent("UpdateAnwesenheit", $this->InstanceID);
+			//$PresenceOffDelayScriptID = IPS_GetObjectIDByIdent("PresenceOffDelayScript", $this->InstanceID);
 					
 			
 			// Manuelle Anwesenheit überschreibt Bewegungsmelder
 			$ManualPresence = GetValueBoolean($this->GetIDForIdent("ManualPresence"));
 			if ($ManualPresence == true){
-				IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
+				$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
+				//IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
 				$this->SetPresenceState(true);
 				return;
 			}
@@ -452,29 +470,32 @@
 			skipElement:
 			
 			}
-			
-			IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
+			$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
+			//IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
 			
 						
 			if ($PresenceDetectorsExist == true){
 				if ($enabled == false){$result = false;}	//Setze Anwesenheit auf FALSCH wenn Bewegungsmelder deaktiviert wurden.
 				
 				if ($result == true){
-					IPS_SetScriptTimer($SkriptID, $PresenceRefreshTimeout);
+				   	$this->SetTimerInterval("UpdatePresence_Timer", $PresenceRefreshTimeout);
+					//IPS_SetScriptTimer($SkriptID, $PresenceRefreshTimeout);
 					$this->SetPresenceState($result);
 				}else{
-					IPS_SetScriptTimer($SkriptID, 0);
+					$this->SetTimerInterval("UpdatePresence_Timer", 0);
+					// IPS_SetScriptTimer($SkriptID, 0);
 					
 					if ($PresenceOffDelay <= 0){
 						$this->SetPresenceState($result);
 					}else{
-						IPS_SetScriptTimer($PresenceOffDelayScriptID, $PresenceOffDelay);
+						$this->SetTimerInterval("PresenceOffDelayScript_Timer", $PresenceOffDelay);
+						//IPS_SetScriptTimer($PresenceOffDelayScriptID, $PresenceOffDelay);
 					}
 				}
 			}
 		}
 		
-        public function RefreshStatus() {
+        private function RefreshStatus() {
 			$result = false;
             $resultFloat = 0.0;
             $resultInteger = 0;
@@ -534,7 +555,7 @@
        SetValue($this->GetIDForIdent("Ergebnis_Integer"), $resultInteger);
 
        }
-		public function RefreshIlluminationLevel(){
+		private function RefreshIlluminationLevel(){
 			$IlluminationLevelMotion = GetValueFloat(IPS_GetObjectIDByIdent("IlluminationLevelMotion", $this->InstanceID));  
 			$illumination = $this->GetIlluminationLevelMin();
 			
@@ -711,13 +732,14 @@
 			SetValueBoolean($this->GetIDForIdent("ManualPresence"), $Value);
 			$this->RefreshPresence();
 		}
-		public function SetPresenceState(bool $Value){
+		private function SetPresenceState(bool $Value){
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
 			//IPS_SemaphoreEnter("SXGRP_AlertStateChange", 120 * 1000);
 			SetValue($this->GetIDForIdent("PresenceDetected"), $Value);
 			
-			$PresenceOffDelayScriptID = IPS_GetObjectIDByIdent("PresenceOffDelayScript", $this->InstanceID);
-			IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
+			//$PresenceOffDelayScriptID = IPS_GetObjectIDByIdent("PresenceOffDelayScript", $this->InstanceID);
+			$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
+			//IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
 			
             $data = $this->ReadSettings();
 
@@ -735,8 +757,8 @@
 			
 			$DeviceList = $this->GetListItems("actors");
 			$PresenceTimeout = $this->ReadPropertyInteger("PresenceTimeout");
-			$PresenceTimeoutOffScriptID = IPS_GetObjectIDByIdent("PresenceTimeoutOff", $this->InstanceID);  
-			$PresenceResetID = IPS_GetObjectIDByIdent("ResetPresenceStateToTemplate", $this->InstanceID);  
+			//$PresenceTimeoutOffScriptID = IPS_GetObjectIDByIdent("PresenceTimeoutOff", $this->InstanceID);  
+			//$PresenceResetID = IPS_GetObjectIDByIdent("ResetPresenceStateToTemplate", $this->InstanceID);  
 			
 			$PresenceResetToTemplateTimeout = $this->ReadPropertyInteger("PresenceResetToTemplateTimeout");
 
@@ -758,7 +780,8 @@
 							}
 						}
 						
-						IPS_SetScriptTimer ($PresenceTimeoutOffScriptID, $PresenceTimeout );
+						$this->SetTimerInterval("PresenceTimeoutOff_Timer", $PresenceTimeout);
+						// IPS_SetScriptTimer ($PresenceTimeoutOffScriptID, $PresenceTimeout );
 					
 					}else{
 						if ($DeviceList){
@@ -781,7 +804,8 @@
 				}
 				
 				if ($PresenceResetToTemplateTimeout > 0 ){
-					IPS_SetScriptTimer ($PresenceResetID, $PresenceTimeout + $PresenceResetToTemplateTimeout);
+					$this->SetTimerInterval("ResetPresenceStateToTemplate_Timer", $PresenceTimeout + $PresenceResetToTemplateTimeout);
+					//IPS_SetScriptTimer ($PresenceResetID, $PresenceTimeout + $PresenceResetToTemplateTimeout);
 				}
 				
 			}else{
@@ -794,8 +818,10 @@
 					}
 				}
 				
-				IPS_SetScriptTimer($PresenceTimeoutOffScriptID, 0);
-				IPS_SetScriptTimer ($PresenceResetID, 0);
+				$this->SetTimerInterval("PresenceTimeoutOff_Timer", 0);
+				// IPS_SetScriptTimer($PresenceTimeoutOffScriptID, 0);
+				$this->SetTimerInterval("ResetPresenceStateToTemplate_Timer", 0);
+				//IPS_SetScriptTimer ($PresenceResetID, 0);
 				
 				$ProfileID2 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID2", $this->InstanceID));  
 				
@@ -832,11 +858,12 @@
 			
 			//IPS_SemaphoreLeave("SXGRP_AlertStateChange");
 		}
-		public function PresenceTimeoutOff(){
+		private function PresenceTimeoutOff(){
 			//IPS_SemaphoreEnter("SXGRP_AlertStateChange", 120 * 1000);
 			
-			$PresenceTimeoutOffScriptID = IPS_GetObjectIDByIdent("PresenceTimeoutOff", $this->InstanceID);
-			IPS_SetScriptTimer($PresenceTimeoutOffScriptID, 0);
+			//$PresenceTimeoutOffScriptID = IPS_GetObjectIDByIdent("PresenceTimeoutOff", $this->InstanceID);
+			//$this->SetTimerInterval("PresenceTimeoutOff_Timer", 0);
+			//IPS_SetScriptTimer($PresenceTimeoutOffScriptID, 0);
 			
 			$data = $this->ReadSettings();
 
@@ -856,8 +883,8 @@
 			//IPS_SemaphoreLeave("SXGRP_AlertStateChange");
 		}
 		public function ResetPresenceStateToTemplate(){
-			$PResetPresenceStateToTemplateScriptID = IPS_GetObjectIDByIdent("ResetPresenceStateToTemplate", $this->InstanceID);
-			IPS_SetScriptTimer($PResetPresenceStateToTemplateScriptID, 0);
+			//$PResetPresenceStateToTemplateScriptID = IPS_GetObjectIDByIdent("ResetPresenceStateToTemplate", $this->InstanceID);
+			//IPS_SetScriptTimer($PResetPresenceStateToTemplateScriptID, 0);
 			
 			$data = $this->ReadSettings();
 			
@@ -1062,6 +1089,28 @@
 			
 			case "ManualPresence":
 				$this->SetManualPresence($Value);
+				break;
+			
+			case "TimerCallback":
+				$this->SetTimerInterval($Value, 0);
+				
+				switch($Value){
+					case "UpdatePresence_Timer"
+						$this->RefreshPresence();
+						break;
+						
+					case "PresenceTimeoutOff_Timer":
+						$this->PresenceTimeoutOff();
+						break;
+						
+					case "PresenceOffDelayScript_Timer":
+						$this->SetPresenceState(false);
+						break;
+						
+					case "ResetPresenceStateToTemplate_Timer":
+						$this->ResetPresenceStateToTemplat();
+						break;
+				}				
 				break;
 			
         	default:
