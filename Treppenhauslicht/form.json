@@ -54,6 +54,8 @@
     ],
     "status":
     [
-        { "code": 102, "icon": "active", "caption": "OK" }
+        { "code": 102, "icon": "active", "caption": "OK" },
+        { "code": 201, "icon": "error", "caption": "Authentication failed" },
+        { "code": 202, "icon": "error", "caption": "No credits left" }
     ]
 }
