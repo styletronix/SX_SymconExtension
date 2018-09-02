@@ -106,7 +106,8 @@
 					
 			$this->RegisterTimer("UpdatePresence_Timer",0,'SXGRP_TimerCallback($_IPS["TARGET"], "UpdatePresence_Timer");');
 			$this->RegisterTimer("PresenceTimeoutOff_Timer",0,'SXGRP_TimerCallback($_IPS["TARGET"], "PresenceTimeoutOff_Timer");');
-			$this->RegisterTimer("PresenceOffDelayScript_Timer",0,'SXGRP_TimerCallback($_IPS["TARGET"], "PresenceOffDelayScript_Timer");');
+			// $this->RegisterTimer("PresenceOffDelayScript_Timer",0,'SXGRP_TimerCallback($_IPS["TARGET"], "PresenceOffDelayScript_Timer");');
+			$this->RegisterTimer("PresenceOffDelayScript_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceOffDelayScript_Timer");');
 			$this->RegisterTimer("ResetPresenceStateToTemplate_Timer",0,'SXGRP_TimerCallback($_IPS["TARGET"], "ResetPresenceStateToTemplate_Timer");');
 			
 			
@@ -1095,6 +1096,10 @@
 			
 			case "ManualPresence":
 				$this->SetManualPresence($Value);
+				break;
+				
+			case "TimerCallback":
+				$this->TimerCallback($Value);
 				break;
 			
         	default:
