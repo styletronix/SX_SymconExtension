@@ -97,11 +97,11 @@
 		}
 		private function Blink(){
 			$this->SetAllDeviceStatus(false);
-			IPS_Sleep(500);
+			IPS_Sleep(1000);
 			
 			if ($this->GetBuffer("IsOn") == "true"){
 				$this->SetAllDeviceStatus(true);
-				$this->SetTimerInterval("blink_timer", 5 * 1000);
+				$this->SetTimerInterval("blink_timer", 8 * 1000);
 			}	
 		}
 		
