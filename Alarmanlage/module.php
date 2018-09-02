@@ -165,7 +165,8 @@
 					$disabled = $this->IsLeaveMaintenanceDisabled();
 					if ($currentMode == 4 and $disabled != false){
 						SetValueString($this->GetIDForIdent("TTS_output"), "Verlassen des Wartungsmodus ist nicht möglich, da ".$disabled." dies verhindert.");
-						throw new Exception("Verlassen des Wartungsmodus ist nicht möglich, da ".$disabled." dies verhindert.");
+						echo("Verlassen des Wartungsmodus ist nicht möglich, da ".$disabled." dies verhindert.");
+						return;
 					}
 					
 					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
@@ -174,12 +175,24 @@
 	
 				case 1:
 					//Aktiviert
-				case 2:
-					//Intern Aktiviert
 					$disabled = $this->IsActivationDisabled();
 					if ($disabled){
 						SetValueString($this->GetIDForIdent("TTS_output"), "Aktivierung ist nicht möglich, da ".$disabled." dies verhindert.");
-						throw new Exception("Aktivierung ist nicht möglich, da ".$disabled." dies verhindert.");
+						echo("Aktivierung ist nicht möglich, da ".$disabled." dies verhindert.");
+						return;
+					}
+					
+					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
+					$this->ArmSystemDelayed();
+					break;
+					
+				case 2:
+					//Intern Aktiviert
+					$disabled = $this->IsInternalActivationDisabled();
+					if ($disabled){
+						SetValueString($this->GetIDForIdent("TTS_output"), "Aktivierung ist nicht möglich, da ".$disabled." dies verhindert.");
+						echo("Aktivierung ist nicht möglich, da ".$disabled." dies verhindert.");
+						return;
 					}
 					
 					SetValueInteger($this->GetIDForIdent("alarmmodus"), $Modus);
@@ -237,6 +250,24 @@
 			
 			foreach($DeviceParameters as $device){
 				if ($device["preventActivation"] == true){
+					$DeviceID = $device["InstanceID"];
+					if (IPS_VariableExists($DeviceID)){
+						if (GetValue($DeviceID) == true){ 
+							$result = $device["Bezeichnung"];
+						}
+					}				
+				}
+			}
+			
+			return $result;
+		}
+		public function IsInternalActivationDisabled(){
+			$result = false;
+			
+			$DeviceParameters = $this->GetDeviceParameters();
+			
+			foreach($DeviceParameters as $device){
+				if ($device["preventActivation"] == true and $device["istInternAktiv"] == true){
 					$DeviceID = $device["InstanceID"];
 					if (IPS_VariableExists($DeviceID)){
 						if (GetValue($DeviceID) == true){ 
