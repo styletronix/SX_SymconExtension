@@ -172,11 +172,12 @@ Die Alarmierung erfolgt nur durch Sensoren mit aktiver Option "24h-Alarm" und "i
 - WARTUNG
 Die Alarmanlage ist vollständig deaktiviert und löst auch bei 24h-Alarm keinen Alarm aus.
 
-
-
-
+---
 
 ## 8. Änderungen
+23.09.2019
+- Variablen mit benutzerdefiniertem ActionScript werden unterstützt.
+
 31.08.2018
 - Erstes öffentliches Release
 
