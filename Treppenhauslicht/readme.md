@@ -12,7 +12,7 @@
 
 
 ## 1. Funktionsumfang
-Die Treppenhauslicht-Steuerung ermöglicht das einschalten eines Lichts per Taster und zeitgesteuerte ausschalten mit Vorwarn-Funktion vor dem ausschalten, welche für Mietshäuser gesetzlich vorgeschrieben ist.
+- Die Treppenhauslicht-Steuerung ermöglicht das einschalten eines Lichts per Taster und zeitgesteuerte ausschalten mit Vorwarn-Funktion vor dem ausschalten, welche für Mietshäuser gesetzlich vorgeschrieben ist.
 ---
 
 
