@@ -1134,36 +1134,38 @@
 		}
 		
 		
-		private function SetObjectValue(int $key, bool $value, int $valueInteger, float $valueFloat, bool $lowerOnly, bool $higherOnly){
+		private function SetObjectValue(int $TargetID, bool $value, int $valueInteger, float $valueFloat, bool $lowerOnly, bool $higherOnly){
 			set_time_limit(30);
 
-				$itemObject = IPS_GetObject($key);
-				$TargetID = $key;
-
-
 				if (IPS_VariableExists($TargetID)){
-					$pID = IPS_GetParent($TargetID);					
-					$obj = IPS_GetObject($TargetID);
-					$VariableName = $obj["ObjectIdent"];
-					
-					$var = IPS_GetVariable ($TargetID);
-					$t = $var["VariableType"];
+					$object = IPS_GetObject($TargetID);
+					$variable = IPS_GetVariable($TargetID);
+					$actionID = $this->GetProfileAction($variable);
+										
+					$t = $variable["VariableType"];
 					$currentVal = GetValue($TargetID);
 					
 					if ($t == 0){
 						if ($currentVal != $value){
 						  if (($lowerOnly == true and $value < $currentVal) or ($higherOnly == true and $value > $currentVal) or ($higherOnly == false and $lowerOnly == false)){
-							if (@IPS_RequestAction($pID, $VariableName, $value) == false){
+							if(IPS_InstanceExists($actionID)){
+								IPS_RequestAction($actionID, $object['ObjectIdent'], $value);
+							} else if(IPS_ScriptExists($actionID)) {
+								echo IPS_RunScriptWaitEx($actionID, Array("VARIABLE" => $TargetID, "VALUE" => $value));
+							} else {
 								SetValue($TargetID, $value);
-							}
-			
+							}		
 						  }
 						}
 					}
 					if ($t == 1){
 						if ($currentVal != $valueInteger){
 						if (($lowerOnly == true and $valueInteger < $currentVal) or ($higherOnly == true and $valueInteger > $currentVal) or ($higherOnly == false and $lowerOnly == false)){
-							if (@IPS_RequestAction($pID, $VariableName, $valueInteger) == false){
+							if(IPS_InstanceExists($actionID)){
+								IPS_RequestAction($actionID, $object['ObjectIdent'], $valueInteger);
+							} else if(IPS_ScriptExists($actionID)) {
+								echo IPS_RunScriptWaitEx($actionID, Array("VARIABLE" => $TargetID, "VALUE" => $valueInteger));
+							} else {
 								SetValue($TargetID, $valueInteger);
 							}
 						}
@@ -1172,7 +1174,11 @@
 					if ($t == 2){
 						if ($currentVal != $valueFloat){
 						if (($lowerOnly == true and $valueFloat < $currentVal ) or ($higherOnly == true and $valueFloat > $currentVal ) or ($higherOnly == false and $lowerOnly == false)){
-							if (@IPS_RequestAction($pID, $VariableName, $valueFloat) == false){
+							if(IPS_InstanceExists($actionID)){
+								IPS_RequestAction($actionID, $object['ObjectIdent'], $valueFloat);
+							} else if(IPS_ScriptExists($actionID)) {
+								echo IPS_RunScriptWaitEx($actionID, Array("VARIABLE" => $TargetID, "VALUE" => $valueFloat));
+							} else {
 								SetValue($TargetID, $valueFloat);
 							}
 						}
@@ -1180,6 +1186,21 @@
 					}
 				}
 		}
+		
+        private function GetProfileName($variable){
+            if($variable['VariableCustomProfile'] != ""){
+                return $variable['VariableCustomProfile'];
+            } else {
+                return $variable['VariableProfile'];
+            }
+        }
+        private function GetProfileAction($variable){
+            if($variable['VariableCustomAction'] > 0){
+                return $variable['VariableCustomAction'];
+            } else {
+                return $variable['VariableAction'];
+            }
+        }
 		
 		
 		private function SetChildLinks(int $key, bool $value, int $valueInteger, float $valueFloat){
@@ -1205,44 +1226,7 @@
 				}
 
 				if ($TargetID > 0 and !in_array($TargetID, $ignoreIDs)){
-					$pID = IPS_GetParent($TargetID);
-                    //$VariableName = IPS_GetName($TargetID);
-					
-					$obj = IPS_GetObject($TargetID);
-					$VariableName = $obj["ObjectIdent"];
-					
-					$var = IPS_GetVariable ($TargetID);
-					$t = $var["VariableType"];
-					$currentVal = GetValue($TargetID);
-					
-					if ($t == 0){
-						if ($currentVal != $value){
-						  if (($lowerOnly == true and $value < $currentVal) or ($higherOnly == true and $value > $currentVal) or ($higherOnly == false and $lowerOnly == false)){
-							if (@IPS_RequestAction($pID, $VariableName, $value) == false){
-								SetValue($TargetID, $value);
-							}
-			
-						  }
-						}
-					}
-					if ($t == 1){
-						if ($currentVal != $valueInteger){
-						if (($lowerOnly == true and $valueInteger < $currentVal) or ($higherOnly == true and $valueInteger > $currentVal) or ($higherOnly == false and $lowerOnly == false)){
-							if (@IPS_RequestAction($pID, $VariableName, $valueInteger) == false){
-								SetValue($TargetID, $valueInteger);
-							}
-						}
-						}
-					}
-					if ($t == 2){
-						if ($currentVal != $valueFloat){
-						if (($lowerOnly == true and $valueFloat < $currentVal ) or ($higherOnly == true and $valueFloat > $currentVal ) or ($higherOnly == false and $lowerOnly == false)){
-							if (@IPS_RequestAction($pID, $VariableName, $valueFloat) == false){
-								SetValue($TargetID, $valueFloat);
-							}
-						}
-						}
-					}
+					$this->SetObjectValue($TargetID, $value, $valueInteger, $valueFloat, $lowerOnly, $higherOnly);
 				}
 			}
         }

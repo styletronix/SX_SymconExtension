@@ -515,19 +515,50 @@
 			}
 		}
 			
-		private function setDeviceStatus(int $TargetID, bool $Value){
-			if (!IPS_VariableExists($TargetID)){ return; }
-			$actionValue = $Value;
-			
-			$pID = IPS_GetParent($TargetID);
-            $obj = IPS_GetObject($TargetID);
-			$VariableName = $obj["ObjectIdent"];
-					
+		private function setDeviceStatus(int $outputID, bool $Value){
+            $object = IPS_GetObject($outputID);
+            $variable = IPS_GetVariable($outputID);
+            $actionID = $this->GetProfileAction($variable);
 
-			if (@IPS_RequestAction($pID, $VariableName, $Value) == false){
-				SetValue($TargetID, $Value);
+            $profileName = $this->GetProfileName($variable);
+
+            if($profileName != "") {
+                if ($Value) {
+                    $actionValue = IPS_GetVariableProfile($profileName)['MaxValue'];
+                } else {
+                    $actionValue = IPS_GetVariableProfile($profileName)['MinValue'];
+                }
+                if($variable['VariableType'] == 0) {
+                    $actionValue = ($actionValue > 0);
+                }
+            } else {
+                $actionValue = $Value;
+            }
+
+            if(IPS_InstanceExists($actionID)){
+                IPS_RequestAction($actionID, $object['ObjectIdent'], $actionValue);
+            } else if(IPS_ScriptExists($actionID)) {
+                echo IPS_RunScriptWaitEx($actionID, Array("VARIABLE" => $outputID, "VALUE" => $actionValue));
+            } else {
+				SetValue($outputID, $actionValue);
 			}
-		}
+        }
+
+        private function GetProfileName($variable){
+            if($variable['VariableCustomProfile'] != ""){
+                return $variable['VariableCustomProfile'];
+            } else {
+                return $variable['VariableProfile'];
+            }
+        }
+
+        private function GetProfileAction($variable){
+            if($variable['VariableCustomAction'] > 0){
+                return $variable['VariableCustomAction'];
+            } else {
+                return $variable['VariableAction'];
+            }
+        }
 				
 		private function onDisableTimer1(){
 			$this->SetBuffer("alertactive", "false");
@@ -586,5 +617,6 @@
 			}
 		}
 
+		
     }
 ?>

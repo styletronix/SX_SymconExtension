@@ -110,21 +110,6 @@
 			$this->SetAllDeviceStatus(false);
 		}
 		
-		private function setDeviceStatus(int $TargetID, bool $Value){
-			if (!IPS_VariableExists($TargetID)){ return; }
-			$actionValue = $Value;
-			
-			$pID = IPS_GetParent($TargetID);
-            $obj = IPS_GetObject($TargetID);
-			$VariableName = $obj["ObjectIdent"];
-					
-
-			if (@IPS_RequestAction($pID, $VariableName, $Value) == false){
-				SetValue($TargetID, $Value);
-			}
-		}
-				
-		
 		private function TimerCallback(string $TimerID){
 			$this->SetTimerInterval($TimerID, 0);
 			
@@ -171,6 +156,54 @@
 				$this->DeviceStatusChanged($SenderID);
 			}
 		}
+			
+		private function setDeviceStatus(int $outputID, bool $Value){
+			// Vorlage aus Symcon Misc
+			
+            $object = IPS_GetObject($outputID);
+            $variable = IPS_GetVariable($outputID);
+            $actionID = $this->GetProfileAction($variable);
+
+            $profileName = $this->GetProfileName($variable);
+
+            if($profileName != "") {
+                if ($Value) {
+                    $actionValue = IPS_GetVariableProfile($profileName)['MaxValue'];
+                } else {
+                    $actionValue = 0;
+                }
+                if($variable['VariableType'] == 0) {
+                    $actionValue = ($actionValue > 0);
+                }
+            } else {
+                $actionValue = $Value;
+            }
+
+            if(IPS_InstanceExists($actionID)){
+                IPS_RequestAction($actionID, $object['ObjectIdent'], $actionValue);
+            } else if(IPS_ScriptExists($actionID)) {
+                echo IPS_RunScriptWaitEx($actionID, Array("VARIABLE" => $outputID, "VALUE" => $actionValue));
+            } else {
+				SetValue($outputID, $actionValue);
+			}
+        }
+
+        private function GetProfileName($variable){
+            if($variable['VariableCustomProfile'] != ""){
+                return $variable['VariableCustomProfile'];
+            } else {
+                return $variable['VariableProfile'];
+            }
+        }
+
+        private function GetProfileAction($variable){
+            if($variable['VariableCustomAction'] > 0){
+                return $variable['VariableCustomAction'];
+            } else {
+                return $variable['VariableAction'];
+            }
+        }
+		
 
     }
 ?>
