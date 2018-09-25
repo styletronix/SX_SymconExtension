@@ -23,3 +23,11 @@ Statustext zur Nutzung in Text-To-Speech systemen oder Anzeige auf einem Display
 
 
 [Weitere Details zur Alarmanlage](/Alarmanlage/readme.md)
+
+
+## Treppenhauslicht
+Die Treppenhauslicht-Steuerung ermöglicht das einschalten eines Lichts per Taster und zeitgesteuerte ausschalten mit Vorwarn-Funktion vor dem ausschalten, welche für Mietshäuser gesetzlich vorgeschrieben ist.
+
+Es können mehrere Geräte als Tasterund Schaltausgang verwendet werden.
+
+[Weitere Details zum Treppenhauslicht](/Treppenhauslicht/readme.md)
