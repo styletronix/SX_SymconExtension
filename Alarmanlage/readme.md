@@ -175,7 +175,7 @@ Die Alarmanlage ist vollständig deaktiviert und löst auch bei 24h-Alarm keinen
 ---
 
 ## 8. Änderungen
-23.09.2019
+23.09.2018
 - Variablen mit benutzerdefiniertem ActionScript werden unterstützt.
 
 31.08.2018
