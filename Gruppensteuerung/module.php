@@ -958,14 +958,15 @@
 				if (IPS_VariableExists($TargetID)){
 					$pID = IPS_GetParent($TargetID);
                     $VariableName = IPS_GetName($TargetID);
-					$value = $arr[$TargetID];
-					$var = IPS_GetVariable ($TargetID);
-					$t = $var["VariableType"];
-					$currentVal = GetValue($TargetID);
-
-					if ($currentVal != $value){
-						if (@IPS_RequestAction($pID, $VariableName, $value) == false){
-							SetValue($TargetID, $value);
+					if (array_key_exists($TargetID, $arr)) {
+						$value = $arr[$TargetID];
+						$currentVal = GetValue($TargetID);
+						
+						if ($currentVal != $value){
+							SetObjectValue($TargetID, $value, $value, $value, false, false);
+							//if (@IPS_RequestAction($pID, $VariableName, $value) == false){
+							//	SetValue($TargetID, $value);
+							//}
 						}
 					}
 				}
