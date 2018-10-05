@@ -175,7 +175,10 @@ Die Alarmanlage ist vollständig deaktiviert und löst auch bei 24h-Alarm keinen
 ---
 
 ## 8. Änderungen
-23.09.2019
+05.10.2018
+- Fehler im Konfigurationsformular behoben, welches in manchen Versionen von IP-Symcon zu Fehlermeldungen geführt hat.
+
+23.09.2018
 - Variablen mit benutzerdefiniertem ActionScript werden unterstützt.
 
 31.08.2018
