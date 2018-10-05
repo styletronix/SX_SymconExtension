@@ -7,10 +7,14 @@ Die Gruppensteuerung kann für komplexe Aufgaben kaskadiert werden. Das bedeutet
 Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, könne Sie die Kategorien "Geräte", "Helligkeit" und "Bewegung" in der Instanz löschen, sofern Sie darin nur Verknüpfungen abgelegt hatten.
 
 ## Änderungen
-23.09.2019
+05.10.2018
+- Variablen mit benutzerdefiniertem ActionScript wurden beim laden von Profilen nicht korrekt gesetzt.
+- Beim laden von Profilen 
+
+23.09.2018
 - Variablen mit benutzerdefiniertem ActionScript werden unterstützt.
 
-02.09.2019
+02.09.2018
 - Anpassung von diversen Timern an die neuen Möglichkeiten in IP-Symcon 5.0
 - Entfernung nicht mehr benötigter Skripts und externer Timer.
 
