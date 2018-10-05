@@ -503,63 +503,28 @@
         private function RefreshStatus() {
 			$result = false;
             $resultFloat = 0.0;
-            $resultInteger = 0;
 			$ActorDeviceList = $this->GetListItems("actors");
 			
 			if (!$ActorDeviceList){ return; }
 			
-
 			foreach($ActorDeviceList as $device) {
-				$key2 = $device["InstanceID"];
-				
-	         $itemObject = IPS_GetObject($key2);
-	         $TargetID = $key2;
-	         $TargetName = IPS_GetName($key2);
-		
-		
-			if ($itemObject["ObjectType"] == 2){
-				$var = IPS_GetVariable ($TargetID);
-				$t = $var["VariableType"];
-				if ($t == 0){
-				   $Meldung = GetValueBoolean($TargetID);
-					if ($Meldung == true){
-				      $result = true;
-                      $resultFloat = 1.0;
-                      $resultInteger = 100;
-				   }
+				$key2 = $device["InstanceID"];				
+				$deviceStatus = $this->GetObjectValuePercent($key2);
+				if ($deviceStatus > $resultFloat){
+					$resultFloat = $deviceStatus;
 				}
-				if ($t == 1){
-				   $Meldung = GetValueInteger($TargetID);
-					if ($Meldung > 0){ 
-                        $result = true; 
-                    }
-                    if ($resultFloat < $Meldung / 100){
-                        $resultFloat = $Meldung / 100; 
-                    }
-                    if ($resultInteger < $Meldung){
-                        $resultInteger = $Meldung;
-                    }
-				}
-				if ($t == 2){
-				   $Meldung = GetValueFloat($TargetID);
-					if ($Meldung > 0){
-                        $result = true;
-                    }
-                    if ($resultFloat < $Meldung){ 
-                        $resultFloat = $Meldung;
-                    }
-                    if ($resultInteger < $Meldung * 100){
-                        $resultInteger = $Meldung * 100;
-                    }
-				}
+			}	
+			
+			if($resultFloat > 0.0){
+				$result = true;
+			}else{
+				$result = false;
 			}
-	   }
-
-	   SetValue($this->GetIDForIdent("Ergebnis_Boolean"), $result);
-       SetValue($this->GetIDForIdent("Ergebnis_Float"),	$resultFloat);
-       SetValue($this->GetIDForIdent("Ergebnis_Integer"), $resultInteger);
-
-       }
+		
+			SetValue($this->GetIDForIdent("Ergebnis_Boolean"), $result);
+			SetValue($this->GetIDForIdent("Ergebnis_Float"),	$resultFloat);
+			SetValue($this->GetIDForIdent("Ergebnis_Integer"), $resultFloat * 100);
+		}
 		private function RefreshIlluminationLevel(){
 			$IlluminationLevelMotion = GetValueFloat(IPS_GetObjectIDByIdent("IlluminationLevelMotion", $this->InstanceID));  
 			$illumination = $this->GetIlluminationLevelMin();
@@ -628,10 +593,10 @@
 	   }
 	    public function SetState(bool $Value){
 			if ($Value){
-                    $ValueInteger = 100;
+                    //$ValueInteger = 100;
                     $ValueFloat = 1.0;
                 }else{
-                    $ValueInteger = 0;
+                    //$ValueInteger = 0;
                     $ValueFloat = 0.0;
             }
 								
@@ -644,19 +609,20 @@
 			$arr = $this->GetListItems("actors");
 			if ($arr){
 				foreach($arr as $device){
-					$this->SetObjectValue($device["InstanceID"], $Value, $ValueInteger, $ValueFloat, false, false);
+					$this->SetObjectValuePercent($device["InstanceID"], $ValueFloat, false, false);
+					//$this->SetObjectValue($device["InstanceID"], $Value, $ValueInteger, $ValueFloat, false, false);
 				}
 			}
 		}
 	
         public function SetStateFloat(float $Value){
-			$ValueInteger = $Value * 100;
+			//$ValueInteger = $Value * 100;
 			
-			if ($Value > 0.0){           
-                    $ValueBool = true;
-                }else{
-                    $ValueBool = false;
-            }
+			//if ($Value > 0.0){           
+            //        $ValueBool = true;
+            //    }else{
+            //        $ValueBool = false;
+            //}
 								
             $data = $this->ReadSettings();
 			$currentPreAlertState = $data["PreAlertState"];
@@ -667,18 +633,19 @@
 			$arr = $this->GetListItems("actors");
 			if ($arr){
 				foreach($arr as $device){
-					$this->SetObjectValue($device["InstanceID"], $ValueBool, $ValueInteger, $Value, false, false);
+					$this->SetObjectValuePercent($device["InstanceID"], $Value, false, false);
+					// $this->SetObjectValue($device["InstanceID"], $ValueBool, $ValueInteger, $Value, false, false);
 				}
 			}
         }
         public function SetStateInteger(int $Value){
 			$ValueFloat = $Value / 100;
 			
-			if ($Value > 0){           
-                    $ValueBool = true;
-                }else{
-                    $ValueBool = false;
-            }
+			// if ($Value > 0){           
+                    // $ValueBool = true;
+                // }else{
+                    // $ValueBool = false;
+            // }
 								
             $data = $this->ReadSettings();
 			$currentPreAlertState = $data["PreAlertState"];
@@ -689,7 +656,8 @@
 			$arr = $this->GetListItems("actors");
 			if ($arr){
 				foreach($arr as $device){
-					$this->SetObjectValue($device["InstanceID"], $ValueBool, $Value, $ValueFloat, false, false);
+					$this->SetObjectValuePercent($device["InstanceID"], $ValueFloat, false, false);
+					//$this->SetObjectValue($device["InstanceID"], $ValueBool, $Value, $ValueFloat, false, false);
 				}
 			}
         }
@@ -711,7 +679,8 @@
 				$arr = $this->GetListItems("actors");
 				if ($arr){
 					foreach($arr as $device){
-						$this->SetObjectValue($device["InstanceID"], $Value, 100, 1.0, false, false);
+						$this->SetObjectValuePercent($device["InstanceID"], 1.0, false, false);
+						//$this->SetObjectValue($device["InstanceID"], $Value, 100, 1.0, false, false);
 					}
 				}
 
@@ -964,9 +933,6 @@
 						
 						if ($currentVal != $value){
 							$this->SetObjectValue($TargetID, $value, $value, $value, false, false);
-							//if (@IPS_RequestAction($pID, $VariableName, $value) == false){
-							//	SetValue($TargetID, $value);
-							//}
 						}
 					}
 				}
@@ -1137,6 +1103,94 @@
 			}
 		}
 		
+		private function GetObjectValuePercent(int $TargetID){
+			if (IPS_VariableExists($TargetID)){
+				$variable = IPS_GetVariable($TargetID);										
+				$t = $variable["VariableType"];
+				$currentVal = GetValue($TargetID);				
+				$profileName = $this->GetProfileName($variable);
+				
+				if ($t == 0){
+					if ($currentVal == true){
+						return 1.0;
+					}else{
+						return 0.0;
+					}
+				}else if ($t == 1){
+					$MaxValue = 100;
+					$MinValue = 0;
+				}else if ($t == 2){
+					$MaxValue = 1.0;
+					$MinValue = 0.0;
+				}else{
+					$MaxValue = 100;
+					$MinValue = 0;
+				}
+				
+				if ($profileName != "" and $t != 0) {
+					$MaxValue = IPS_GetVariableProfile($profileName)['MaxValue'];
+					$MinValue = IPS_GetVariableProfile($profileName)['MinValue'];
+				}					
+				
+				return (($currentVal - $MinValue) / ($MaxValue - $MinValue));
+			}else{
+				return 0.0;
+			}
+		}
+		private function SetObjectValuePercent(int $TargetID, float $value, bool $lowerOnly, bool $higherOnly){
+			set_time_limit(30);
+			
+			if (IPS_VariableExists($TargetID)){
+				$object = IPS_GetObject($TargetID);
+				$variable = IPS_GetVariable($TargetID);
+				$actionID = $this->GetProfileAction($variable);
+										
+				$t = $variable["VariableType"];
+				$currentVal = GetValue($TargetID);				
+				$profileName = $this->GetProfileName($variable);
+				
+				if ($t == 0){
+					$MaxValue = 1;
+					$MinValue = 0;
+				}else if ($t == 1){
+					$MaxValue = 100;
+					$MinValue = 0;
+				}else if ($t == 2){
+					$MaxValue = 1.0;
+					$MinValue = 0.0;
+				}else{
+					$MaxValue = 100;
+					$MinValue = 0;
+				}
+				
+				if ($profileName != "" and $t != 0) {
+					$MaxValue = IPS_GetVariableProfile($profileName)['MaxValue'];
+					$MinValue = IPS_GetVariableProfile($profileName)['MinValue'];
+				}					
+				
+				$TargetValue = (($MaxValue - $MinValue) * $value) + $MinValue;
+				
+				if ($t == 0){
+					if ($value > 0.0){
+						$TargetValue = true;
+					}else{
+						$TargetValue = false;
+					}
+				}
+				
+				if ($currentVal != $TargetValue){	
+					if (($lowerOnly == true and $TargetValue < $currentVal) or ($higherOnly == true and $TargetValue > $currentVal) or ($higherOnly == false and $lowerOnly == false)){
+							if(IPS_InstanceExists($actionID)){
+								IPS_RequestAction($actionID, $object['ObjectIdent'], $TargetValue);
+							} else if(IPS_ScriptExists($actionID)) {
+								echo IPS_RunScriptWaitEx($actionID, Array("VARIABLE" => $TargetID, "VALUE" => $TargetValue));
+							} else {
+								SetValue($TargetID, $TargetValue);
+							}		
+					}
+				}
+			}
+		}
 		
 		private function SetObjectValue(int $TargetID, bool $value, int $valueInteger, float $valueFloat, bool $lowerOnly, bool $higherOnly){
 			set_time_limit(30);
