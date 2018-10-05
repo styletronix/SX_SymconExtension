@@ -884,11 +884,11 @@
 			$DeviceList = $this->GetListItems("actors");
 
 			if ($DeviceList){
-			foreach($DeviceList as $Device) {
+				foreach($DeviceList as $Device) {
 				$TargetID = $Device["InstanceID"];				
-				$itemObject = IPS_GetObject($TargetID);
 				
 				if (IPS_VariableExists($TargetID)){
+					$itemObject = IPS_GetObject($TargetID);
 					$var = IPS_GetVariable ($TargetID);
 					$t = $var["VariableType"];
 					if ($t == 0){
@@ -901,7 +901,7 @@
 						$arr[$TargetID] = GetValueFloat($TargetID);
 					}
 				}
-			}
+				}
 			}
 			
 			
