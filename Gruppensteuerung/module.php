@@ -918,13 +918,12 @@
 			
 			foreach($DeviceList as $Device) {
 				$key2 = $Device["InstanceID"];
+				$TargetID = $key2;
 				
 				set_time_limit(30);
 
-				$itemObject = IPS_GetObject($key2);
-				$TargetID = $key2;
-				
 				if (IPS_VariableExists($TargetID)){
+					$itemObject = IPS_GetObject($key2);
 					$pID = IPS_GetParent($TargetID);
                     $VariableName = IPS_GetName($TargetID);
 					if (array_key_exists($TargetID, $arr)) {
