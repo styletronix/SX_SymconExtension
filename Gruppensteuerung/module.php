@@ -737,6 +737,9 @@
 			SetValueBoolean($this->GetIDForIdent("ManualPresence"), $Value);
 			$this->RefreshPresence();
 		}
+		public function TriggerPresenceDetected(){
+			$this->SetPresenceState(true);
+		}
 		private function SetPresenceState(bool $Value){
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
 			//IPS_SemaphoreEnter("SXGRP_AlertStateChange", 120 * 1000);
@@ -955,14 +958,15 @@
 				if (IPS_VariableExists($TargetID)){
 					$pID = IPS_GetParent($TargetID);
                     $VariableName = IPS_GetName($TargetID);
-					$value = $arr[$TargetID];
-					$var = IPS_GetVariable ($TargetID);
-					$t = $var["VariableType"];
-					$currentVal = GetValue($TargetID);
-
-					if ($currentVal != $value){
-						if (@IPS_RequestAction($pID, $VariableName, $value) == false){
-							SetValue($TargetID, $value);
+					if (array_key_exists($TargetID, $arr)) {
+						$value = $arr[$TargetID];
+						$currentVal = GetValue($TargetID);
+						
+						if ($currentVal != $value){
+							$this->SetObjectValue($TargetID, $value, $value, $value, false, false);
+							//if (@IPS_RequestAction($pID, $VariableName, $value) == false){
+							//	SetValue($TargetID, $value);
+							//}
 						}
 					}
 				}
