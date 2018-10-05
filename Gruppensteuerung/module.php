@@ -963,7 +963,7 @@
 						$currentVal = GetValue($TargetID);
 						
 						if ($currentVal != $value){
-							SetObjectValue($TargetID, $value, $value, $value, false, false);
+							$this->SetObjectValue($TargetID, $value, $value, $value, false, false);
 							//if (@IPS_RequestAction($pID, $VariableName, $value) == false){
 							//	SetValue($TargetID, $value);
 							//}
