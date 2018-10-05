@@ -175,6 +175,7 @@ Die Alarmanlage ist vollständig deaktiviert und löst auch bei 24h-Alarm keinen
 ---
 
 ## 8. Änderungen
+
 05.10.2018
 - Fehler im Konfigurationsformular behoben, welches in manchen Versionen von IP-Symcon zu Fehlermeldungen geführt hat.
 

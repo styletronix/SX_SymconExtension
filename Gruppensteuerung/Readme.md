@@ -9,7 +9,7 @@ Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, k
 ## Änderungen
 05.10.2018
 - Variablen mit benutzerdefiniertem ActionScript wurden beim laden von Profilen nicht korrekt gesetzt.
-- Beim laden von Profilen 
+- Beim laden von Profilen kam es bei nicht existierenden Geräten zu Fehlermeldung.
 
 23.09.2018
 - Variablen mit benutzerdefiniertem ActionScript werden unterstützt.
