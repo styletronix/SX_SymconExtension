@@ -19,6 +19,7 @@
         "caption": "Bezeichnung",
         "name": "Bezeichnung",
         "width": "200px",
+		"add": "neuer Sensor",
         "edit": {
             "type": "ValidationTextBox"
         }
