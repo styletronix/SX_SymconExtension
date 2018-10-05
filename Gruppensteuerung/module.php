@@ -737,6 +737,9 @@
 			SetValueBoolean($this->GetIDForIdent("ManualPresence"), $Value);
 			$this->RefreshPresence();
 		}
+		public function TriggerPresenceDetected(){
+			$this->SetPresenceState(true);
+		}
 		private function SetPresenceState(bool $Value){
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
 			//IPS_SemaphoreEnter("SXGRP_AlertStateChange", 120 * 1000);
