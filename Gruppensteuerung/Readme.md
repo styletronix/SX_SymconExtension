@@ -10,6 +10,8 @@ Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, k
 05.10.2018
 - Variablen mit benutzerdefiniertem ActionScript wurden beim laden von Profilen nicht korrekt gesetzt.
 - Beim laden von Profilen kam es bei nicht existierenden Geräten zu Fehlermeldung.
+- Bei Variablen werden nun die Min/Max-Werte der Profile berücksichtigt und in Prozentwerte von 0 - 100% umgerechnet.
+- Werte, welche mit SXGRP_SetState... gesetzt werden, sind nun als Prozentwerte zu verstehen, welche auf die einzelnen Variablen anhand der eingestellten Min-/Max-Werte der jeweiligen Profile umgerechnet werden.
 
 23.09.2018
 - Variablen mit benutzerdefiniertem ActionScript werden unterstützt.
@@ -30,10 +32,8 @@ Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, k
 4. Fügen Sie gegebenenfalls Bewegungsmelder und Helligkeitssensoren in der entsprechenden Liste hinzu.
 
 ## Unterstützte Variablen und Geräte
-Es werden alle Geräte bzw. Variablen unterstützt, welche auch per WebFront geschaltet werden können und folgende Bedingungen erfüllen:
-Variable des Typs boolean (false = Aus / true = Ein)
-Variable des Typs float (Dimmbar / 0.0 = Aus / 1.0 = Ein)
-Variable des Typs integer (Dimmbar / 0 = Aus / 100 = Ein)
+Es werden alle Geräte bzw. Variablen unterstützt, welche auch per WebFront geschaltet werden können.
+Seit Update vom 05.10.2018 werden alle Variablen mit korrektem Profil und Min/Max-Werten unterstützt.
 
 ## Profile
 Der Status der Geräte kann in Profilen gespeichert werden. Wobei für jedes Profil der einzelstatus der Geräte gespeichert wird. Wird z.b. in einem Profil die Lampe1 auf 50% und die Lampe2 auf 100% gesetzt, wird genau dieser Zustand wiederhergestellt, sobald das Profil wieder aufgerufen wird.
@@ -75,13 +75,18 @@ Werden einzelne Geräte nicht über die Gruppe gesteuert, so zeigt die Gruppenst
 Liefert den niedrigsten Helligkeitswert aller Helligkeitssensoren.
 
 `SXGRP_SetState(int $InstanceID, bool $Value);`
-Setzt den Status aller Geräte auf Ein, oder Aus.
+Wichtig: Seit Update vom 05.10.2018 werden alle Werte als % interpretiert und intern umgerechnet.
+Setzt den Status aller Geräte auf Ein, oder Aus. Bzw. 0% oder 100%
 
 `SXGRP_SetStateFloat(int InstanceID, float $Value);`
-Setzt den Status aller Geräte auf den Wert `$Value`
+Wichtig: Seit Update vom 05.10.2018 werden alle Werte als % interpretiert und intern umgerechnet.
+Setzt den Status aller Geräte auf den Wert `$Value` 
+Gültige Werte für $Value sind 0.0 bis 1.0. (Entspricht 0% bis 100%)
 
 `SXGRP_SetStateInteger(int $InstanceID, int $Value);`
+Wichtig: Seit Update vom 05.10.2018 werden alle Werte als % interpretiert und intern umgerechnet.
 Setzt den Status aller Geräte auf den Wert `$Value`
+Gültige Werte für $Value sind 0 bis 100. (Entspricht 0% bis 100%)
 
 `SXGRP_SetAlertState(int $InstanceID, bool $Value);`
 Aktiviert oder deaktiviert die Alarmbeleuchtung.

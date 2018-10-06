@@ -13,6 +13,7 @@
         "width": "auto",
         "add": 0,
         "edit": {
+			"caption": "Sensoren",
             "type": "SelectVariable"
         }
     }, {
@@ -21,6 +22,7 @@
         "width": "200px",
 		"add": "neuer Sensor",
         "edit": {
+			"caption": "Bezeichnung",
             "type": "ValidationTextBox"
         }
     }, {
@@ -29,6 +31,7 @@
         "width": "100px",
         "add": false,
         "edit": {
+			"caption": "24h-Alarm (Sabotage / Technik)",
             "type": "CheckBox"
         }
     }, {
@@ -37,6 +40,7 @@
         "width": "100px",
         "add": false,
         "edit": {
+			"caption": "Technik-Alarm",
             "type": "CheckBox"
         }
     }, {
@@ -45,6 +49,7 @@
         "width": "100px",
         "add": false,
         "edit": {
+			"caption": "Bei jeder Aktualisierung auslösen",
             "type": "CheckBox"
         }
     }, {
@@ -53,6 +58,7 @@
         "width": "100px",
         "add": true,
         "edit": {
+			"caption": "Ausgangsverzögerung",
             "type": "CheckBox"
         }
     }, {
@@ -61,6 +67,7 @@
         "width": "100px",
         "add": false,
         "edit": {
+			"caption": "Eingangsverzögerung",
             "type": "CheckBox"
         }
     }, {
@@ -69,6 +76,7 @@
         "width": "100px",
         "add": true,
         "edit": {
+			"caption": "Intern aktiv",
             "type": "CheckBox"
         }
     }, {
@@ -77,7 +85,8 @@
         "width": "100px",
         "add": false,
         "edit": {
-            "type": "CheckBox"
+            "type": "CheckBox",
+			"caption": "Aktivierung verhindern"
         }
     }]
 },{
@@ -93,6 +102,7 @@
         "width": "auto",
         "add": 0,
         "edit": {
+			"caption": "Melder",
             "type": "SelectVariable"
         }
     }, {
@@ -101,6 +111,7 @@
         "width": "100px",
         "add": true,
         "edit": {
+			"caption": "24h-Alarm",
             "type": "CheckBox"
         }
     }, {
@@ -109,6 +120,7 @@
         "width": "100px",
         "add": true,
         "edit": {
+			"caption": "Technik-Alarm",
             "type": "CheckBox"
         }
     }, {
@@ -117,6 +129,7 @@
         "width": "100px",
         "add": true,
         "edit": {
+			"caption": "Intern aktiv",
             "type": "CheckBox"
         }
     }, {
@@ -125,6 +138,7 @@
         "width": "100px",
         "add": true,
         "edit": {
+			"caption": "Extern aktiv",
             "type": "CheckBox"
         }
     }, {
@@ -133,6 +147,7 @@
         "width": "100px",
         "add": false,
         "edit": {
+			"caption": "Verzögert",
             "type": "CheckBox"
         }
     }, {
@@ -141,6 +156,7 @@
         "width": "150px",
         "add": 0,
         "edit": {
+			"caption": "Typ",
             "type": "Select",
 			"options": [
 				{ "caption": "Sirene", "value": 0 },
