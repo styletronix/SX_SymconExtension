@@ -52,6 +52,7 @@
 			//Eigenschaften registrieren
 			$this->RegisterPropertyString("devices", null);
 			$this->RegisterPropertyString("melder", null);
+			$this->RegisterPropertyString("PushNotification", null);
 			
 			$this->RegisterPropertyInteger("dauer_alarmbeleuchtung", 900);
 			$this->RegisterPropertyInteger("dauer_sirene", 120);
@@ -329,7 +330,6 @@
 		
 		private function TriggerDeviceAlert($DeviceParameters){
 			$triggeredDeviceID = $this->GetIDForIdent("deviceTriggered");
-			$deviceTriggeredString = GetValueString($triggeredDeviceID);
 			SetValueString($triggeredDeviceID, $DeviceParameters["Bezeichnung"]);
 			
 			if ($DeviceParameters["verzoegerung_eingang"] == true){
@@ -427,11 +427,14 @@
 			$arrString = $this->ReadPropertyString("melder");
 			if ($arrString){
 				$arr = json_decode($arrString, true);
-								
-				// foreach($arr as $key1) {
-					// TODO: Prüfen ob InstanceID existiert...
-				//}
-				
+				return $arr;
+			}	
+			return null;
+		}
+		private function GetPushNotificationParameters(){
+			$arrString = $this->ReadPropertyString("PushNotification");
+			if ($arrString){
+				$arr = json_decode($arrString, true);
 				return $arr;
 			}	
 			return null;
@@ -451,14 +454,16 @@
 				$this->onTriggerAlert2();
 			}
 			
+			$this->SendPushNotificationByDelayMode(false);
 			$this->ActivateDeviceByDelayMode(false);
 		}
 		private function onTriggerAlert2(){
 			
 			SetValueBoolean($this->GetIDForIdent("vorwarnung_aktiv"), false);
 			
+			$this->SendPushNotificationByDelayMode(true);
 			$this->ActivateDeviceByDelayMode(true);
-			
+						
 			$this->SetTimerInterval("DisableTimer1", $this->ReadPropertyInteger("dauer_sirene") * 1000);	
 			$this->SetTimerInterval("DisableTimer2", $this->ReadPropertyInteger("dauer_warnlicht") * 1000);
 			$this->SetTimerInterval("DisableTimer3", $this->ReadPropertyInteger("dauer_alarmbeleuchtung") * 1000);						
@@ -505,6 +510,83 @@
 					}
 				}
 			}
+		}
+		private function SendPushNotificationByDelayMode($delayed){
+			try{
+				$arrString = $this->ReadPropertyString("PushNotification");
+			$arr = json_decode($arrString, true);
+			if (!$arr){ return;}
+			
+			$modus = GetValueInteger($this->GetIDForIdent("alarmmodus"));
+			$isINTERN = ($modus == 2);
+			$isEXTERN = ($modus == 1);
+			
+			$is24h = GetValueBoolean($this->GetIDForIdent("24h_alarm"));
+
+			$isEinbruch = GetValueBoolean($this->GetIDForIdent("alarm"));
+			$isTechnik = GetValueBoolean($this->GetIDForIdent("technik_alarm"));
+			
+			$triggeredDeviceID = $this->GetIDForIdent("deviceTriggered");
+			$deviceTriggeredString = GetValueString($triggeredDeviceID);
+			
+			foreach($arr as $key1) {
+				if($key1["delayed"] == $delayed){
+					if ($is24h == true and $key1 ["24h"] == true){
+						if ($key1["TargetID"] > 0){
+							$push_TargetID = $key1["TargetID"];
+						}else{
+							$push_TargetID = $triggeredDeviceID;
+						}
+						$push_Text = str_replace("{melder}", $deviceTriggeredString, $key1["Text"]);
+						
+						WFC_PushNotification($key1["InstanceID"], $key1["Title"], $push_Text, $key1["sound"], $push_TargetID);
+						continue;
+					}
+					
+					if ($isTechnik == true and $key1["Technik"] == true){
+						if ($key1["TargetID"] > 0){
+							$push_TargetID = $key1["TargetID"];
+						}else{
+							$push_TargetID = $triggeredDeviceID;
+						}
+						$push_Text = str_replace("{melder}", $deviceTriggeredString, $key1["Text"]);
+						
+						WFC_PushNotification($key1["InstanceID"], $key1["Title"], $push_Text, $key1["sound"], $push_TargetID);
+						continue;
+					}
+					
+					if ($isINTERN == true and $isEinbruch == true){
+						if ($key1["istInternAktiv"] == true){
+							if ($key1["TargetID"] > 0){
+							$push_TargetID = $key1["TargetID"];
+						}else{
+							$push_TargetID = $triggeredDeviceID;
+						}
+						$push_Text = str_replace("{melder}", $deviceTriggeredString, $key1["Text"]);
+						
+						WFC_PushNotification($key1["InstanceID"], $key1["Title"], $push_Text, $key1["sound"], $push_TargetID);
+							continue;
+						}
+					}
+					
+					if ($isEXTERN == true and $isEinbruch == true){
+						if ($key1["istExternAktiv"] == true){
+							if ($key1["TargetID"] > 0){
+							$push_TargetID = $key1["TargetID"];
+						}else{
+							$push_TargetID = $triggeredDeviceID;
+						}
+						$push_Text = str_replace("{melder}", $deviceTriggeredString, $key1["Text"]);
+						
+						WFC_PushNotification($key1["InstanceID"], $key1["Title"], $push_Text, $key1["sound"], $push_TargetID);
+							continue;
+						}
+					}
+				}
+			}
+			}catch(e){
+				print_r(e);
+			}		
 		}
 		private function deactivateAllDevices(){
 			$arr = $this->GetOutputDeviceParameters();
