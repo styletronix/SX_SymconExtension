@@ -536,7 +536,7 @@
 						if ($key1["TargetID"] > 0){
 							$push_TargetID = $key1["TargetID"];
 						}else{
-							$push_TargetID = $triggeredDeviceID;
+							$push_TargetID = $_IPS['SELF'];
 						}
 						$push_Text = str_replace("{melder}", $deviceTriggeredString, $key1["Text"]);
 						$push_Text = str_replace("{tts}", $ttsText, $push_Text);
@@ -549,7 +549,7 @@
 						if ($key1["TargetID"] > 0){
 							$push_TargetID = $key1["TargetID"];
 						}else{
-							$push_TargetID = $triggeredDeviceID;
+							$push_TargetID = $_IPS['SELF'];
 						}
 						$push_Text = str_replace("{melder}", $deviceTriggeredString, $key1["Text"]);
 						$push_Text = str_replace("{tts}", $ttsText, $push_Text);
@@ -563,7 +563,7 @@
 							if ($key1["TargetID"] > 0){
 							$push_TargetID = $key1["TargetID"];
 						}else{
-							$push_TargetID = $triggeredDeviceID;
+							$push_TargetID = $_IPS['SELF'];
 						}
 						$push_Text = str_replace("{melder}", $deviceTriggeredString, $key1["Text"]);
 						$push_Text = str_replace("{tts}", $ttsText, $push_Text);
@@ -578,7 +578,7 @@
 							if ($key1["TargetID"] > 0){
 							$push_TargetID = $key1["TargetID"];
 						}else{
-							$push_TargetID = $triggeredDeviceID;
+							$push_TargetID = $_IPS['SELF'];
 						}
 						$push_Text = str_replace("{melder}", $deviceTriggeredString, $key1["Text"]);
 						$push_Text = str_replace("{tts}", $ttsText, $push_Text);
