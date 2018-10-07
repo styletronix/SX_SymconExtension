@@ -584,7 +584,7 @@
 					}
 				}
 			}
-			}catch($e){
+			} catch (Exception $e){
 				print_r($e);
 			}		
 		}
