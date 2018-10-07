@@ -11,7 +11,7 @@
 			// $this->EnableAction("alarmmodus");
 						
 			$this->RegisterPropertyString("devices", null);
-			$this->RegisterPropertyString("BatteryMonitoring", null);
+			$this->RegisterPropertyString("BatteryMonitoring", "[{\"Caption\":\"HomeMatic\",\"ModuleID\":\"{EE4A81C6-5C90-4DB7-AD2F-F6BBD521412E}\",\"Ident\":\"LOWBAT\"},{\"Caption\":\"HomeMatic\",\"ModuleID\":\"{EE4A81C6-5C90-4DB7-AD2F-F6BBD521412E}\",\"Ident\":\"LOW_BAT\"}]");
 			$this->RegisterPropertyInteger("refreshInterval", 60);
 			
 			

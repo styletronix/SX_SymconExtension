@@ -35,14 +35,14 @@
     }, {
         "caption": "Modul ID",
         "name": "ModuleID", 
-        "width": "200px",
+        "width": "250px",
         "add": "",
         "edit": {
             "type": "ValidationTextBox"
         }
     },{
-        "caption": "Indent",
-        "name": "Indent", 
+        "caption": "Ident",
+        "name": "Ident", 
         "width": "150px",
         "add": "",
         "edit": {
