@@ -584,8 +584,8 @@
 					}
 				}
 			}
-			}catch(e){
-				print_r(e);
+			}catch($e){
+				print_r($e);
 			}		
 		}
 		private function deactivateAllDevices(){
