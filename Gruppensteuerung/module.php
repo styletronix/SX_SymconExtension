@@ -1127,7 +1127,10 @@
 					}else{
 						$TargetValue = false;
 					}
-				}else{
+				}else if ($t == 1){
+					$currentVal = round($currentVal, 0);
+					$TargetValue = round($TargetValue, 0);
+				}else {
 					$currentVal = round($currentVal, 2);
 					$TargetValue = round($TargetValue, 2);
 				}
