@@ -7,11 +7,14 @@ Die Gruppensteuerung kann für komplexe Aufgaben kaskadiert werden. Das bedeutet
 Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, könne Sie die Kategorien "Geräte", "Helligkeit" und "Bewegung" in der Instanz löschen, sofern Sie darin nur Verknüpfungen abgelegt hatten.
 
 ## Änderungen
+07.10.2018
++ Werte werden vor der Zuweisung gerundet um korrekt prüfen zu können ob eine Variable aktualisiert werden muss oder nicht.
+
 05.10.2018
-- Variablen mit benutzerdefiniertem ActionScript wurden beim laden von Profilen nicht korrekt gesetzt.
-- Beim laden von Profilen kam es bei nicht existierenden Geräten zu Fehlermeldung.
-- Bei Variablen werden nun die Min/Max-Werte der Profile berücksichtigt und in Prozentwerte von 0 - 100% umgerechnet.
-- Werte, welche mit SXGRP_SetState... gesetzt werden, sind nun als Prozentwerte zu verstehen, welche auf die einzelnen Variablen anhand der eingestellten Min-/Max-Werte der jeweiligen Profile umgerechnet werden.
+o Variablen mit benutzerdefiniertem ActionScript wurden beim laden von Profilen nicht korrekt gesetzt.
+o Beim laden von Profilen kam es bei nicht existierenden Geräten zu Fehlermeldung.
++ Bei Variablen werden nun die Min/Max-Werte der Profile berücksichtigt und in Prozentwerte von 0 - 100% umgerechnet.
++ Werte, welche mit SXGRP_SetState... gesetzt werden, sind nun als Prozentwerte zu verstehen, welche auf die einzelnen Variablen anhand der eingestellten Min-/Max-Werte der jeweiligen Profile umgerechnet werden.
 
 23.09.2018
 - Variablen mit benutzerdefiniertem ActionScript werden unterstützt.
