@@ -197,7 +197,7 @@
         "caption": "Text",
         "name": "Text",
         "width": "100px",
-        "add": "Alarm wurde ausgelöst durch {melder}",
+        "add": "{tts}",
         "edit": {
 			"caption": "Text",
             "type": "ValidationTextBox"
@@ -287,7 +287,10 @@
             "type": "CheckBox"
         }
     }]
-},
+}, 
+{ "type": "Label", "caption": "In der Spalte TEXT bei Push-Nachrichten können folgende Variablen verwendet werden:"},
+{ "type": "Label", "caption": "{melder} = Bezeichnung des Melders, welcher den Alarm ausgelöst hat."},
+{ "type": "Label", "caption": "{tts} = Kompletter Text aus der Variable TTS Ausgabetext."},
 { "type": "NumberSpinner", "name": "dauer_alarmbeleuchtung", "caption": "Dauer der Alarmbeleuchtung", "suffix": "Sekunden"},
 { "type": "NumberSpinner", "name": "dauer_sirene", "caption": "Dauer der Sirene", "suffix": "Sekunden"},
 { "type": "NumberSpinner", "name": "dauer_warnlicht", "caption": "Dauer des Warnlichts", "suffix": "Sekunden"},

@@ -528,6 +528,7 @@
 			
 			$triggeredDeviceID = $this->GetIDForIdent("deviceTriggered");
 			$deviceTriggeredString = GetValueString($triggeredDeviceID);
+			$ttsText = GetValueString($this->GetIDForIdent("TTS_output"));
 			
 			foreach($arr as $key1) {
 				if($key1["delayed"] == $delayed){
@@ -538,7 +539,8 @@
 							$push_TargetID = $triggeredDeviceID;
 						}
 						$push_Text = str_replace("{melder}", $deviceTriggeredString, $key1["Text"]);
-						
+						$push_Text = str_replace("{tts}", $ttsText, $push_Text);
+												
 						WFC_PushNotification($key1["InstanceID"], $key1["Title"], $push_Text, $key1["sound"], $push_TargetID);
 						continue;
 					}
@@ -550,6 +552,7 @@
 							$push_TargetID = $triggeredDeviceID;
 						}
 						$push_Text = str_replace("{melder}", $deviceTriggeredString, $key1["Text"]);
+						$push_Text = str_replace("{tts}", $ttsText, $push_Text);
 						
 						WFC_PushNotification($key1["InstanceID"], $key1["Title"], $push_Text, $key1["sound"], $push_TargetID);
 						continue;
@@ -563,6 +566,7 @@
 							$push_TargetID = $triggeredDeviceID;
 						}
 						$push_Text = str_replace("{melder}", $deviceTriggeredString, $key1["Text"]);
+						$push_Text = str_replace("{tts}", $ttsText, $push_Text);
 						
 						WFC_PushNotification($key1["InstanceID"], $key1["Title"], $push_Text, $key1["sound"], $push_TargetID);
 							continue;
@@ -577,6 +581,7 @@
 							$push_TargetID = $triggeredDeviceID;
 						}
 						$push_Text = str_replace("{melder}", $deviceTriggeredString, $key1["Text"]);
+						$push_Text = str_replace("{tts}", $ttsText, $push_Text);
 						
 						WFC_PushNotification($key1["InstanceID"], $key1["Title"], $push_Text, $key1["sound"], $push_TargetID);
 							continue;
