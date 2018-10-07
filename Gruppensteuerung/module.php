@@ -610,20 +610,11 @@
 			if ($arr){
 				foreach($arr as $device){
 					$this->SetObjectValuePercent($device["InstanceID"], $ValueFloat, false, false);
-					//$this->SetObjectValue($device["InstanceID"], $Value, $ValueInteger, $ValueFloat, false, false);
 				}
 			}
 		}
 	
-        public function SetStateFloat(float $Value){
-			//$ValueInteger = $Value * 100;
-			
-			//if ($Value > 0.0){           
-            //        $ValueBool = true;
-            //    }else{
-            //        $ValueBool = false;
-            //}
-								
+        public function SetStateFloat(float $Value){								
             $data = $this->ReadSettings();
 			$currentPreAlertState = $data["PreAlertState"];
 			if ($currentPreAlertState !== "" and $Value == false){
@@ -634,18 +625,11 @@
 			if ($arr){
 				foreach($arr as $device){
 					$this->SetObjectValuePercent($device["InstanceID"], $Value, false, false);
-					// $this->SetObjectValue($device["InstanceID"], $ValueBool, $ValueInteger, $Value, false, false);
 				}
 			}
         }
         public function SetStateInteger(int $Value){
 			$ValueFloat = $Value / 100;
-			
-			// if ($Value > 0){           
-                    // $ValueBool = true;
-                // }else{
-                    // $ValueBool = false;
-            // }
 								
             $data = $this->ReadSettings();
 			$currentPreAlertState = $data["PreAlertState"];
@@ -657,7 +641,6 @@
 			if ($arr){
 				foreach($arr as $device){
 					$this->SetObjectValuePercent($device["InstanceID"], $ValueFloat, false, false);
-					//$this->SetObjectValue($device["InstanceID"], $ValueBool, $Value, $ValueFloat, false, false);
 				}
 			}
         }
@@ -680,7 +663,6 @@
 				if ($arr){
 					foreach($arr as $device){
 						$this->SetObjectValuePercent($device["InstanceID"], 1.0, false, false);
-						//$this->SetObjectValue($device["InstanceID"], $Value, 100, 1.0, false, false);
 					}
 				}
 
@@ -692,7 +674,6 @@
 			}
 
             $this->WriteSettings($data);
-			// $this->RefreshStatus();
 						
 			SetValueBoolean($this->GetIDForIdent("AlertModeAktive"), $Value);
 			
@@ -711,12 +692,9 @@
 		}
 		private function SetPresenceState(bool $Value){
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
-			//IPS_SemaphoreEnter("SXGRP_AlertStateChange", 120 * 1000);
 			SetValue($this->GetIDForIdent("PresenceDetected"), $Value);
 			
-			//$PresenceOffDelayScriptID = IPS_GetObjectIDByIdent("PresenceOffDelayScript", $this->InstanceID);
 			$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
-			//IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
 			
             $data = $this->ReadSettings();
 
@@ -734,8 +712,6 @@
 			
 			$DeviceList = $this->GetListItems("actors");
 			$PresenceTimeout = $this->ReadPropertyInteger("PresenceTimeout");
-			//$PresenceTimeoutOffScriptID = IPS_GetObjectIDByIdent("PresenceTimeoutOff", $this->InstanceID);  
-			//$PresenceResetID = IPS_GetObjectIDByIdent("ResetPresenceStateToTemplate", $this->InstanceID);  
 			
 			$PresenceResetToTemplateTimeout = $this->ReadPropertyInteger("PresenceResetToTemplateTimeout");
 
@@ -758,7 +734,6 @@
 						}
 						
 						$this->SetTimerInterval("PresenceTimeoutOff_Timer", $PresenceTimeout * 1000);
-						// IPS_SetScriptTimer ($PresenceTimeoutOffScriptID, $PresenceTimeout );
 					
 					}else{
 						if ($DeviceList){
@@ -782,7 +757,6 @@
 				
 				if ($PresenceResetToTemplateTimeout > 0 ){
 					$this->SetTimerInterval("ResetPresenceStateToTemplate_Timer", ($PresenceTimeout + $PresenceResetToTemplateTimeout) * 1000);
-					//IPS_SetScriptTimer ($PresenceResetID, $PresenceTimeout + $PresenceResetToTemplateTimeout);
 				}
 				
 			}else{
@@ -796,9 +770,7 @@
 				}
 				
 				$this->SetTimerInterval("PresenceTimeoutOff_Timer", 0);
-				// IPS_SetScriptTimer($PresenceTimeoutOffScriptID, 0);
 				$this->SetTimerInterval("ResetPresenceStateToTemplate_Timer", 0);
-				//IPS_SetScriptTimer ($PresenceResetID, 0);
 				
 				$ProfileID2 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID2", $this->InstanceID));  
 				
@@ -832,16 +804,8 @@
 
             $this->WriteSettings($data);
 			$this->RefreshStatus();
-			
-			//IPS_SemaphoreLeave("SXGRP_AlertStateChange");
 		}
-		private function PresenceTimeoutOff(){
-			//IPS_SemaphoreEnter("SXGRP_AlertStateChange", 120 * 1000);
-			
-			//$PresenceTimeoutOffScriptID = IPS_GetObjectIDByIdent("PresenceTimeoutOff", $this->InstanceID);
-			//$this->SetTimerInterval("PresenceTimeoutOff_Timer", 0);
-			//IPS_SetScriptTimer($PresenceTimeoutOffScriptID, 0);
-			
+		private function PresenceTimeoutOff(){			
 			$data = $this->ReadSettings();
 
 			if (array_key_exists('PrePresenceState', $data) == false) {
@@ -857,12 +821,8 @@
 					}
 				}
 			}
-			//IPS_SemaphoreLeave("SXGRP_AlertStateChange");
 		}
 		public function ResetPresenceStateToTemplate(){
-			//$PResetPresenceStateToTemplateScriptID = IPS_GetObjectIDByIdent("ResetPresenceStateToTemplate", $this->InstanceID);
-			//IPS_SetScriptTimer($PResetPresenceStateToTemplateScriptID, 0);
-			
 			$data = $this->ReadSettings();
 			
 			$data['PrePresenceState'] = $data['PresenceStateTemplate'];
@@ -903,10 +863,6 @@
 				}
 				}
 			}
-			
-			
-			
-
 			return json_encode($arr);
 		}
 		public function SetCurrentStateString(string $State){
@@ -939,15 +895,11 @@
 		}
 
 		public function CallProfile(int $id){
-			//IPS_SemaphoreEnter("SXGRP_AlertStateChange", 120 * 1000);
-			
 			$data = $this->ReadSettings();
 			if (array_key_exists('Profile'.$id, $data)) {
 				$this->SetCurrentStateString($data['Profile'.$id]);
 			}
 			SetValue($this->GetIDForIdent("ProfileID"), $id);
-
-			//IPS_SemaphoreLeave("SXGRP_AlertStateChange");
 		}
 		public function UseProfileIDAsPresenceStateTeplate(int $id){
 			$data = $this->ReadSettings();
@@ -1175,8 +1127,11 @@
 					}else{
 						$TargetValue = false;
 					}
+				}else{
+					$currentVal = round($currentVal, 2);
+					$TargetValue = round($TargetValue, 2);
 				}
-				
+
 				if ($currentVal != $TargetValue){	
 					if (($lowerOnly == true and $TargetValue < $currentVal) or ($higherOnly == true and $TargetValue > $currentVal) or ($higherOnly == false and $lowerOnly == false)){
 							if(IPS_InstanceExists($actionID)){
@@ -1258,56 +1213,6 @@
                 return $variable['VariableAction'];
             }
         }
-		
-		
-		private function SetChildLinks(int $key, bool $value, int $valueInteger, float $valueFloat){
-			$this->SetChildLinks3($key, $value, $valueInteger, $valueFloat, false, false);
-		}
-		private function SetChildLinks2(int $key, bool $value, int $valueInteger, float $valueFloat, bool $lowerOnly){
-			$this->SetChildLinks3($key, $value, $valueInteger, $valueFloat, $lowerOnly, false);
-		}
-        private function SetChildLinks3(int $key, bool $value, int $valueInteger, float $valueFloat, bool $lowerOnly, bool $higherOnly){
-            $ignoreIDs = IPS_GetChildrenIDs($this->InstanceID);
-
-            foreach(IPS_GetChildrenIDs($key) as $key2) {
-				set_time_limit(30);
-
-				$itemObject = IPS_GetObject($key2);
-				$TargetID = 0;
-
-                // Prüfe ob Ziel ein Link ist
-				if ($itemObject["ObjectType"] == 6){
-					$TargetID = IPS_GetLink($key2)["TargetID"];
-				}elseif($itemObject["ObjectType"] == 2){
-					$TargetID = $key2;
-				}
-
-				if ($TargetID > 0 and !in_array($TargetID, $ignoreIDs)){
-					$this->SetObjectValue($TargetID, $value, $valueInteger, $valueFloat, $lowerOnly, $higherOnly);
-				}
-			}
-        }
-		private function SetChildLinksBoolean(int $key, bool $value){
-                if ($value){
-                    $ValueInteger = 100;
-                    $ValueFloat = 1.0;
-                }else{
-                    $ValueInteger = 0;
-                    $ValueFloat = 0.0;
-                }
-
-                $this->SetChildLinks($key, $value, $ValueInteger, $ValueFloat);
-		}
-        private function SetChildLinksFloat(int $key, float $value){
-            $valbool = ($value > 0);
-
-            $this->SetChildLinks($key, $valbool, $value * 100, $value);
-		}
-        private function SetChildLinksInteger(int $key, int $value){
-            $valbool = ($value > 0);
-
-            $this->SetChildLinks($key, $valbool, $value, $value / 100);
-		}
 
         private function WriteSettings($data){
 			IPS_SemaphoreEnter("SXGRP_SettingAccess".$this->InstanceID,  2000);
