@@ -35,7 +35,7 @@
     }, {
         "caption": "Modul ID",
         "name": "ModuleID", 
-        "width": "250px",
+        "width": "300px",
         "add": "",
         "edit": {
             "type": "ValidationTextBox"
@@ -51,7 +51,7 @@
     },{
         "caption": "Invertieren",
         "name": "Invert", 
-        "width": "50px",
+        "width": "100px",
         "add": false,
         "edit": {
             "type": "CheckBox"
