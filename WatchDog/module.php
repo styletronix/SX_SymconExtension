@@ -67,7 +67,7 @@
 						$Caption = str_replace($repl, "", $Caption);						
 						
 						if ($BattLevel){
-							$BattMonitorTableEmpty .= $Caption) . "<br>";
+							$BattMonitorTableEmpty .= $Caption . "<br>";
 						}else{
 							$BattMonitorTableOK .= $Caption . "<br>";
 						}						
