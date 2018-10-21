@@ -14,8 +14,8 @@
 			$this->RegisterPropertyString("BatteryMonitoring", "[{\"Caption\":\"HomeMatic\",\"ModuleID\":\"{EE4A81C6-5C90-4DB7-AD2F-F6BBD521412E}\",\"Ident\":\"LOWBAT\"},{\"Caption\":\"HomeMatic\",\"ModuleID\":\"{EE4A81C6-5C90-4DB7-AD2F-F6BBD521412E}\",\"Ident\":\"LOW_BAT\"}]");
 			$this->RegisterPropertyInteger("refreshInterval", 60);
 			
-			$this->RegisterVariableString("BattMon_OK", "Batterie OK");
-			$this->RegisterVariableString("BattMon_Empty", "Batterie Leer");
+			$this->RegisterVariableString("BattMon_OK", "Batterie OK", "~HTMLBox");
+			$this->RegisterVariableString("BattMon_Empty", "Batterie Leer", "~HTMLBox");
 			
 			$this->RegisterTimer("timer_refresh", 0, 'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "timer_refresh");');
         }
@@ -60,12 +60,16 @@
 				$instances = IPS_GetInstanceListByModuleID($value["ModuleID"]);
 				foreach ($instances as $instanceID) {
 					$valID = @IPS_GetObjectIDByIdent($value["Ident"], $instanceID);
-					if ($valID){
+					if ($valID > 0){
 						$BattLevel = GetValue($valID);
+						$Caption = IPS_GetName($instanceID);
+						$repl = {":0", ":1", ":2"};
+						$Caption = str_replace($repl, "", $Caption);						
+						
 						if ($BattLevel){
-							$BattMonitorTableEmpty .= IPS_GetName($instanceID) . "<br>";
+							$BattMonitorTableEmpty .= $Caption) . "<br>";
 						}else{
-							$BattMonitorTableOK .= IPS_GetName($instanceID) . "<br>";
+							$BattMonitorTableOK .= $Caption . "<br>";
 						}						
 					}
 				}
