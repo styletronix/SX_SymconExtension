@@ -6,23 +6,20 @@
 		
         public function Create() {
             parent::Create();
-
-			// $this->RegisterVariableInteger("alarmmodus", "Status", "SX_Alarm.Modus");
-			// $this->EnableAction("alarmmodus");
 						
 			$this->RegisterPropertyString("devices", null);
 			$this->RegisterPropertyString("BatteryMonitoring", "[{\"Caption\":\"HomeMatic\",\"ModuleID\":\"{EE4A81C6-5C90-4DB7-AD2F-F6BBD521412E}\",\"Ident\":\"LOWBAT\"},{\"Caption\":\"HomeMatic\",\"ModuleID\":\"{EE4A81C6-5C90-4DB7-AD2F-F6BBD521412E}\",\"Ident\":\"LOW_BAT\"}]");
-			$this->RegisterPropertyInteger("refreshInterval", 60);
+			$this->RegisterPropertyInteger("refreshInterval", 120);
 			
 			$this->RegisterVariableString("BattMon_OK", "Batterie OK", "~HTMLBox");
 			$this->RegisterVariableString("BattMon_Empty", "Batterie Leer", "~HTMLBox");
+			$this->RegisterVariableString("CommonMessages", "Alle Meldungen", "~HTMLBox");
 			
 			$this->RegisterTimer("timer_refresh", 0, 'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "timer_refresh");');
         }
 		
         public function ApplyChanges() {
             parent::ApplyChanges();
-
 			
 			$this->SetTimerInterval("timer_refresh", $this->ReadPropertyInteger("refreshInterval") * 1000);
 			$this->SetStatus(102);
@@ -53,6 +50,7 @@
 		public function CheckDevices(){
 			$BattMonitorTableEmpty = "";
 			$BattMonitorTableOK = "";
+			$CommonMessages = "";
 			
 			$arr = $this->GetDeviceParameters("BatteryMonitoring");
 			if ($arr){
@@ -66,18 +64,22 @@
 						$repl = [":0", ":1", ":2"];
 						$Caption = str_replace($repl, "", $Caption);						
 						
-						if ($BattLevel){
+						$InvertValue = ($value["Invert"] == false);
+						
+						if ($BattLevel == $InvertValue){
 							$BattMonitorTableEmpty .= $Caption . "<br>";
+							$CommonMessages .=  "Batterie Leer: " . $Caption . "<br>";
 						}else{
 							$BattMonitorTableOK .= $Caption . "<br>";
 						}						
 					}
 				}
-			}
+				}
 			}
 			
 			SetValueString($this->GetIDForIdent("BattMon_OK"), $BattMonitorTableOK);
 			SetValueString($this->GetIDForIdent("BattMon_Empty"), $BattMonitorTableEmpty);
+			SetValueString($this->GetIDForIdent("CommonMessages"), $CommonMessages);
 		}
 			
 		private function TimerCallback(string $TimerID){

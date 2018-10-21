@@ -21,7 +21,7 @@
     "type": "List",
     "name": "BatteryMonitoring",
     "caption": "Batteriemonitor",
-    "rowCount": 10,
+    "rowCount": 5,
     "add": true,
     "delete": true,
     "columns": [{
@@ -47,6 +47,14 @@
         "add": "",
         "edit": {
             "type": "ValidationTextBox"
+        }
+    },{
+        "caption": "Invertieren",
+        "name": "Invert", 
+        "width": "50px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
         }
     }]
 }
