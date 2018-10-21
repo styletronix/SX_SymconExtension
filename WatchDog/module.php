@@ -63,7 +63,7 @@
 					if ($valID > 0){
 						$BattLevel = GetValue($valID);
 						$Caption = IPS_GetName($instanceID);
-						$repl = {":0", ":1", ":2"};
+						$repl = [":0", ":1", ":2"];
 						$Caption = str_replace($repl, "", $Caption);						
 						
 						if ($BattLevel){
