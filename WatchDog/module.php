@@ -58,14 +58,14 @@
 			if ($arr){
 				foreach ($arr as $value) {
 				$instances = IPS_GetInstanceListByModuleID($value["ModuleID"]);
-				foreach ($instances as $instance) {
-					$valID = @IPS_GetObjectIDByIdent($value["Ident"], $instance["InstanceID"]);
+				foreach ($instances as $instanceID) {
+					$valID = @IPS_GetObjectIDByIdent($value["Ident"], $instanceID);
 					if ($valID){
 						$BattLevel = GetValue($valID);
 						if ($BattLevel){
-							$BattMonitorTableEmpty .= IPS_GetName($instance["InstanceID"]) . "<br>";
+							$BattMonitorTableEmpty .= IPS_GetName($instanceID) . "<br>";
 						}else{
-							$BattMonitorTableOK .= IPS_GetName($instance["InstanceID"]) . "<br>";
+							$BattMonitorTableOK .= IPS_GetName($instanceID) . "<br>";
 						}						
 					}
 				}
