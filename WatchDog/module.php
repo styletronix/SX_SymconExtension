@@ -63,7 +63,7 @@
 					if ($valID){
 						$BattLevel = GetValue($valID);
 						if ($BattLevel){
-							$BattMonitorTableEmpty .= IPS_GetName($instance["InstanceID"]) . "<br>"
+							$BattMonitorTableEmpty .= IPS_GetName($instance["InstanceID"]) . "<br>";
 						}else{
 							$BattMonitorTableOK .= IPS_GetName($instance["InstanceID"]) . "<br>";
 						}						
