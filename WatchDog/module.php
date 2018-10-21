@@ -14,8 +14,8 @@
 			$this->RegisterPropertyString("BatteryMonitoring", "[{\"Caption\":\"HomeMatic\",\"ModuleID\":\"{EE4A81C6-5C90-4DB7-AD2F-F6BBD521412E}\",\"Ident\":\"LOWBAT\"},{\"Caption\":\"HomeMatic\",\"ModuleID\":\"{EE4A81C6-5C90-4DB7-AD2F-F6BBD521412E}\",\"Ident\":\"LOW_BAT\"}]");
 			$this->RegisterPropertyInteger("refreshInterval", 60);
 			
-			$this->RegisterVariableString("BattMon_OK", "");
-			$this->RegisterVariableString("BattMon_Empty", "");
+			$this->RegisterVariableString("BattMon_OK", "Batterie OK");
+			$this->RegisterVariableString("BattMon_Empty", "Batterie Leer");
 			
 			$this->RegisterTimer("timer_refresh", 0, 'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "timer_refresh");');
         }
@@ -50,11 +50,11 @@
 						
 			return null;
 		}
-		private function CheckDevices(){
+		public function CheckDevices(){
 			$BattMonitorTableEmpty = "";
 			$BattMonitorTableOK = "";
 			
-			$arr = GetDeviceParameters("BatteryMonitoring");
+			$arr = $this->GetDeviceParameters("BatteryMonitoring");
 			if ($arr){
 				foreach ($arr as $value) {
 				$instances = IPS_GetInstanceListByModuleID($value["ModuleID"]);
