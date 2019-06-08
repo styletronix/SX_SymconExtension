@@ -52,7 +52,7 @@
 
 					
 		private function TimerCallback(string $TimerID){
-			$this->SetTimerInterval($TimerID, 0);
+			//$this->SetTimerInterval($TimerID, 0);
 			
 			switch($TimerID) {
 				case "off_timer":
@@ -103,13 +103,13 @@
 			$on_time = $this->ReadPropertyInteger("on_time");
 			$on_steps = $on_time * 60 / 100;
 				
-			$this->SetBuffer("CurrentLevel", 0);
 			$this->SetTimerInterval("on_timer", $on_steps * 1000);	
 		}
 
 		public function Stop() {
 			$this->SetTimerInterval("on_timer", 0);
 			$this->SetTimerInterval("off_timer", 0);
+			$this->SetBuffer("CurrentLevel", 0);
 		}
 		
 		private function SetObjectValuePercent(int $TargetID, float $value, bool $lowerOnly, bool $higherOnly){
