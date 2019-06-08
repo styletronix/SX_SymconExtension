@@ -1,0 +1,71 @@
+{
+  "elements": [
+    {
+    "type": "List",
+    "name": "devices",
+    "caption": "Zu überwachende Elemente",
+    "rowCount": 10,
+    "add": true,
+    "delete": true,
+    "columns": [{
+        "caption": "Objekt",
+        "name": "InstanceID", 
+        "width": "auto",
+        "add": 0,
+        "edit": {
+			"caption": "Objekt",
+            "type": "SelectVariable"
+        }
+    }]
+}, {
+    "type": "List",
+    "name": "BatteryMonitoring",
+    "caption": "Batteriemonitor",
+    "rowCount": 5,
+    "add": true,
+    "delete": true,
+    "columns": [{
+        "caption": "Bezeichnung",
+        "name": "Caption", 
+        "width": "200px",
+        "add": "",
+        "edit": {
+            "type": "ValidationTextBox"
+        }
+    }, {
+        "caption": "Modul ID",
+        "name": "ModuleID", 
+        "width": "300px",
+        "add": "",
+        "edit": {
+            "type": "ValidationTextBox"
+        }
+    },{
+        "caption": "Ident",
+        "name": "Ident", 
+        "width": "150px",
+        "add": "",
+        "edit": {
+            "type": "ValidationTextBox"
+        }
+    },{
+        "caption": "Invertieren",
+        "name": "Invert", 
+        "width": "100px",
+        "add": false,
+        "edit": {
+            "type": "CheckBox"
+        }
+    }]
+}
+  ],
+    "actions":
+    [
+    ],
+    "status":
+    [
+        { "code": 102, "icon": "active", "caption": "OK" },
+        { "code": 201, "icon": "error", "caption": "Authentication failed" },
+        { "code": 202, "icon": "error", "caption": "No credits left" }
+    ]
+}
