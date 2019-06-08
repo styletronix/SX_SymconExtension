@@ -58,6 +58,8 @@
 			switch($TimerID) {
 				case "off_timer":
 					$this->SetTimerInterval("off_timer", 0);
+					$this->SetBuffer("CurrentLevel", 0);
+					$this->SetObjectValuePercent($deviceID, 0, false, false);
 					
 					break;
 					
