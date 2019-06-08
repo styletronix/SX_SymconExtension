@@ -1,0 +1,13 @@
+{
+    "id": "{A16715D3-ED7E-41CC-90D3-1244196E38FB}",
+    "name": "WatchDog",
+    "type": 3,
+    "vendor": "Styletronix.net",
+  "aliases": [
+    "WatchDog"
+  ],  
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "SXWD"
+}

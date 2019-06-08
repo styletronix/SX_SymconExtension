@@ -176,14 +176,17 @@ Die Alarmanlage ist vollständig deaktiviert und löst auch bei 24h-Alarm keinen
 
 ## 8. Änderungen
 
+07.10.2018
++ Push-Nachrichten können konfiguriert werden. 
+
 05.10.2018
-- Fehler im Konfigurationsformular behoben, welches in manchen Versionen von IP-Symcon zu Fehlermeldungen geführt hat.
+o Fehler im Konfigurationsformular behoben, welches in manchen Versionen von IP-Symcon zu Fehlermeldungen geführt hat.
 
 23.09.2018
-- Variablen mit benutzerdefiniertem ActionScript werden unterstützt.
++ Variablen mit benutzerdefiniertem ActionScript werden unterstützt.
 
 31.08.2018
-- Erstes öffentliches Release
++ Erstes öffentliches Release
 
 28.08.2018
 - Erste Beta-Version

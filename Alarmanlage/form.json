@@ -13,6 +13,7 @@
         "width": "auto",
         "add": 0,
         "edit": {
+			"caption": "Sensoren",
             "type": "SelectVariable"
         }
     }, {
@@ -21,6 +22,7 @@
         "width": "200px",
 		"add": "neuer Sensor",
         "edit": {
+			"caption": "Bezeichnung",
             "type": "ValidationTextBox"
         }
     }, {
@@ -29,6 +31,7 @@
         "width": "100px",
         "add": false,
         "edit": {
+			"caption": "24h-Alarm (Sabotage / Technik)",
             "type": "CheckBox"
         }
     }, {
@@ -37,6 +40,7 @@
         "width": "100px",
         "add": false,
         "edit": {
+			"caption": "Technik-Alarm",
             "type": "CheckBox"
         }
     }, {
@@ -45,6 +49,7 @@
         "width": "100px",
         "add": false,
         "edit": {
+			"caption": "Bei jeder Aktualisierung auslösen",
             "type": "CheckBox"
         }
     }, {
@@ -53,6 +58,7 @@
         "width": "100px",
         "add": true,
         "edit": {
+			"caption": "Ausgangsverzögerung",
             "type": "CheckBox"
         }
     }, {
@@ -61,6 +67,7 @@
         "width": "100px",
         "add": false,
         "edit": {
+			"caption": "Eingangsverzögerung",
             "type": "CheckBox"
         }
     }, {
@@ -69,6 +76,7 @@
         "width": "100px",
         "add": true,
         "edit": {
+			"caption": "Intern aktiv",
             "type": "CheckBox"
         }
     }, {
@@ -77,7 +85,8 @@
         "width": "100px",
         "add": false,
         "edit": {
-            "type": "CheckBox"
+            "type": "CheckBox",
+			"caption": "Aktivierung verhindern"
         }
     }]
 },{
@@ -93,6 +102,7 @@
         "width": "auto",
         "add": 0,
         "edit": {
+			"caption": "Melder",
             "type": "SelectVariable"
         }
     }, {
@@ -101,6 +111,7 @@
         "width": "100px",
         "add": true,
         "edit": {
+			"caption": "24h-Alarm",
             "type": "CheckBox"
         }
     }, {
@@ -109,6 +120,7 @@
         "width": "100px",
         "add": true,
         "edit": {
+			"caption": "Technik-Alarm",
             "type": "CheckBox"
         }
     }, {
@@ -117,6 +129,7 @@
         "width": "100px",
         "add": true,
         "edit": {
+			"caption": "Intern aktiv",
             "type": "CheckBox"
         }
     }, {
@@ -125,6 +138,7 @@
         "width": "100px",
         "add": true,
         "edit": {
+			"caption": "Extern aktiv",
             "type": "CheckBox"
         }
     }, {
@@ -133,6 +147,7 @@
         "width": "100px",
         "add": false,
         "edit": {
+			"caption": "Verzögert",
             "type": "CheckBox"
         }
     }, {
@@ -141,6 +156,7 @@
         "width": "150px",
         "add": 0,
         "edit": {
+			"caption": "Typ",
             "type": "Select",
 			"options": [
 				{ "caption": "Sirene", "value": 0 },
@@ -152,6 +168,129 @@
         }
     }]
 },
+{
+    "type": "List",
+    "name": "PushNotification",
+    "caption": "Push-Nachrichten",
+    "rowCount": 2,
+    "add": true,
+    "delete": true,
+    "columns": [{
+        "caption": "WebFront",
+        "name": "InstanceID", 
+        "width": "auto",
+        "add": 0,
+        "edit": {
+			"caption": "WebFront",
+            "type": "SelectInstance"
+        }
+    }, {
+        "caption": "Titel",
+        "name": "Title",
+        "width": "100px",
+        "add": "Alarm",
+        "edit": {
+			"caption": "Titel",
+            "type": "ValidationTextBox"
+        }
+    }, {
+        "caption": "Text",
+        "name": "Text",
+        "width": "100px",
+        "add": "{tts}",
+        "edit": {
+			"caption": "Text",
+            "type": "ValidationTextBox"
+        }
+    }, {
+        "caption": "Sound",
+        "name": "sound",
+        "width": "100px",
+        "add": "alarm",
+        "edit": {
+			"caption": "Sound",
+            "type": "Select",
+			"options": [
+				{ "caption": "alarm", "value": "alarm" },
+				{ "caption": "bell", "value": "bell" },
+				{ "caption": "boom", "value": "boom" },
+				{ "caption": "buzzer", "value": "buzzer" },
+				{ "caption": "connected", "value": "connected" },
+				{ "caption": "dark", "value": "dark" },
+				{ "caption": "digital", "value": "digital" },
+				{ "caption": "drums", "value": "drums" },
+				{ "caption": "duck", "value": "duck" },
+				{ "caption": "full", "value": "full" },
+				{ "caption": "happy", "value": "happy" },
+				{ "caption": "horn", "value": "horn" },
+				{ "caption": "inception", "value": "inception" },
+				{ "caption": "kazoo", "value": "kazoo" },
+				{ "caption": "roll", "value": "roll" },
+				{ "caption": "siren", "value": "siren" },
+				{ "caption": "space", "value": "space" },
+				{ "caption": "trickling", "value": "trickling" },
+				{ "caption": "turn", "value": "turn" }
+				]
+        }
+    }, {
+        "caption": "Ziel",
+        "name": "TargetID", 
+        "width": "100px",
+        "add": 0,
+        "edit": {
+			"caption": "Ziel",
+            "type": "SelectObject"
+        }
+    }, {
+        "caption": "24h-Alarm",
+        "name": "24h",
+        "width": "100px",
+        "add": true,
+        "edit": {
+			"caption": "24h-Alarm",
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Technik-Alarm",
+        "name": "Technik",
+        "width": "100px",
+        "add": true,
+        "edit": {
+			"caption": "Technik-Alarm",
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Intern aktiv",
+        "name": "istInternAktiv",
+        "width": "100px",
+        "add": true,
+        "edit": {
+			"caption": "Intern aktiv",
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Extern aktiv",
+        "name": "istExternAktiv",
+        "width": "100px",
+        "add": true,
+        "edit": {
+			"caption": "Extern aktiv",
+            "type": "CheckBox"
+        }
+    }, {
+        "caption": "Verzögert",
+        "name": "delayed",
+        "width": "100px",
+        "add": false,
+        "edit": {
+			"caption": "Verzögert",
+            "type": "CheckBox"
+        }
+    }]
+}, 
+{ "type": "Label", "caption": "In der Spalte TEXT bei Push-Nachrichten können folgende Variablen verwendet werden:"},
+{ "type": "Label", "caption": "{melder} = Bezeichnung des Melders, welcher den Alarm ausgelöst hat."},
+{ "type": "Label", "caption": "{tts} = Kompletter Text aus der Variable TTS Ausgabetext."},
 { "type": "NumberSpinner", "name": "dauer_alarmbeleuchtung", "caption": "Dauer der Alarmbeleuchtung", "suffix": "Sekunden"},
 { "type": "NumberSpinner", "name": "dauer_sirene", "caption": "Dauer der Sirene", "suffix": "Sekunden"},
 { "type": "NumberSpinner", "name": "dauer_warnlicht", "caption": "Dauer des Warnlichts", "suffix": "Sekunden"},
