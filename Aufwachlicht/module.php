@@ -62,7 +62,7 @@
 					
 				case "on_timer":
 					$current = $this->GetBuffer("CurrentLevel");	
-					$deviceID = $this->ReadPropertyInteger(("device");
+					$deviceID = $this->ReadPropertyInteger("device");
 					
 					if ($current < 100){
 						$current = $current + 1;
