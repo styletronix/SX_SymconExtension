@@ -56,13 +56,13 @@
 			
 			switch($TimerID) {
 				case "off_timer":
-					$this->SetTimerInterval("off_time", 0);
+					$this->SetTimerInterval("off_timer", 0);
 					
 					break;
 					
 				case "on_timer":
 					$current = $this->GetBuffer("CurrentLevel");	
-					$deviceID = $this->GetPropertyInteger("device");
+					$deviceID = $this->ReadPropertyInteger(("device");
 					
 					if ($current < 100){
 						$current = $current + 1;
@@ -70,7 +70,7 @@
 						$this->SetObjectValuePercent($deviceID, $current / 100.0, false, true);
 					}else{
 						$this->SetTimerInterval("on_timer", 0);
-						$this->SetTimerInterval("off_time", $this->GetPropertyInteger("off_time") * 60 * 1000);
+						$this->SetTimerInterval("off_timer", $this->ReadPropertyInteger("off_time") * 60 * 1000);
 					};
 					
 					break;
@@ -109,7 +109,7 @@
 
 		public function Stop() {
 			$this->SetTimerInterval("on_timer", 0);
-			$this->SetTimerInterval("off_time", 0);
+			$this->SetTimerInterval("off_timer", 0);
 		}
 		
 		private function SetObjectValuePercent(int $TargetID, float $value, bool $lowerOnly, bool $higherOnly){
