@@ -14,6 +14,7 @@
 			
 			$this->RegisterPropertyInteger("on_time", 30);
 			$this->RegisterPropertyInteger("off_time", 10);
+			$this->RegisterPropertyInteger("dimm_steps", 20);
 			
 			$this->RegisterTimer("off_timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "off_timer");');
 			$this->RegisterTimer("on_timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "on_timer");');
@@ -65,7 +66,8 @@
 					$deviceID = $this->ReadPropertyInteger("device");
 					
 					if ($current < 100){
-						$current = $current + 1;
+						$dimm_steps = $this->ReadPropertyInteger("dimm_steps");
+						$current = $current + (100 / $dimm_steps);
 						$this->SetBuffer("CurrentLevel", $current);
 						$this->SetObjectValuePercent($deviceID, $current / 100.0, false, true);
 					}else{
@@ -101,7 +103,8 @@
 		
 		public function Start() {
 			$on_time = $this->ReadPropertyInteger("on_time");
-			$on_steps = $on_time * 60 / 100;
+			$dimm_steps = $this->ReadPropertyInteger("dimm_steps");
+			$on_steps = $on_time * 60 / $dimm_steps;
 				
 			$this->SetTimerInterval("on_timer", $on_steps * 1000);	
 		}
