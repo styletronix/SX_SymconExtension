@@ -1,0 +1,26 @@
+{
+  "elements": [
+{ "type": "SelectVariable", "name": "device", "caption": "Ausgang"},
+{ "type": "NumberSpinner", "name": "on_time", "caption": "Einschaltdauer", "suffix": "Minuten"},
+{ "type": "NumberSpinner", "name": "off_time", "caption": "Ausschaltverzögerung", "suffix": "Minuten"}
+  ],
+    "actions":
+    [
+	{
+        "type": "Button",
+        "label": "Start",
+        "onClick": "SXAWK_Start($id);"
+      },
+	  {
+        "type": "Button",
+        "label": "Stop",
+        "onClick": "SXAWK_Stop($id);"
+      }
+    ],
+    "status":
+    [
+        { "code": 102, "icon": "active", "caption": "OK" },
+        { "code": 201, "icon": "error", "caption": "Authentication failed" },
+        { "code": 202, "icon": "error", "caption": "No credits left" }
+    ]
+}
