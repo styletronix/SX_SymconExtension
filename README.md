@@ -31,3 +31,6 @@ Die Treppenhauslicht-Steuerung ermöglicht das einschalten eines Lichts per Tast
 Es können mehrere Geräte als Tasterund Schaltausgang verwendet werden.
 
 [Weitere Details zum Treppenhauslicht](/Treppenhauslicht/readme.md)
+
+## Aufwachlicht
+Per Zeitinterval z.b. 7 Uhr morgens, wird ein Licht in einem vordefinierten Zeitraum (z.b. 30 Minuten)  von 0 bis 100% eingeschaltet. Nach einer definierbaren Einschaltdauer wird das Licht wieder ausgeschaltet. Dient zum sanftem aufwecken mit einem dimmbaren Licht.
