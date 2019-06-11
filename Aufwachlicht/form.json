@@ -2,7 +2,7 @@
   "elements": [
 { "type": "SelectVariable", "name": "device", "caption": "Ausgang"},
 { "type": "NumberSpinner", "name": "on_time", "caption": "Einschaltdauer", "suffix": "Minuten"},
-{ "type": "NumberSpinner", "name": "off_time", "caption": "Ausschaltverzögerung", "suffix": "Minuten"}
+{ "type": "NumberSpinner", "name": "off_time", "caption": "Ausschaltverzögerung", "suffix": "Minuten"},
 { "type": "NumberSpinner", "name": "dimm_steps", "caption": "Anzahl Schritte von 0 bis 100%", "suffix": "Schritte"}
   ],
     "actions":
