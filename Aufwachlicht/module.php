@@ -52,12 +52,10 @@
 		}
 
 					
-		private function TimerCallback(string $TimerID){
-			//$this->SetTimerInterval($TimerID, 0);
-			
+		private function TimerCallback(string $TimerID){		
 			switch($TimerID) {
 				case "off_timer":
-					$this->SetTimerInterval("off_timer", 0);
+					$this->SetTimerInterval($TimerID, 0);
 					$this->SetBuffer("CurrentLevel", 0);
 					$this->SetObjectValuePercent($deviceID, 0, false, false);
 					
@@ -73,7 +71,7 @@
 						$this->SetBuffer("CurrentLevel", $current);
 						$this->SetObjectValuePercent($deviceID, $current / 100.0, false, true);
 					}else{
-						$this->SetTimerInterval("on_timer", 0);
+						$this->SetTimerInterval($TimerID, 0);
 						$this->SetTimerInterval("off_timer", $this->ReadPropertyInteger("off_time") * 60 * 1000);
 					};
 					
