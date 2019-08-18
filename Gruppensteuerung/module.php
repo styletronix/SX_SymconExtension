@@ -411,9 +411,8 @@
 			$BrightnessDeviceList = $this->GetListItems("brightness");
 			$IlluminationLevelMotion = GetValueFloat(IPS_GetObjectIDByIdent("IlluminationLevelMotion", $this->InstanceID));  
 			
-			if (!$PresenceDeviceList){return; }
-			
-			foreach($PresenceDeviceList as $Device) {
+			if ($PresenceDeviceList){
+				foreach($PresenceDeviceList as $Device) {
 				$key2 = $Device["InstanceID"];
 				if (!IPS_ObjectExists($key2)){ continue; }
 				
@@ -475,6 +474,9 @@
 			skipElement:
 			
 			}
+			}
+			
+			
 			$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
 			//IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
 			
@@ -497,6 +499,8 @@
 						//IPS_SetScriptTimer($PresenceOffDelayScriptID, $PresenceOffDelay);
 					}
 				}
+			}else{
+				$this->SetPresenceState($result);
 			}
 		}
 		
@@ -751,7 +755,7 @@
 						}
 					
 				}elseif($ProfileID3 > 0){
-						CallProfile(ProfileID3);
+						$this->CallProfile($ProfileID3);
 						
 				}
 				
