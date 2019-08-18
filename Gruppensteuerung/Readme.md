@@ -7,6 +7,10 @@ Die Gruppensteuerung kann für komplexe Aufgaben kaskadiert werden. Das bedeutet
 Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, könne Sie die Kategorien "Geräte", "Helligkeit" und "Bewegung" in der Instanz löschen, sofern Sie darin nur Verknüpfungen abgelegt hatten.
 
 ## Änderungen
+18.08.2019
+o Wenn keine Bewegungsmelder eingerichtet wurden, hat die manuelle Anwesenheit nicht mehr auf "Abwesend" zurück geschaltet.
+o Wenn für "Abwesenheit" ein Profil ausgewählt wurde, wurde dies bei Abwesenheit nicht verwendet.
+
 07.10.2018
 + Werte werden vor der Zuweisung gerundet um korrekt prüfen zu können ob eine Variable aktualisiert werden muss oder nicht.
 
