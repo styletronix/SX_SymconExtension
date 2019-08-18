@@ -1,0 +1,13 @@
+{
+    "id": "{6BA7ECC6-096B-498F-B7F0-2979740F0A75}",
+    "name": "Aufwachlicht",
+    "type": 3,
+    "vendor": "Styletronix.net",
+  "aliases": [
+    "Aufwachlicht"
+  ],  
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "SXAWK"
+}
