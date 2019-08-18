@@ -755,7 +755,7 @@
 						}
 					
 				}elseif($ProfileID3 > 0){
-						CallProfile(ProfileID3);
+						$this->CallProfile($ProfileID3);
 						
 				}
 				
