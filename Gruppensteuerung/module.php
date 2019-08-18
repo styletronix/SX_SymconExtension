@@ -499,6 +499,8 @@
 						//IPS_SetScriptTimer($PresenceOffDelayScriptID, $PresenceOffDelay);
 					}
 				}
+			}else{
+				$this->SetPresenceState($result);
 			}
 		}
 		
