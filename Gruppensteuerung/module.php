@@ -809,6 +809,9 @@
             $this->WriteSettings($data);
 			$this->RefreshStatus();
 		}
+		private function ApplyPresenceStateAfterProfileChange(){
+			$this->SetPresenceState(GetValueBoolean($this->GetIDForIdent("PresenceDetected")));
+		}
 		private function PresenceTimeoutOff(){			
 			$data = $this->ReadSettings();
 
@@ -955,13 +958,27 @@
 		}
 		public function SetProfilePresent(int $id){
 			SetValue($this->GetIDForIdent("ProfileID2"), $id);
-			if ($id > 0){
-				$this->UseProfileIDAsPresenceStateTeplateAndApplyToCurrentStateIfPresent($id);	
+			
+			if (GetValueBoolean($this->GetIDForIdent("PresenceDetected")) == true){
+				$this->ApplyPresenceStateAfterProfileChange();
+			} else {
+				$this->RefreshPresence();
 			}
+			
+			// if ($id > 0){
+				// $this->UseProfileIDAsPresenceStateTeplateAndApplyToCurrentStateIfPresent($id);	
+			// }
 		}
 		public function SetProfileAbsent(int $id){
 			SetValue($this->GetIDForIdent("ProfileID3"), $id);
-			$this->RefreshPresence();
+			
+			if (GetValueBoolean($this->GetIDForIdent("PresenceDetected")) == false){
+				$this->ApplyPresenceStateAfterProfileChange();
+			} else {
+				$this->RefreshPresence();
+			}
+			
+			//$this->RefreshPresence();
 		}
 		public function SetIlluminationLevelMotion(float $Value){
 			SetValue($this->GetIDForIdent("IlluminationLevelMotion"), $Value);
