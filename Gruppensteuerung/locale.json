@@ -1,0 +1,32 @@
+{
+    "translations": {
+        "de": { 
+            "Actors": "Aktoren",
+            "Actor": "Aktor",
+            "Sensors": "Sensoren",
+            "Type": "Typ",
+            "Motion": "Bewegung",
+            "Button": "Taster",
+            "Brightness": "Helligkeit",
+            "Brightness-Sensors": "Helligkeitssensoren",
+            "0 = Global use of motion and brightness. 1 = motion and brightness are combined per device if it is supplied from the same device instance.": "0 = Helligkeit und Bewegung werden nur Global ausgewertet und nicht auf einzelne Bereiche aufgeteilt, 1 = Helligkeit und Bewegung werden pro Geräteinstanz ausgewertet.",
+            "Brightness segmentation level": "Helligkeits-Segmente",
+            "Delay for absent": "Verzögerung für Abwesenheit",
+            "After absent, time for which the dimm-level is used before switching off": "Nach Abwesenheit wird vor dem vollständigen Abschalten für die eingestellte Zeit (in Sekunden) gewartet und das Licht auf den unten angegebenen Wert gedimmt.",
+			"Dimm delay": "Dimm Verzögerung",
+			"Dimm %": "Abwesend Dimmer %",
+			"Presence timeout (in seconds) switches to absent if no sensor refreshes its status during this time.": "Anwesenheits Timeout (in Sekunden) schaltet nach der hier eingestellten Zeit auf Abwesend, wenn keine der Variablen für die Anwesenheitskontrolle in dieser Zeit aktualisiert wurden.",
+			"Presence timeout": "Anwesenheits Timeout",
+			"Resets the absent template to the default values set by 'save as template' after a time period": "Bei Abwesenheit wird nach dem Reset Timeout (in Sekunden) das gespeicherte Lichtmuster auf die Vorlage zurückgesetzt. Die Vorlage wird mit dem Button 'Als Vorlage speichern' gesetzt.",
+			"Reset Timeout": "Reset Timeout",
+			"OFF": "AUS",
+			"ON": "AN",
+			"Activate ALERT Mode": "Alarm-Modus aktivieren",
+			"Deactivate ALERT Mode": "Alarm-Modus deaktivieren",
+			"Presence": "Anwesend",
+			"Absent": "Abwesend",
+			"Save as template": "Als Vorlage speichern",
+			"OK": "OK"
+        }
+    }
+}

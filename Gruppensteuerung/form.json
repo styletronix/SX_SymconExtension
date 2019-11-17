@@ -3,12 +3,12 @@
   {
     "type": "List",
     "name": "actors",
-    "caption": "Aktoren",
+    "caption": "Actors",
     "rowCount": 5,
     "add": true,
     "delete": true,
     "columns": [{
-        "caption": "Aktor",
+        "caption": "Actor",
         "name": "InstanceID", 
         "width": "auto",
         "add": 0,
@@ -19,12 +19,12 @@
 },{
     "type": "List",
     "name": "sensors",
-    "caption": "Sensoren",
+    "caption": "Sensors",
     "rowCount": 5,
     "add": true,
     "delete": true,
     "columns": [{
-        "caption": "Sensoren",
+        "caption": "Sensors",
         "name": "InstanceID", 
         "width": "auto",
         "add": 0,
@@ -32,27 +32,27 @@
             "type": "SelectVariable"
         }
     }, {
-        "caption": "Typ",
+        "caption": "Type",
         "name": "typ",
         "width": "150px",
         "add": 0,
         "edit": {
             "type": "Select",
 			"options": [
-				{ "caption": "Bewegung", "value": 0 },
-				{ "caption": "Taster", "value": 1 }
+				{ "caption": "Motion", "value": 0 },
+				{ "caption": "Button", "value": 1 }
 				]
         }
     }]
 },{
     "type": "List",
     "name": "brightness",
-    "caption": "Helligkeit",
+    "caption": "Brightness",
     "rowCount": 5,
     "add": true,
     "delete": true,
     "columns": [{
-        "caption": "Helligkeitssensoren",
+        "caption": "Brightness-Sensors",
         "name": "InstanceID", 
         "width": "auto",
         "add": 0,
@@ -63,44 +63,44 @@
 },
 	{
       "type": "Label",
-      "label": "0 = Helligkeit und Bewegung werden nur Global ausgewertet und nicht auf einzelne Bereiche aufgeteilt, 1 = Helligkeit und Bewegung werden pro Geräteinstanz ausgewertet."
+      "label": "0 = Global use of motion and brightness. 1 = motion and brightness are combined per device if it is supplied from the same device instance."
     },
     {
       "type": "NumberSpinner",
       "name": "BrightnessSegmentationLevel",
-      "caption": "Helligkeits-Segmente"
+      "caption": "Brightness segmentation level"
     },
 	{
       "type": "NumberSpinner",
       "name": "PresenceOffDelay",
-      "caption": "Verzögerung für Abwesenheit"
+      "caption": "Delay for absent"
     },
 	{
       "type": "Label",
-      "label": "Nach Abwesenheit wird vor dem vollständigen Abschalten für die eingestellte Zeit (in Sekunden) gewartet und das Licht auf den unten angegebenen Wert gedimmt."
+      "label": "After absent, time for which the dimm-level is used before switching off"
     },
     {
       "type": "NumberSpinner",
       "name": "PresenceTimeout",
-      "caption": "Dimm Verzögerung"
+      "caption": "Dimm delay"
     },
     {
       "type": "NumberSpinner",
       "name": "PresenceDimmerOffPercent",
-      "caption": "Abwesend Dimmer %"
+      "caption": "Dimm %"
     },
 	{
       "type": "Label",
-      "label": "Anwesenheits Timeout (in Sekunden) schaltet nach der hier eingestellten Zeit auf Abwesend, wenn keine der Variablen für die Anwesenheitskontrolle in dieser Zeit aktualisiert wurden."
+      "label": "Presence timeout (in seconds) switches to absent if no sensor refreshes its status during this time."
     },
     {
       "type": "NumberSpinner",
       "name": "PresenceRefreshTimeout",
-      "caption": "Anwesenheits Timeout"
+      "caption": "Presence timeout"
     },
 	{
       "type": "Label",
-      "label": "Bei Abwesenheit wird nach dem Reset Timeout (in Sekunden) das gespeicherte Lichtmuster auf die Vorlage zurückgesetzt. Die Vorlage wird mit dem Button 'Als Vorlage speichern' gesetzt. "
+      "label": "Resets the absent template to the default values set by 'save as template' after a time period"
     },
     {
       "type": "NumberSpinner",
@@ -112,49 +112,42 @@
     [
       {
         "type": "Button",
-        "label": "AUS",
+        "label": "OFF",
         "onClick": "SXGRP_SetState($id, false);"
       },
       {
         "type": "Button",
-        "label": "AN",
+        "label": "ON",
         "onClick": "SXGRP_SetState($id, true);"
       },
       {
         "type": "Button",
-        "label": "Alarm-Modus aktivieren",
+        "label": "Activate ALERT Mode",
         "onClick": "SXGRP_SetAlertState($id, true);"
       },
        {
         "type": "Button",
-        "label": "Alarm-Modus deaktivieren",
+        "label": "Deactivate ALERT Mode",
         "onClick": "SXGRP_SetAlertState($id, false);"
       },
        {
         "type": "Button",
-        "label": "Anwesend",
+        "label": "Presence",
         "onClick": "SXGRP_SetPresenceState($id, true);"
       },
        {
         "type": "Button",
-        "label": "Abwesend",
+        "label": "Absent",
         "onClick": "SXGRP_SetPresenceState($id, false);"
       },
        {
         "type": "Button",
-        "label": "Als Vorlage speichern",
+        "label": "Save as template",
         "onClick": "SXGRP_StoreCurrentAsPresenceStateTemplate($id);"
-      },
-       {
-        "type": "Button",
-        "label": "Geräte aktualisieren",
-        "onClick": "SXGRP_UpdateEvents($id);"
       }
     ],
     "status":
     [
-        { "code": 102, "icon": "active", "caption": "OK" },
-        { "code": 201, "icon": "error", "caption": "Authentication failed" },
-        { "code": 202, "icon": "error", "caption": "No credits left" }
+        { "code": 102, "icon": "active", "caption": "OK" }
     ]
 }
