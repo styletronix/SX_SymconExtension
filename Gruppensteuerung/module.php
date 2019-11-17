@@ -1,4 +1,4 @@
-<?
+<?php
     class Gruppensteuerung extends IPSModule {
         public function __construct($InstanceID) {
             parent::__construct($InstanceID);
