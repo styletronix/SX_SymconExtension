@@ -1,4 +1,4 @@
-<?
+<?php
 class WakeOnLAN extends IPSModule {
         public function __construct($InstanceID) {
             // Diese Zeile nicht löschen

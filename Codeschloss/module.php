@@ -1,4 +1,4 @@
-<?
+<?php
 class Codeschloss extends IPSModule {
     public $PinCache = "";
         

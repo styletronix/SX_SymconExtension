@@ -1,4 +1,4 @@
-<?
+<?php
     class WatchDog extends IPSModule {
         public function __construct($InstanceID) {
             parent::__construct($InstanceID);
