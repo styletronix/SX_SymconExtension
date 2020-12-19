@@ -330,7 +330,43 @@
 			if ($arr){
 				foreach($arr as $key1) {
 					if($key1["InstanceID"] == $DeviceID){
-						$this->RefreshPresence();
+						if($key1["typ"] == 0){
+							// Motion
+							$this->RefreshPresence();
+						}
+						if($key1["typ"] == 1){
+							// Button (depends on brightness)
+							$this->RefreshPresence();
+						}
+						if($key1["typ"] == 2){
+							// Button manual presence on
+							$this->SetManualPresence(true);
+						}
+						if($key1["typ"] == 3){
+							// Button manual presence off
+							$this->SetManualPresence(false);
+						}
+						if($key1["typ"] == 4){
+							// Button disable presence detection
+							$this->DisablePresenceDetection();
+						}
+						if($key1["typ"] == 5){
+							// Button enable presence detection
+							$this->EnablePresenceDetection();
+						}
+						if($key1["typ"] == 6){
+							// Button alert mode on
+							$this->SetAlertState(true);
+						}
+						if($key1["typ"] == 7){
+							// Button alert mode off
+							$this->SetAlertState(false);
+						}
+						if($key1["typ"] == 8){
+							// Button on
+							$this->SetPresenceState(true, true);
+						}
+						
 						break;
 					}
 				}
@@ -397,7 +433,7 @@
 			if ($ManualPresence == true){
 				$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
 				//IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
-				$this->SetPresenceState(true);
+				$this->SetPresenceState(true, false);
 				return;
 			}
 
@@ -487,20 +523,20 @@
 				if ($result == true){
 				   	$this->SetTimerInterval("UpdatePresence_Timer", $PresenceRefreshTimeout * 1000);
 					//IPS_SetScriptTimer($SkriptID, $PresenceRefreshTimeout);
-					$this->SetPresenceState($result);
+					$this->SetPresenceState($result, false);
 				}else{
 					$this->SetTimerInterval("UpdatePresence_Timer", 0);
 					// IPS_SetScriptTimer($SkriptID, 0);
 					
 					if ($PresenceOffDelay <= 0){
-						$this->SetPresenceState($result);
+						$this->SetPresenceState($result, false);
 					}else{
 						$this->SetTimerInterval("PresenceOffDelayScript_Timer", $PresenceOffDelay * 1000);
 						//IPS_SetScriptTimer($PresenceOffDelayScriptID, $PresenceOffDelay);
 					}
 				}
 			}else{
-				$this->SetPresenceState($result);
+				$this->SetPresenceState($result, false);
 			}
 		}
 		
@@ -692,9 +728,10 @@
 			$this->RefreshPresence();
 		}
 		public function TriggerPresenceDetected(){
-			$this->SetPresenceState(true);
+			$this->SetPresenceState(true, false);
 		}
-		private function SetPresenceState(bool $Value){
+
+		private function SetPresenceState(bool $Value, bool $ignoreIllumination){
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
 			SetValue($this->GetIDForIdent("PresenceDetected"), $Value);
 			
@@ -765,12 +802,14 @@
 				
 			}else{
 				// Prüfe Helligkeit
+				if ($ignoreIllumination == false){
 				$IlluminationLevelMotion = GetValueFloat(IPS_GetObjectIDByIdent("IlluminationLevelMotion", $this->InstanceID));  
 				if ($IlluminationLevelMotion > -1){
 					$illumination = $this->GetIlluminationLevelMin();
 					if ($illumination > $IlluminationLevelMotion){
 						return; // Bewegung nicht als erkannt setzen, wenn Helligkeit höher als eingestellter Wert ist.
 					}
+				}
 				}
 				
 				$this->SetTimerInterval("PresenceTimeoutOff_Timer", 0);
@@ -810,7 +849,7 @@
 			$this->RefreshStatus();
 		}
 		private function ApplyPresenceStateAfterProfileChange(){
-			$this->SetPresenceState(GetValueBoolean($this->GetIDForIdent("PresenceDetected")));
+			$this->SetPresenceState(GetValueBoolean($this->GetIDForIdent("PresenceDetected")), false);
 		}
 		private function PresenceTimeoutOff(){			
 			$data = $this->ReadSettings();
@@ -1061,7 +1100,7 @@
 						break;
 						
 					case "PresenceOffDelayScript_Timer":
-						$this->SetPresenceState(false);
+						$this->SetPresenceState(false, false);
 						break;
 						
 					case "ResetPresenceStateToTemplate_Timer":

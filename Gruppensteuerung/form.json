@@ -40,7 +40,14 @@
             "type": "Select",
 			"options": [
 				{ "caption": "Motion", "value": 0 },
-				{ "caption": "Button", "value": 1 }
+				{ "caption": "Button (depends on brightness)", "value": 1 },
+				{ "caption": "Button manual presence on", "value": 2 },
+				{ "caption": "Button manual presence off", "value": 3 },
+				{ "caption": "Button disable presence detection", "value": 4 },
+				{ "caption": "Button enable presence detection", "value": 5 },
+				{ "caption": "Button alert mode on", "value": 6 },
+				{ "caption": "Button alert mode off", "value": 7 },
+				{ "caption": "Button on", "value": 8 }
 				]
         }
     }]
