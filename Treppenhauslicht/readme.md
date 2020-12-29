@@ -28,6 +28,11 @@
 ---
 
 ## 4. Änderungen
+29.12.2020
+- Funktion "Off_with_warning" wurde hinzugefügt. Hiermit kann das Licht vorzeitig mit Vorwarnung ausgeschaltet werden.
+- Funktion "Off_without_warning" wurde hinzugefügt. Hiermit kann das Licht sofort ohne Vorwarnung ausgeschaltet werden.
+- Variable "Status" wurde hinzugefügt.
+
 23.09.2019
 - Variablen mit benutzerdefiniertem ActionScript werden unterstützt.
 
