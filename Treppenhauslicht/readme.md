@@ -30,6 +30,8 @@
 
 ## 4. Hinweise
 Die Option "Bei jeder Aktualisierung Timer neu starten" für die Sensoren schaltet das Licht bei jeder aktualisierung der Variable ein, unabhängig ob die Variable auf "Ein" oder "Aus" steht. Ist die Option deaktiviert wird der Timer nur neu gestartet wenn die Variable von "Aus" auf "Ein" wechselt oder die Variable aktualisiert wird während diese auf "Ein" steht.
+___
+
 
 ## 5. Änderungen
 29.12.2020
