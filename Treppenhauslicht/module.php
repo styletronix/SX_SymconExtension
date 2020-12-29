@@ -6,11 +6,7 @@
 		
         public function Create() {
             parent::Create();
-
-			// $this->RegisterVariableInteger("alarmmodus", "Status", "SX_Alarm.Modus");
-			// $this->EnableAction("alarmmodus");
 						
-			//Eigenschaften registrieren
 			$this->RegisterPropertyString("triggers", null);
 			$this->RegisterPropertyString("devices", null);
 			
@@ -24,7 +20,7 @@
 			$this->RegisterTimer("on_timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "on_timer");');
 			$this->RegisterTimer("blink_timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "blink_timer");');
 			
-			$this->ParameterChanged("showStatus");
+			$this->RegisterVariableString("statusString", "Status");
         }
 		
         public function ApplyChanges() {
@@ -55,18 +51,22 @@
 			$this->SetAllDeviceStatus(true);				
 		}
 		
-		public function ParameterChanged(string $parameter){
-			if ($parameter == "showStatus"){
-				$showStatus = $this->ReadPropertyBoolean("showStatus");
-				if ($showStatus){
-					$this->RegisterVariableString("statusString","Status");
-				}else{
-					$id = $this->GetIDForIdent("statusString");
-					if ($id){
-						$this->UnregisterVariable($id);
-					}					
-				}
-			}
+		public function Off_without_warning(){
+			$this->SetTimerInterval("on_timer", 0);
+			$this->SetTimerInterval("blink_timer", 0);
+			$this->SetTimerInterval("warning_timer", 0);
+			
+			$this->SetBuffer("IsOn", "false");
+			$this->SetValue("statusString", "Reset");
+			$this->SetAllDeviceStatus(false);				
+		}
+		
+		public function Off_with_warning(){
+			$this->SetTimerInterval("on_timer", 0);
+			$this->SetTimerInterval("blink_timer", 0);
+			$this->SetTimerInterval("warning_timer", 0);
+			
+			$this->TimerCallback("on_timer");
 		}
 		
 		private function SetAllDeviceStatus(bool $Value){

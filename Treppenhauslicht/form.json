@@ -42,8 +42,7 @@
     }]
 },
 { "type": "NumberSpinner", "name": "on_time", "caption": "Einschaltdauer", "suffix": "Sekunden"},
-{ "type": "NumberSpinner", "name": "off_warning_time", "caption": "Dauer der Ausschaltvorwarnung", "suffix": "Sekunden"},
-{ "type": "CheckBox", "name": "showStatus", "caption": "Statusvariable generieren", "onChange": "SXTRP_ParameterChanged($id,'showStatus');"}
+{ "type": "NumberSpinner", "name": "off_warning_time", "caption": "Dauer der Ausschaltvorwarnung", "suffix": "Sekunden"}
   ],
     "actions":
     [
