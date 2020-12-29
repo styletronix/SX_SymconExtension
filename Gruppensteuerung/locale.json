@@ -33,7 +33,10 @@
 			"Presence": "Anwesend",
 			"Absent": "Abwesend",
 			"Save as template": "Als Vorlage speichern",
-			"OK": "OK"
+			"OK": "OK",
+			"Manual presence timeout": "Timeout für manuelle Anwesenheit",
+			"Alert state timeout": "Alarmstatus Timeout",
+			"seconds": "Sekunden"
         }
     }
 }

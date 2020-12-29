@@ -31,6 +31,8 @@
 			$this->RegisterVariableBoolean("ManualPresence", "manuelle Anwesenheit", "~Switch");
             $this->EnableAction("ManualPresence");
 			
+			$this->RegisterVariableString("statusString", "Status");
+			
 			$this->RegisterVariableFloat("CurrentMinBrightness", "Aktuelle Helligkeit", "");
 			
 			if (IPS_VariableProfileExists ( "SXGRP.Profiles" ) == false){
@@ -89,6 +91,8 @@
 			$this->RegisterPropertyInteger("PresenceRefreshTimeout", 300);
 			$this->RegisterPropertyInteger("PresenceResetToTemplateTimeout", 0);
 			$this->RegisterPropertyInteger("BrightnessSegmentationLevel", 0);
+			$this->RegisterPropertyInteger("ManualPresenceResetTimeout", 0);
+			$this->RegisterPropertyInteger("AlertTimeout", 0);
 			
 			$this->RegisterPropertyInteger("IsVersion", 0);
 			
@@ -108,7 +112,9 @@
 			$this->RegisterTimer("PresenceTimeoutOff_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceTimeoutOff_Timer");');			
 			$this->RegisterTimer("PresenceOffDelayScript_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceOffDelayScript_Timer");');
 			$this->RegisterTimer("ResetPresenceStateToTemplate_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ResetPresenceStateToTemplate_Timer");');
-									
+			$this->RegisterTimer("ManualPresenceReset_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ManualPresenceReset_Timer");');
+			$this->RegisterTimer("AlertTimeout_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "AlertTimeout_Timer");');
+						
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
 			}
@@ -432,7 +438,6 @@
 			$ManualPresence = GetValueBoolean($this->GetIDForIdent("ManualPresence"));
 			if ($ManualPresence == true){
 				$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
-				//IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
 				$this->SetPresenceState(true, false);
 				return;
 			}
@@ -514,7 +519,6 @@
 			
 			
 			$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
-			//IPS_SetScriptTimer($PresenceOffDelayScriptID, 0);
 			
 						
 			if ($PresenceDetectorsExist == true){
@@ -522,17 +526,15 @@
 				
 				if ($result == true){
 				   	$this->SetTimerInterval("UpdatePresence_Timer", $PresenceRefreshTimeout * 1000);
-					//IPS_SetScriptTimer($SkriptID, $PresenceRefreshTimeout);
 					$this->SetPresenceState($result, false);
+					
 				}else{
 					$this->SetTimerInterval("UpdatePresence_Timer", 0);
-					// IPS_SetScriptTimer($SkriptID, 0);
 					
 					if ($PresenceOffDelay <= 0){
 						$this->SetPresenceState($result, false);
 					}else{
 						$this->SetTimerInterval("PresenceOffDelayScript_Timer", $PresenceOffDelay * 1000);
-						//IPS_SetScriptTimer($PresenceOffDelayScriptID, $PresenceOffDelay);
 					}
 				}
 			}else{
@@ -718,12 +720,23 @@
 			SetValueBoolean($this->GetIDForIdent("AlertModeAktive"), $Value);
 			
 			if ($Value == false){
+				$this->SetTimerInterval("AlertTimeout_Timer", 0);
 				$this->RefreshPresence();
+			}else{
+				$timer = $this->ReadPropertyInteger("AlertTimeout");	
+				$this->SetTimerInterval("AlertTimeout_Timer",  $timer * 1000);
 			}
 			
 			IPS_SemaphoreLeave("SXGRP_AlertStateChange");
 		}
 		public function SetManualPresence(bool $Value){
+			if ($Value){
+				$timer = $this->ReadPropertyInteger("ManualPresenceResetTimeout");			
+				$this->SetTimerInterval("ManualPresenceReset_Timer", $timer * 1000);
+			}else{
+				$this->SetTimerInterval("ManualPresenceReset_Timer", 0);
+			}
+			
 			SetValueBoolean($this->GetIDForIdent("ManualPresence"), $Value);
 			$this->RefreshPresence();
 		}
@@ -743,11 +756,13 @@
 			$currentPreAlertState = $data['PreAlertState'];
 			
 			if ($currentPreAlertState !== ""){
+				$this->SetValue("statusString", "Alarmmodus ist aktiv");
 				return;
 			}
 			
 			// Keine weitere Ausführung, wenn Bewegungsmelder deaktiviert sind.
 			if ($enabled == false){
+				$this->SetValue("statusString", "Bewegungsmelder sind deaktiviert");
 				return;
 			}
 			
@@ -766,6 +781,7 @@
 				
 				if ($ProfileID3 == -1 or $ProfileID3 == 0 or $ProfileID3 == -2){
 					if ($PresenceTimeout > 0){
+						$this->SetValue("statusString", "Vorwarnung vor abwesenheit...");
 						$DimmLevel = $this->ReadPropertyInteger("PresenceDimmerOffPercent");
 						
 						if ($DeviceList){
@@ -775,8 +791,9 @@
 						}
 						
 						$this->SetTimerInterval("PresenceTimeoutOff_Timer", $PresenceTimeout * 1000);
-					
+						
 					}else{
+						$this->SetValue("statusString", "Abwesend (Aus)");
 						if ($DeviceList){
 							foreach($DeviceList as $device){
 								$this->SetObjectValue($device["InstanceID"], false, 0, 0, false, false);
@@ -785,6 +802,7 @@
 					}
 				
 				}elseif($ProfileID3 == -3){
+					$this->SetValue("statusString", "Abwesend (An)");
 					if ($DeviceList){
 							foreach($DeviceList as $device){
 								$this->SetObjectValue($device["InstanceID"], true, 100, 1.0, false, false);
@@ -792,7 +810,8 @@
 						}
 					
 				}elseif($ProfileID3 > 0){
-						$this->CallProfile($ProfileID3);
+					$this->SetValue("statusString", "Abwesend (Profil ". $ProfileID3 .")");
+					$this->CallProfile($ProfileID3);
 						
 				}
 				
@@ -807,6 +826,7 @@
 				if ($IlluminationLevelMotion > -1){
 					$illumination = $this->GetIlluminationLevelMin();
 					if ($illumination > $IlluminationLevelMotion){
+						$this->SetValue("statusString", "Bewegung wegen Helligkeit ignoriert");
 						return; // Bewegung nicht als erkannt setzen, wenn Helligkeit höher als eingestellter Wert ist.
 					}
 				}
@@ -819,10 +839,12 @@
 				
 				if ($ProfileID2 == -1 or $ProfileID2 == 0){
 					if ($currentPrePresenceState !== ""){
+						$this->SetValue("statusString", "Anwesend (Automatik)");
 						$this->SetCurrentStateString($currentPrePresenceState);
 					}
 					
 				}elseif($ProfileID2 == -2){
+					$this->SetValue("statusString", "Anwesend (Aus)");
 					if ($DeviceList){
 							foreach($DeviceList as $device){
 								$this->SetObjectValue($device["InstanceID"], false, 0, 0, false, false);
@@ -831,6 +853,7 @@
 					
 					
 				}elseif($ProfileID2 == -3){
+					$this->SetValue("statusString", "Anwesend (An)");					
 					if ($DeviceList){
 							foreach($DeviceList as $device){
 								$this->SetObjectValue($device["InstanceID"], true, 100, 1.0, false, false);
@@ -838,7 +861,8 @@
 						}
 					
 				}elseif($ProfileID2 > 0){
-						$this->CallProfile($ProfileID2);
+					$this->SetValue("statusString", "Anwesend (Profil ". $ProfileID2 .")");
+					$this->CallProfile($ProfileID2);
 						
 				}
 				
@@ -1105,6 +1129,14 @@
 						
 					case "ResetPresenceStateToTemplate_Timer":
 						$this->ResetPresenceStateToTemplat();
+						break;
+						
+					case "ManualPresenceReset_Timer":
+						$this->SetManualPresence(false);
+						break;
+						
+					case "AlertTimeout_Timer":
+						$this->SetAlertState(false);
 						break;
 				}				
 		}

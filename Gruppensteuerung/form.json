@@ -89,12 +89,16 @@
     {
       "type": "NumberSpinner",
       "name": "PresenceTimeout",
-      "caption": "Dimm delay"
+      "caption": "Dimm delay",
+	  "suffix": "seconds"
     },
     {
       "type": "NumberSpinner",
       "name": "PresenceDimmerOffPercent",
-      "caption": "Dimm %"
+      "caption": "Dimm %",
+	  "suffix": "%",
+	  "minimum": 0,
+	  "maximum": 100
     },
 	{
       "type": "Label",
@@ -103,7 +107,8 @@
     {
       "type": "NumberSpinner",
       "name": "PresenceRefreshTimeout",
-      "caption": "Presence timeout"
+      "caption": "Presence timeout",
+	  "suffix": "seconds"
     },
 	{
       "type": "Label",
@@ -112,7 +117,20 @@
     {
       "type": "NumberSpinner",
       "name": "PresenceResetToTemplateTimeout",
-      "caption": "Reset Timeout"
+      "caption": "Reset Timeout",
+	  "suffix": "seconds"
+    },
+	{
+      "type": "NumberSpinner",
+      "name": "ManualPresenceResetTimeout",
+      "caption": "Manual presence timeout",
+	  "suffix": "seconds"
+    },
+	{
+      "type": "NumberSpinner",
+      "name": "AlertTimeout",
+      "caption": "Alert state timeout",
+	  "suffix": "seconds"
     }
   ],
     "actions":
