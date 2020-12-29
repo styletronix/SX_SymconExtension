@@ -158,12 +158,12 @@
        {
         "type": "Button",
         "label": "Presence",
-        "onClick": "SXGRP_SetPresenceState($id, true);"
+        "onClick": "SXGRP_SetManualPresence($id, true);"
       },
        {
         "type": "Button",
         "label": "Absent",
-        "onClick": "SXGRP_SetPresenceState($id, false);"
+        "onClick": "SXGRP_SetManualPresence($id, false);"
       },
        {
         "type": "Button",
