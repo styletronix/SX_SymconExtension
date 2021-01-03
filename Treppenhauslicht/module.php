@@ -6,11 +6,7 @@
 		
         public function Create() {
             parent::Create();
-
-			// $this->RegisterVariableInteger("alarmmodus", "Status", "SX_Alarm.Modus");
-			// $this->EnableAction("alarmmodus");
 						
-			//Eigenschaften registrieren
 			$this->RegisterPropertyString("triggers", null);
 			$this->RegisterPropertyString("devices", null);
 			
@@ -18,10 +14,13 @@
 			
 			$this->RegisterPropertyInteger("on_time", 240);
 			$this->RegisterPropertyInteger("off_warning_time", 30);
+			$this->RegisterPropertyBoolean("showStatus", false);
 			
 			$this->RegisterTimer("warning_timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "warning_timer");');
 			$this->RegisterTimer("on_timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "on_timer");');
 			$this->RegisterTimer("blink_timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "blink_timer");');
+			
+			$this->RegisterVariableString("statusString", "Status");
         }
 		
         public function ApplyChanges() {
@@ -48,7 +47,26 @@
 			$this->SetTimerInterval("warning_timer", 0);
 			
 			$this->SetBuffer("IsOn", "true");
+			$this->SetValue("statusString", "Zeit läuft...");
 			$this->SetAllDeviceStatus(true);				
+		}
+		
+		public function Off_without_warning(){
+			$this->SetTimerInterval("on_timer", 0);
+			$this->SetTimerInterval("blink_timer", 0);
+			$this->SetTimerInterval("warning_timer", 0);
+			
+			$this->SetBuffer("IsOn", "false");
+			$this->SetValue("statusString", "Reset");
+			$this->SetAllDeviceStatus(false);				
+		}
+		
+		public function Off_with_warning(){
+			$this->SetTimerInterval("on_timer", 0);
+			$this->SetTimerInterval("blink_timer", 0);
+			$this->SetTimerInterval("warning_timer", 0);
+			
+			$this->TimerCallback("on_timer");
 		}
 		
 		private function SetAllDeviceStatus(bool $Value){
@@ -95,7 +113,7 @@
 						
 			return null;
 		}
-		private function Blink(){
+		private function Blink(){		
 			$this->SetAllDeviceStatus(false);
 			IPS_Sleep(1000);
 			
@@ -107,6 +125,7 @@
 		
 		private function Off(){
 			$this->SetBuffer("IsOn", "false");
+			$this->SetValue("statusString", "Aus");
 			$this->SetAllDeviceStatus(false);
 		}
 		
@@ -122,6 +141,7 @@
 					$offWarningTime = $this->ReadPropertyInteger("off_warning_time");
 					if ($offWarningTime > 0){
 						$this->SetTimerInterval("warning_timer", $offWarningTime * 1000);
+						$this->SetValue("statusString", "Ausschaltwarnung");
 						$this->Blink();
 					}else{
 						$this->Off();

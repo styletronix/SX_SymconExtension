@@ -40,7 +40,14 @@
             "type": "Select",
 			"options": [
 				{ "caption": "Motion", "value": 0 },
-				{ "caption": "Button", "value": 1 }
+				{ "caption": "Button (depends on brightness)", "value": 1 },
+				{ "caption": "Button manual presence on", "value": 2 },
+				{ "caption": "Button manual presence off", "value": 3 },
+				{ "caption": "Button disable presence detection", "value": 4 },
+				{ "caption": "Button enable presence detection", "value": 5 },
+				{ "caption": "Button alert mode on", "value": 6 },
+				{ "caption": "Button alert mode off", "value": 7 },
+				{ "caption": "Button on", "value": 8 }
 				]
         }
     }]
@@ -82,12 +89,16 @@
     {
       "type": "NumberSpinner",
       "name": "PresenceTimeout",
-      "caption": "Dimm delay"
+      "caption": "Dimm delay",
+	  "suffix": "seconds"
     },
     {
       "type": "NumberSpinner",
       "name": "PresenceDimmerOffPercent",
-      "caption": "Dimm %"
+      "caption": "Dimm %",
+	  "suffix": "%",
+	  "minimum": 0,
+	  "maximum": 100
     },
 	{
       "type": "Label",
@@ -96,7 +107,8 @@
     {
       "type": "NumberSpinner",
       "name": "PresenceRefreshTimeout",
-      "caption": "Presence timeout"
+      "caption": "Presence timeout",
+	  "suffix": "seconds"
     },
 	{
       "type": "Label",
@@ -105,7 +117,25 @@
     {
       "type": "NumberSpinner",
       "name": "PresenceResetToTemplateTimeout",
-      "caption": "Reset Timeout"
+      "caption": "Reset Timeout",
+	  "suffix": "seconds"
+    },
+	{
+      "type": "NumberSpinner",
+      "name": "ManualPresenceResetTimeout",
+      "caption": "Manual presence timeout",
+	  "suffix": "seconds"
+    },
+	{
+      "type": "NumberSpinner",
+      "name": "AlertTimeout",
+      "caption": "Alert state timeout",
+	  "suffix": "seconds"
+    },
+	{
+      "type": "CheckBox",
+      "name": "ResetManualPresenceOnManualTrigger",
+      "caption": "Reset manual presence on Button press"
     }
   ],
     "actions":
@@ -133,12 +163,12 @@
        {
         "type": "Button",
         "label": "Presence",
-        "onClick": "SXGRP_SetPresenceState($id, true);"
+        "onClick": "SXGRP_SetManualPresence($id, true);"
       },
        {
         "type": "Button",
         "label": "Absent",
-        "onClick": "SXGRP_SetPresenceState($id, false);"
+        "onClick": "SXGRP_SetManualPresence($id, false);"
       },
        {
         "type": "Button",

@@ -7,7 +7,8 @@
 1. [Funktionsumfang](#1-funktionsumfang)
 2. [Systemanforderungen](#2-systemanforderungen)
 3. [Installation](#3-installation)
-4. [Änderungen](#4-änderungen)
+4. [Hinweise](#4-hinweise)
+5. [Änderungen](#5-änderungen)
 ---
 
 
@@ -27,7 +28,17 @@
 3. Fügen Sie im Instanzeditor Sensoren und Melder ein.
 ---
 
-## 4. Änderungen
+## 4. Hinweise
+Die Option "Bei jeder Aktualisierung Timer neu starten" für die Sensoren schaltet das Licht bei jeder aktualisierung der Variable ein, unabhängig ob die Variable auf "Ein" oder "Aus" steht. Ist die Option deaktiviert wird der Timer nur neu gestartet wenn die Variable von "Aus" auf "Ein" wechselt oder die Variable aktualisiert wird während diese auf "Ein" steht.
+___
+
+
+## 5. Änderungen
+29.12.2020
+- Funktion "Off_with_warning" wurde hinzugefügt. Hiermit kann das Licht vorzeitig mit Vorwarnung ausgeschaltet werden.
+- Funktion "Off_without_warning" wurde hinzugefügt. Hiermit kann das Licht sofort ohne Vorwarnung ausgeschaltet werden.
+- Variable "Status" wurde hinzugefügt.
+
 23.09.2019
 - Variablen mit benutzerdefiniertem ActionScript werden unterstützt.
 
