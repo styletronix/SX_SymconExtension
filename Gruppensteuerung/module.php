@@ -93,7 +93,7 @@
 			$this->RegisterPropertyInteger("BrightnessSegmentationLevel", 0);
 			$this->RegisterPropertyInteger("ManualPresenceResetTimeout", 0);
 			$this->RegisterPropertyInteger("AlertTimeout", 0);
-			
+			$this->RegisterPropertyBoolean("ResetManualPresenceOnManualTrigger", false);
 			$this->RegisterPropertyInteger("IsVersion", 0);
 			
 
@@ -334,6 +334,7 @@
 			
 			$arr = $this->GetListItems("sensors");
 			if ($arr){
+				$resetManual = $this->ReadPropertyBoolean("ResetManualPresenceOnManualTrigger");	
 				foreach($arr as $key1) {
 					if($key1["InstanceID"] == $DeviceID){
 						if($key1["typ"] == 0){
@@ -370,6 +371,9 @@
 						}
 						if($key1["typ"] == 8){
 							// Button on
+							if ($resetManual == true){
+								$this->SetManualPresence(false);
+							}
 							$this->SetPresenceState(true, true);
 						}
 						

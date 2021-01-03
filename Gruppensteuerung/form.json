@@ -131,6 +131,11 @@
       "name": "AlertTimeout",
       "caption": "Alert state timeout",
 	  "suffix": "seconds"
+    },
+	{
+      "type": "CheckBox",
+      "name": "ResetManualPresenceOnManualTrigger",
+      "caption": "Reset manual presence on Button press"
     }
   ],
     "actions":

@@ -35,7 +35,8 @@
 			"Save as template": "Als Vorlage speichern",
 			"OK": "OK",
 			"Manual presence timeout": "Timeout für manuelle Anwesenheit",
-			"Alert state timeout": "Alarmstatus Timeout",
+			"Alert state timeout": "Timeout für Alarmstatus",
+			"Reset manual presence on Button press": "Rücksetzen von manuelle Anwesenheit wenn 'Taste an' betätigt wird.",
 			"seconds": "Sekunden"
         }
     }
