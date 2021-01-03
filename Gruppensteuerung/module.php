@@ -454,8 +454,14 @@
 			
 			if ($PresenceDeviceList){
 				foreach($PresenceDeviceList as $Device) {
+					if($Device["typ"] < 0 or $Device["typ"] > 1){
+						// Skip Buttons
+						continue;
+					}
+						
 				$key2 = $Device["InstanceID"];
 				if (!IPS_ObjectExists($key2)){ continue; }
+				
 				
 				$itemObject = IPS_GetObject($key2);
 				$TargetID = $key2;
