@@ -81,6 +81,9 @@
 			
 			$this->RegisterVariableInteger("ProfileID3", "Profil Abwesend", "SXGRP.Profiles2");
             $this->EnableAction("ProfileID3");
+			
+			$this->RegisterVariableInteger("ProfileID4", "Profil Alarmbeleuchtung", "SXGRP.Profiles2");
+            $this->EnableAction("ProfileID4");
 
 			$this->RegisterVariableFloat("IlluminationLevelMotion", "Helligkeitsgrenze für Bewegungsmelder", "SXGRP.Brightness");
             $this->EnableAction("IlluminationLevelMotion");
@@ -711,10 +714,25 @@
                     $data["PreAlertState"] = $result;
 				}
 			
-				$arr = $this->GetListItems("actors");
-				if ($arr){
-					foreach($arr as $device){
-						$this->SetObjectValuePercent($device["InstanceID"], 1.0, false, false);
+				$ProfileID4 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID4", $this->InstanceID));  
+				if ($ProfileID4 > 0){
+					// Load Profile if set
+					$this->CallProfile($ProfileID4);
+				}elseif($ProfileID3 == -2){
+					// Switch off on Alert
+					$arr = $this->GetListItems("actors");
+					if ($arr){
+						foreach($arr as $device){
+							$this->SetObjectValuePercent($device["InstanceID"], 0.0, false, false);
+						}
+					}
+				}else{
+					// Switch on in Alert (default)
+					$arr = $this->GetListItems("actors");
+					if ($arr){
+						foreach($arr as $device){
+							$this->SetObjectValuePercent($device["InstanceID"], 1.0, false, false);
+						}
 					}
 				}
 
