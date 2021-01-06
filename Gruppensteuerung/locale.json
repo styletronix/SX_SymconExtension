@@ -36,6 +36,7 @@
 			"OK": "OK",
 			"Manual presence timeout": "Timeout für manuelle Anwesenheit",
 			"Alert state timeout": "Timeout für Alarmstatus",
+			"Presence detector off timeout": "Timeout für deaktivierte Bewegungsmelder",
 			"Reset manual presence on Button press": "Rücksetzen von manuelle Anwesenheit wenn 'Taste an' betätigt wird.",
 			"seconds": "Sekunden"
         }

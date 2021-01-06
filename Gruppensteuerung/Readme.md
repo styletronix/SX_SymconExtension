@@ -7,6 +7,12 @@ Die Gruppensteuerung kann für komplexe Aufgaben kaskadiert werden. Das bedeutet
 Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, könne Sie die Kategorien "Geräte", "Helligkeit" und "Bewegung" in der Instanz löschen, sofern Sie darin nur Verknüpfungen abgelegt hatten.
 
 ## Änderungen
+06.01.2021
++ Für die Alarmbeleuchtung kann ein extra Profil ausgewählt werden.
++ Den Sensoren können nun direkt Funktionen wie "Alarmbeleuchtung" oder "manuelle anwesenheit" zugeordnet werden.
++ manuelle Anwesenheit, deaktivierte Bewegungsmelder und aktive Alarmbeleuchtung können nun automatisch nach einer eingestellten Zeit wieder auf die Grundwerte zurückgesetzt werden.
++ Bei einem Neustart von IP-Symcon oder Änderungen im Konfigurationsformular werden die Timer neu gestartet, damit die automatikfunktionen durch einen Neustart nicht unterbrochen werden.
+
 18.08.2019
 o Wenn keine Bewegungsmelder eingerichtet wurden, hat die manuelle Anwesenheit nicht mehr auf "Abwesend" zurück geschaltet.
 o Wenn für "Abwesenheit" ein Profil ausgewählt wurde, wurde dies bei Abwesenheit nicht verwendet.
@@ -36,7 +42,7 @@ o Beim laden von Profilen kam es bei nicht existierenden Geräten zu Fehlermeldu
 1.  Fügen Sie SX_SymconExtension zu den Modulen von IP-Symcon hinzu.
 2.  Fügen Sie schaltbare Variablen zur Liste der Aktoren hinzu, die als Gruppe gesteuert werden sollen.
 3. Speichern Sie die Änderungen und prüfen Sie die Funktion durch betätigen der Taset "An" und "Aus" im Instanzeditor.
-4. Fügen Sie gegebenenfalls Bewegungsmelder und Helligkeitssensoren in der entsprechenden Liste hinzu.
+4. Fügen Sie gegebenenfalls Bewegungsmelder, Taster und Helligkeitssensoren in der entsprechenden Liste hinzu.
 
 ## Unterstützte Variablen und Geräte
 Es werden alle Geräte bzw. Variablen unterstützt, welche auch per WebFront geschaltet werden können.
