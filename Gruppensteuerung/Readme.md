@@ -11,6 +11,7 @@ Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, k
 + Für die Alarmbeleuchtung kann ein extra Profil ausgewählt werden.
 + Den Sensoren können nun direkt Funktionen wie "Alarmbeleuchtung" oder "manuelle anwesenheit" zugeordnet werden.
 + manuelle Anwesenheit, deaktivierte Bewegungsmelder und aktive Alarmbeleuchtung können nun automatisch nach einer eingestellten Zeit wieder auf die Grundwerte zurückgesetzt werden.
++ Bei einem Neustart von IP-Symcon oder Änderungen im Konfigurationsformular werden die Timer neu gestartet, damit die automatikfunktionen durch einen Neustart nicht unterbrochen werden.
 
 18.08.2019
 o Wenn keine Bewegungsmelder eingerichtet wurden, hat die manuelle Anwesenheit nicht mehr auf "Abwesend" zurück geschaltet.
