@@ -131,7 +131,7 @@
 
 			$this->UpgradeToNewVersion();
 			$this->UpdateEvents();
-			$this->CheckTimerIntervals();
+			//$this->CheckTimerIntervals();
 			$this->SetStatus(102);
         }
 
@@ -1147,7 +1147,7 @@
     		}
  		}
 		
-		private function CheckTimerIntervals(){
+		public function CheckTimerIntervals(){
 			//$this->SetTimerInterval("PresenceTimeoutOff_Timer", $this->ReadPropertyInteger("PresenceTimeout") * 1000);
 			//$this->SetTimerInterval("PresenceOffDelayScript_Timer", $this->ReadPropertyInteger("PresenceOffDelay") * 1000);
 			
