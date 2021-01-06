@@ -133,6 +133,12 @@
 	  "suffix": "seconds"
     },
 	{
+      "type": "NumberSpinner",
+      "name": "PresenceDetectionOffTimeout",
+      "caption": "Presence detector off timeout",
+	  "suffix": "seconds"
+    },
+	{
       "type": "CheckBox",
       "name": "ResetManualPresenceOnManualTrigger",
       "caption": "Reset manual presence on Button press"

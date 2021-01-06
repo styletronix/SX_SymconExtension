@@ -96,6 +96,7 @@
 			$this->RegisterPropertyInteger("BrightnessSegmentationLevel", 0);
 			$this->RegisterPropertyInteger("ManualPresenceResetTimeout", 0);
 			$this->RegisterPropertyInteger("AlertTimeout", 0);
+			$this->RegisterPropertyInteger("PresenceDetectionOffTimeout", 0);		
 			$this->RegisterPropertyBoolean("ResetManualPresenceOnManualTrigger", false);
 			$this->RegisterPropertyInteger("IsVersion", 0);
 			
@@ -117,6 +118,7 @@
 			$this->RegisterTimer("ResetPresenceStateToTemplate_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ResetPresenceStateToTemplate_Timer");');
 			$this->RegisterTimer("ManualPresenceReset_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ManualPresenceReset_Timer");');
 			$this->RegisterTimer("AlertTimeout_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "AlertTimeout_Timer");');
+			$this->RegisterTimer("PresenceDetectionOffTimeout_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceDetectionOffTimeout_Timer");');
 						
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
@@ -1037,10 +1039,15 @@
 			$this->StoreProfile($ProfileID);
 		}
 		public function EnablePresenceDetection(){
+			$this->SetTimerInterval("PresenceDetectionOffTimeout_Timer",  0);
+			
 			SetValueBoolean($this->GetIDForIdent("EnablePresenceDetection"), true);
 			$this->RefreshPresence();
 		}
 		public function DisablePresenceDetection(){
+			$timer = $this->ReadPropertyInteger("PresenceDetectionOffTimeout");	
+			$this->SetTimerInterval("PresenceDetectionOffTimeout_Timer",  $timer * 1000);
+			
 			SetValueBoolean($this->GetIDForIdent("EnablePresenceDetection"), false);
 			$this->RefreshPresence();
 		}
@@ -1165,6 +1172,10 @@
 						
 					case "AlertTimeout_Timer":
 						$this->SetAlertState(false);
+						break;
+						
+					case "PresenceDetectionOffTimeout_Timer":
+						$this->EnablePresenceDetection();
 						break;
 				}				
 		}
