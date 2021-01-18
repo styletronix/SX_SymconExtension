@@ -38,7 +38,8 @@
 			"Alert state timeout": "Timeout für Alarmstatus",
 			"Presence detector off timeout": "Timeout für deaktivierte Bewegungsmelder",
 			"Reset manual presence on Button press": "Rücksetzen von manuelle Anwesenheit wenn 'Taste an' betätigt wird.",
-			"seconds": "Sekunden"
+			"seconds": "Sekunden",
+			"Reset presence profile to default timeout": "Timeout für Rücksetzung des Anwesenheitsprofils auf Standard"
         }
     }
 }

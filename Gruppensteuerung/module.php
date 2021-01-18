@@ -85,6 +85,9 @@
 			$this->RegisterVariableInteger("ProfileID4", "Profil Alarmbeleuchtung", "SXGRP.Profiles2");
             $this->EnableAction("ProfileID4");
 
+			$this->RegisterVariableInteger("ProfileID5", "Profil Anwesend Standard", "SXGRP.Profiles2");
+            $this->EnableAction("ProfileID5");
+						
 			$this->RegisterVariableFloat("IlluminationLevelMotion", "Helligkeitsgrenze für Bewegungsmelder", "SXGRP.Brightness");
             $this->EnableAction("IlluminationLevelMotion");
 			
@@ -96,8 +99,10 @@
 			$this->RegisterPropertyInteger("BrightnessSegmentationLevel", 0);
 			$this->RegisterPropertyInteger("ManualPresenceResetTimeout", 0);
 			$this->RegisterPropertyInteger("AlertTimeout", 0);
-			$this->RegisterPropertyInteger("PresenceDetectionOffTimeout", 0);		
+			$this->RegisterPropertyInteger("PresenceDetectionOffTimeout", 0);	
+			$this->RegisterPropertyInteger("ResetToDefaultProfilePresenceTimeout", 0);				
 			$this->RegisterPropertyBoolean("ResetManualPresenceOnManualTrigger", false);
+			$this->RegisterPropertyBoolean("ManualPresenceOnManualProfileChange", false);
 			$this->RegisterPropertyInteger("IsVersion", 0);
 			
 
@@ -119,6 +124,7 @@
 			$this->RegisterTimer("ManualPresenceReset_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ManualPresenceReset_Timer");');
 			$this->RegisterTimer("AlertTimeout_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "AlertTimeout_Timer");');
 			$this->RegisterTimer("PresenceDetectionOffTimeout_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceDetectionOffTimeout_Timer");');
+			$this->RegisterTimer("ResetToDefaultProfilePresenceTimeout_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ResetToDefaultProfilePresenceTimeout_Timer");');
 						
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
@@ -340,7 +346,8 @@
 			
 			$arr = $this->GetListItems("sensors");
 			if ($arr){
-				$resetManual = $this->ReadPropertyBoolean("ResetManualPresenceOnManualTrigger");	
+				$resetManual = $this->ReadPropertyBoolean("ResetManualPresenceOnManualTrigger");
+				
 				foreach($arr as $key1) {
 					if($key1["InstanceID"] == $DeviceID){
 						if($key1["typ"] == 0){
@@ -1058,11 +1065,26 @@
 		public function SetProfilePresent(int $id){
 			SetValue($this->GetIDForIdent("ProfileID2"), $id);
 			
+			if (GetValue($this->GetIDForIdent("ProfileID5")) <> $id){
+				$timer = $this->ReadPropertyInteger("ResetToDefaultProfilePresenceTimeout");	
+				$this->SetTimerInterval("ResetToDefaultProfilePresenceTimeout_Timer",  $timer * 1000);
+			}
+			
 			if (GetValueBoolean($this->GetIDForIdent("PresenceDetected")) == true){
 				$this->ApplyPresenceStateAfterProfileChange();
 			} else {
 				$this->RefreshPresence();
 			}
+		}
+		public function SetProfilePresenceDefault(int $id){
+			SetValue($this->GetIDForIdent("ProfileID5"), $id);		
+			$this->SetProfilePresent($id);	
+			$this->SetTimerInterval("ResetToDefaultProfilePresenceTimeout_Timer", 0);
+		}
+		public function ResetPresenceProfileToDefault(){
+			$this->SetTimerInterval("ResetToDefaultProfilePresenceTimeout_Timer", 0);
+			$id = GetValue($this->GetIDForIdent("ProfileID5"), $id);
+			$this->SetProfilePresent($id);
 		}
 		public function SetProfileAbsent(int $id){
 			SetValue($this->GetIDForIdent("ProfileID3"), $id);
@@ -1121,6 +1143,11 @@
 			case "ProfileID4":
 				// Profil Alarmmodus
 				$this->SetProfileAlert($Value);
+				break;
+				
+			case "ProfileID5":
+				// Profil Anwesend Standard
+				$this->SetProfilePresenceDefault($Value);
 				break;
 			
 			case "EnablePresenceDetection":
@@ -1206,6 +1233,10 @@
 						
 					case "PresenceDetectionOffTimeout_Timer":
 						$this->EnablePresenceDetection();
+						break;
+						
+					case "ResetToDefaultProfilePresenceTimeout_Timer":
+						$this->ResetPresenceProfileToDefault();
 						break;
 				}				
 		}
