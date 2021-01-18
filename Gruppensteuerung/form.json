@@ -117,7 +117,7 @@
     {
       "type": "NumberSpinner",
       "name": "PresenceResetToTemplateTimeout",
-      "caption": "Reset Timeout",
+      "caption": "Reset Timeout (obsolete)",
 	  "suffix": "seconds"
     },
 	{
@@ -148,6 +148,11 @@
       "type": "CheckBox",
       "name": "ResetManualPresenceOnManualTrigger",
       "caption": "Reset manual presence on Button press"
+    },
+	{
+      "type": "CheckBox",
+      "name": "DoNotChangeToDefaultPresenceWhenTimerRunning",
+      "caption": "Do not reset presence profile to default while timer is already running"
     }
   ],
     "actions":
@@ -184,7 +189,7 @@
       },
        {
         "type": "Button",
-        "label": "Save as template",
+        "label": "Save as template (obsolete)",
         "onClick": "SXGRP_StoreCurrentAsPresenceStateTemplate($id);"
       }
     ],

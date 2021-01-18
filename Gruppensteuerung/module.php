@@ -103,6 +103,7 @@
 			$this->RegisterPropertyInteger("ResetToDefaultProfilePresenceTimeout", 0);				
 			$this->RegisterPropertyBoolean("ResetManualPresenceOnManualTrigger", false);
 			$this->RegisterPropertyBoolean("ManualPresenceOnManualProfileChange", false);
+			$this->RegisterPropertyBoolean("DoNotChangeToDefaultPresenceWhenTimerRunning", false);
 			$this->RegisterPropertyInteger("IsVersion", 0);
 			
 
@@ -930,6 +931,8 @@
 				}
 			}
 		}
+		
+		// Obsolete
 		public function ResetPresenceStateToTemplate(){
 			$data = $this->ReadSettings();
 			
@@ -937,6 +940,8 @@
 			
 			$this->WriteSettings($data);
 		}
+		
+		// Obsolete
 		public function StoreCurrentAsPresenceStateTemplate(){
 			$data = $this->ReadSettings();
 			
@@ -1009,7 +1014,11 @@
 			}
 			SetValue($this->GetIDForIdent("ProfileID"), $id);
 		}
+		
+		// Obsolete
 		public function UseProfileIDAsPresenceStateTeplate(int $id){
+			// $this->SetProfilePresenceDefault($id);
+			
 			$data = $this->ReadSettings();
 			
 			if (array_key_exists('Profile'.$id, $data)) {
@@ -1020,21 +1029,26 @@
 			
 			$this->WriteSettings($data);
 		}
+		
+		// Obsolete
 		public function UseProfileIDAsPresenceStateTeplateAndApplyToCurrentStateIfPresent(int $id){
-			$data = $this->ReadSettings();
+			//$this->SetProfilePresenceDefault($id);
 			
-			if (array_key_exists('Profile'.$id, $data)) {
-				$data['PresenceStateTemplate'] = $data['Profile'.$id];
-				$data['PrePresenceState'] = $data['Profile'.$id];
+			$data = $this->readsettings();
+			
+			if (array_key_exists('profile'.$id, $data)) {
+				$data['presencestatetemplate'] = $data['profile'.$id];
+				$data['prepresencestate'] = $data['profile'.$id];
 			}
 
-			$this->WriteSettings($data);
+			$this->writesettings($data);
 			
-			SetValue($this->GetIDForIdent("ProfileID"), $id);
-			SetValue($this->GetIDForIdent("ProfileID2"), $id);
+			setvalue($this->getidforident("profileid"), $id);
+			setvalue($this->getidforident("profileid2"), $id);
 			
-			$this->RefreshPresence();
+			$this->refreshpresence();
 		}
+		
 		public function StoreProfile(int $id){
 			$data = $this->ReadSettings();
 			
@@ -1068,6 +1082,8 @@
 			if (GetValue($this->GetIDForIdent("ProfileID5")) <> $id){
 				$timer = $this->ReadPropertyInteger("ResetToDefaultProfilePresenceTimeout");	
 				$this->SetTimerInterval("ResetToDefaultProfilePresenceTimeout_Timer",  $timer * 1000);
+			} else {
+				$this->SetTimerInterval("ResetToDefaultProfilePresenceTimeout_Timer", 0);
 			}
 			
 			if (GetValueBoolean($this->GetIDForIdent("PresenceDetected")) == true){
@@ -1077,7 +1093,14 @@
 			}
 		}
 		public function SetProfilePresenceDefault(int $id){
-			SetValue($this->GetIDForIdent("ProfileID5"), $id);		
+			SetValue($this->GetIDForIdent("ProfileID5"), $id);
+						
+			$preventReset = $this->ReadPropertyBoolean("DoNotChangeToDefaultPresenceWhenTimerRunning");	
+			if ($preventReset == true){
+				$currentTimer = $this->GetTimerInterval("ResetToDefaultProfilePresenceTimeout_Timer");
+				if ($currentTimer > 0){ return; }
+			}
+						
 			$this->SetProfilePresent($id);	
 			$this->SetTimerInterval("ResetToDefaultProfilePresenceTimeout_Timer", 0);
 		}

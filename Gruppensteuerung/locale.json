@@ -25,21 +25,22 @@
 			"Presence timeout (in seconds) switches to absent if no sensor refreshes its status during this time.": "Anwesenheits Timeout (in Sekunden) schaltet nach der hier eingestellten Zeit auf Abwesend, wenn keine der Variablen für die Anwesenheitskontrolle in dieser Zeit aktualisiert wurden.",
 			"Presence timeout": "Anwesenheits Timeout",
 			"Resets the absent template to the default values set by 'save as template' after a time period": "Bei Abwesenheit wird nach dem Reset Timeout (in Sekunden) das gespeicherte Lichtmuster auf die Vorlage zurückgesetzt. Die Vorlage wird mit dem Button 'Als Vorlage speichern' gesetzt.",
-			"Reset Timeout": "Reset Timeout",
+			"Reset Timeout (obsolete)": "Reset Timeout (veraltet)",
 			"OFF": "AUS",
 			"ON": "AN",
 			"Activate ALERT Mode": "Alarm-Modus aktivieren",
 			"Deactivate ALERT Mode": "Alarm-Modus deaktivieren",
 			"Presence": "Anwesend",
 			"Absent": "Abwesend",
-			"Save as template": "Als Vorlage speichern",
+			"Save as template (obsolete)": "Als Vorlage speichern (veraltet)",
 			"OK": "OK",
 			"Manual presence timeout": "Timeout für manuelle Anwesenheit",
 			"Alert state timeout": "Timeout für Alarmstatus",
 			"Presence detector off timeout": "Timeout für deaktivierte Bewegungsmelder",
 			"Reset manual presence on Button press": "Rücksetzen von manuelle Anwesenheit wenn 'Taste an' betätigt wird.",
 			"seconds": "Sekunden",
-			"Reset presence profile to default timeout": "Timeout für Rücksetzung des Anwesenheitsprofils auf Standard"
+			"Reset presence profile to default timeout": "Timeout für Rücksetzung des Anwesenheitsprofils auf Standard",
+			"Do not reset presence profile to default while timer is already running": "Nicht sofort auf Standard Anwesenheit umschalten wenn Reset-Timer noch läuft."
         }
     }
 }
