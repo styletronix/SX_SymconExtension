@@ -1063,10 +1063,6 @@
 			} else {
 				$this->RefreshPresence();
 			}
-			
-			// if ($id > 0){
-				// $this->UseProfileIDAsPresenceStateTeplateAndApplyToCurrentStateIfPresent($id);	
-			// }
 		}
 		public function SetProfileAbsent(int $id){
 			SetValue($this->GetIDForIdent("ProfileID3"), $id);
@@ -1076,8 +1072,13 @@
 			} else {
 				$this->RefreshPresence();
 			}
+		}
+		public function SetProfileAlert(int $id){
+			SetValue($this->GetIDForIdent("ProfileID4"), $id);
 			
-			//$this->RefreshPresence();
+			if (GetValueBoolean($this->GetIDForIdent("AlertModeAktive")) == true){
+				$this->SetAlertState(true);
+			}
 		}
 		public function SetIlluminationLevelMotion(float $Value){
 			SetValue($this->GetIDForIdent("IlluminationLevelMotion"), $Value);
@@ -1115,6 +1116,11 @@
 			case "ProfileID3":
 				// Profil Abwesend
 				$this->SetProfileAbsent($Value);
+				break;
+				
+			case "ProfileID4":
+				// Profil Alarmmodus
+				$this->SetProfileAlert($Value);
 				break;
 			
 			case "EnablePresenceDetection":
