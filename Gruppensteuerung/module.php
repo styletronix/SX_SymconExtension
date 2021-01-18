@@ -1151,21 +1151,21 @@
 			//$this->SetTimerInterval("PresenceTimeoutOff_Timer", $this->ReadPropertyInteger("PresenceTimeout") * 1000);
 			//$this->SetTimerInterval("PresenceOffDelayScript_Timer", $this->ReadPropertyInteger("PresenceOffDelay") * 1000);
 			
-			if (GetValue($this->GetIDForIdent("PresenceDetected") == false)){
+			if (GetValue($this->GetIDForIdent("PresenceDetected")) == false){
 				$this->SetTimerInterval("ResetPresenceStateToTemplate_Timer", $this->ReadPropertyInteger("PresenceResetToTemplateTimeout") * 1000);	
 			}else{
 				$this->SetTimerInterval("UpdatePresence_Timer", $this->ReadPropertyInteger("PresenceRefreshTimeout") * 1000);
 			}
 		
-			if (GetValueBoolean($this->GetIDForIdent("ManualPresence") == true)){
+			if (GetValueBoolean($this->GetIDForIdent("ManualPresence")) == true){
 				$this->SetTimerInterval("ManualPresenceReset_Timer", $this->ReadPropertyInteger("ManualPresenceResetTimeout") * 1000);
 			}
 			
-			if (GetValueBoolean($this->GetIDForIdent("AlertModeAktive") == true)){
+			if (GetValueBoolean($this->GetIDForIdent("AlertModeAktive")) == true){
 				$this->SetTimerInterval("AlertTimeout_Timer",  $this->ReadPropertyInteger("AlertTimeout") * 1000);
 			}
 			
-			if (GetValueBoolean($this->GetIDForIdent("EnablePresenceDetection") == false)){
+			if (GetValueBoolean($this->GetIDForIdent("EnablePresenceDetection")) == false){
 				$this->SetTimerInterval("PresenceDetectionOffTimeout_Timer",  $this->ReadPropertyInteger("PresenceDetectionOffTimeout") * 1000);
 			}		
 		}
