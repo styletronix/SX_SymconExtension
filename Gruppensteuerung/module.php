@@ -105,7 +105,7 @@
 			$this->RegisterPropertyBoolean("ManualPresenceOnManualProfileChange", false);
 			$this->RegisterPropertyBoolean("DoNotChangeToDefaultPresenceWhenTimerRunning", false);
 			$this->RegisterPropertyInteger("IsVersion", 0);
-			
+			$this->RegisterPropertyString("settings", "");
 
             $this->RegisterPropertyInteger("DeviceCategory", 0); // Veraltet
 			$this->RegisterPropertyString("actors", "");
@@ -1434,48 +1434,52 @@
 
         private function WriteSettings($data){
 			IPS_SemaphoreEnter("SXGRP_SettingAccess".$this->InstanceID,  2000);
-            $fp = fopen(IPS_GetKernelDir().$this->InstanceID.'.settings.json', 'w');
-            fwrite($fp, json_encode($data));
-            fclose($fp);
+			
+			$this->WritePropertyString("settings", json_encode($data));		
+			// Writing to settings file is obsolete. Migration will be performed during first ReadSettings()
 			IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
         }
         private function ReadSettings(){
 			IPS_SemaphoreEnter("SXGRP_SettingAccess".$this->InstanceID,  2000);
 			
-            $filename = IPS_GetKernelDir().$this->InstanceID.'.settings.json';
-            if (file_exists($filename)) {
-				try {
-					$contents = file_get_contents($filename);
-					$data = json_decode($contents,true);
-				
-					if (array_key_exists('PrePresenceState', $data) == false) {
-						$data['PrePresenceState'] = "";
+			$contents = $this->ReadPropertyString("settings");
+			if ($contents == ""){
+				// Migrate settings file to settings property and delete setings file on success
+				$filename = IPS_GetKernelDir().$this->InstanceID.'.settings.json';
+				if (file_exists($filename)) {
+					try {
+						$contents = file_get_contents($filename);
+						$this->WritePropertyString("settings", $contents);
+						unlink($filename);
+					} catch (Exception $e) {
+						// Ignore File exceptions. Default settings will be loaded.
 					}
-					if (array_key_exists('PresenceStateTemplate', $data) == false) {
-						$data['PresenceStateTemplate'] = "";
-					}
-					IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
-					return $data;
-					
-				} catch (Exception $e) {
-					$contents = array();
-					$contents["PreAlertState"] = "";
-					$contents["PrePresenceState"] = "";
-					$contents["PresenceStateTemplate"] = "";
-					IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
-					return $contents;
-					
 				}
-   
-            }else{
-                $contents = array();
-                $contents["PreAlertState"] = "";
-				$contents["PrePresenceState"] = "";
-				$contents["PresenceStateTemplate"] = "";
-				IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
-                return $contents;
+			}
+			    
+            try {
+				if ($contents == ""){
+					$data = array();
+				}else{
+					$data = json_decode($contents,true);
+				}
+								
+				if (array_key_exists('PrePresenceState', $data) == false) { $data['PrePresenceState'] = "";	}
+				if (array_key_exists('PresenceStateTemplate', $data) == false) { $data['PresenceStateTemplate'] = ""; }
+				if (array_key_exists('PreAlertState', $data) == false) { $data['PreAlertState'] = ""; }
 				
-            }
+				IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
+				return $data;
+					
+			} catch (Exception $e) {
+				// Reset settings to default if decoding was not possible
+				$data = array();
+				$data["PreAlertState"] = "";
+				$data["PrePresenceState"] = "";
+				$data["PresenceStateTemplate"] = "";
+				IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
+				return $data;					
+			}
 			
 			IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
         }
