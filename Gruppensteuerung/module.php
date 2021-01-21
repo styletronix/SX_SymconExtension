@@ -105,7 +105,8 @@
 			$this->RegisterPropertyBoolean("ManualPresenceOnManualProfileChange", false);
 			$this->RegisterPropertyBoolean("DoNotChangeToDefaultPresenceWhenTimerRunning", false);
 			$this->RegisterPropertyInteger("IsVersion", 0);
-			$this->RegisterPropertyString("settings", "");
+			
+			$this->RegisterAttributeString ("settings", "");
 
             $this->RegisterPropertyInteger("DeviceCategory", 0); // Veraltet
 			$this->RegisterPropertyString("actors", "");
@@ -1435,21 +1436,22 @@
         private function WriteSettings($data){
 			IPS_SemaphoreEnter("SXGRP_SettingAccess".$this->InstanceID,  2000);
 			
-			$this->WritePropertyString("settings", json_encode($data));		
+			$this->WriteAttributeString("settings", json_encode($data));		
 			// Writing to settings file is obsolete. Migration will be performed during first ReadSettings()
 			IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
         }
+		
         private function ReadSettings(){
 			IPS_SemaphoreEnter("SXGRP_SettingAccess".$this->InstanceID,  2000);
 			
-			$contents = $this->ReadPropertyString("settings");
+			$contents = $this->ReadAttributeString("settings");
 			if ($contents == ""){
 				// Migrate settings file to settings property and delete setings file on success
 				$filename = IPS_GetKernelDir().$this->InstanceID.'.settings.json';
 				if (file_exists($filename)) {
 					try {
 						$contents = file_get_contents($filename);
-						$this->WritePropertyString("settings", $contents);
+						$this->WriteAttributeString("settings", $contents);
 						unlink($filename);
 					} catch (Exception $e) {
 						// Ignore File exceptions. Default settings will be loaded.
@@ -1477,6 +1479,7 @@
 				$data["PreAlertState"] = "";
 				$data["PrePresenceState"] = "";
 				$data["PresenceStateTemplate"] = "";
+				
 				IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
 				return $data;					
 			}
