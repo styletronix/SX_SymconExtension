@@ -801,8 +801,6 @@
 			$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
 			
             $data = $this->ReadSettings();
-
-			$currentPrePresenceState = $this->ReadAttributeString("lastPresenceState");
 			$currentPreAlertState = $data['PreAlertState'];
 			
 			if ($currentPreAlertState !== ""){
@@ -867,14 +865,14 @@
 			}else{
 				// Prüfe Helligkeit
 				if ($ignoreIllumination == false){
-				$IlluminationLevelMotion = GetValueFloat(IPS_GetObjectIDByIdent("IlluminationLevelMotion", $this->InstanceID));  
-				if ($IlluminationLevelMotion > -1){
-					$illumination = $this->GetIlluminationLevelMin();
-					if ($illumination > $IlluminationLevelMotion){
-						$this->SetValue("statusString", "Bewegung wegen Helligkeit ignoriert");
-						return; // Bewegung nicht als erkannt setzen, wenn Helligkeit höher als eingestellter Wert ist.
+					$IlluminationLevelMotion = GetValueFloat(IPS_GetObjectIDByIdent("IlluminationLevelMotion", $this->InstanceID));  
+					if ($IlluminationLevelMotion > -1){
+						$illumination = $this->GetIlluminationLevelMin();
+						if ($illumination > $IlluminationLevelMotion){
+							$this->SetValue("statusString", "Bewegung wegen Helligkeit ignoriert");
+							return; // Bewegung nicht als erkannt setzen, wenn Helligkeit höher als eingestellter Wert ist.
+						}
 					}
-				}
 				}
 				
 				$this->SetTimerInterval("PresenceTimeoutOff_Timer", 0);
@@ -883,6 +881,7 @@
 				$ProfileID2 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID2", $this->InstanceID));  
 				
 				if ($ProfileID2 == -1 or $ProfileID2 == 0){
+					$currentPrePresenceState = $this->ReadAttributeString("lastPresenceState");
 					if ($currentPrePresenceState !== ""){
 						$this->SetValue("statusString", "Anwesend (Automatik)");
 						$this->SetCurrentStateString($currentPrePresenceState);
