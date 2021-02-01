@@ -107,6 +107,8 @@
 			$this->RegisterPropertyInteger("IsVersion", 0);
 			
 			$this->RegisterAttributeString ("settings", "");
+			$this->RegisterAttributeString ("lastPresenceState", "");
+			$this->RegisterAttributeString ("lastAbsenceState", "");
 
             $this->RegisterPropertyInteger("DeviceCategory", 0); // Veraltet
 			$this->RegisterPropertyString("actors", "");
@@ -786,13 +788,19 @@
 
 		private function SetPresenceState(bool $Value, bool $ignoreIllumination){
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
+			
+			$lastStatePresence = GetValue($this->GetIDForIdent("PresenceDetected"));
+			if ( $Value == false and $lastStatePresence == true ){
+				$this->WriteAttributeString("lastPresenceState", $this->GetCurrentStateString());
+			}
+			if ( $Value == true and $lastStatePresence == false ){
+				$this->WriteAttributeString("lastAbsenceState", $this->GetCurrentStateString());
+			}			
 			SetValue($this->GetIDForIdent("PresenceDetected"), $Value);
 			
 			$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
 			
             $data = $this->ReadSettings();
-
-			$currentPrePresenceState = $data['PrePresenceState'];
 			$currentPreAlertState = $data['PreAlertState'];
 			
 			if ($currentPreAlertState !== ""){
@@ -811,12 +819,7 @@
 
 			$PresenceResetToTemplateTimeout = $this->ReadPropertyInteger("PresenceResetToTemplateTimeout");
 
-			if ($Value == false){
-				if ($currentPrePresenceState == ""){
-					$result = $this->GetCurrentStateString();
-                    $data["PrePresenceState"] = $result;
-				}
-				
+			if ($Value == false){				
 				$ProfileID3 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID3", $this->InstanceID)); 
 				
 				if ($ProfileID3 == -1 or $ProfileID3 == 0 or $ProfileID3 == -2){
@@ -862,14 +865,14 @@
 			}else{
 				// Prüfe Helligkeit
 				if ($ignoreIllumination == false){
-				$IlluminationLevelMotion = GetValueFloat(IPS_GetObjectIDByIdent("IlluminationLevelMotion", $this->InstanceID));  
-				if ($IlluminationLevelMotion > -1){
-					$illumination = $this->GetIlluminationLevelMin();
-					if ($illumination > $IlluminationLevelMotion){
-						$this->SetValue("statusString", "Bewegung wegen Helligkeit ignoriert");
-						return; // Bewegung nicht als erkannt setzen, wenn Helligkeit höher als eingestellter Wert ist.
+					$IlluminationLevelMotion = GetValueFloat(IPS_GetObjectIDByIdent("IlluminationLevelMotion", $this->InstanceID));  
+					if ($IlluminationLevelMotion > -1){
+						$illumination = $this->GetIlluminationLevelMin();
+						if ($illumination > $IlluminationLevelMotion){
+							$this->SetValue("statusString", "Bewegung wegen Helligkeit ignoriert");
+							return; // Bewegung nicht als erkannt setzen, wenn Helligkeit höher als eingestellter Wert ist.
+						}
 					}
-				}
 				}
 				
 				$this->SetTimerInterval("PresenceTimeoutOff_Timer", 0);
@@ -878,6 +881,7 @@
 				$ProfileID2 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID2", $this->InstanceID));  
 				
 				if ($ProfileID2 == -1 or $ProfileID2 == 0){
+					$currentPrePresenceState = $this->ReadAttributeString("lastPresenceState");
 					if ($currentPrePresenceState !== ""){
 						$this->SetValue("statusString", "Anwesend (Automatik)");
 						$this->SetCurrentStateString($currentPrePresenceState);
@@ -905,8 +909,6 @@
 					$this->CallProfile($ProfileID2);
 						
 				}
-				
-				$data["PrePresenceState"] = "";
 			}
 
             $this->WriteSettings($data);
@@ -915,20 +917,14 @@
 		private function ApplyPresenceStateAfterProfileChange(){
 			$this->SetPresenceState(GetValueBoolean($this->GetIDForIdent("PresenceDetected")), false);
 		}
-		private function PresenceTimeoutOff(){			
-			$data = $this->ReadSettings();
-
-			if (array_key_exists('PrePresenceState', $data) == false) {
-				$data['PrePresenceState'] = "";
-			}
-			$currentPrePresenceState = $data['PrePresenceState'];
+		private function PresenceTimeoutOff(){
+			// TODO: Automatik im Ausschaltvorgang berücksichtigen
+			$this->SetValue("statusString", "Abwesend (Aus)");
 			
-			if ($currentPrePresenceState !== ""){
-				$arr = $this->GetListItems("actors");
-				if ($arr){
-					foreach($arr as $device){
-						$this->SetObjectValue($device["InstanceID"], false, 0, 0, false, false);
-					}
+			$DeviceList = $this->GetListItems("actors");
+			if ($DeviceList){
+				foreach($DeviceList as $device){
+					$this->SetObjectValue($device["InstanceID"], false, 0, 0, false, false);
 				}
 			}
 		}
