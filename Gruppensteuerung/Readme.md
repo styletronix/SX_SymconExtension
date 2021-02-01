@@ -7,6 +7,9 @@ Die Gruppensteuerung kann für komplexe Aufgaben kaskadiert werden. Das bedeutet
 Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, könne Sie die Kategorien "Geräte", "Helligkeit" und "Bewegung" in der Instanz löschen, sofern Sie darin nur Verknüpfungen abgelegt hatten.
 
 ## Änderungen
+01.02.2021
++ In den Einstellungen kann gewählt werden ob das Anwesenheits- oder Abwesenheitsprofil bei jeder Aktualisierung neu geladen werden soll. Bisher war der fest eingestellte Wert "Ja". Nun ist der veränderbare Standardwert "Nein". Vor allem bei verwendung des "Automatik" Profils für Anwesenheit sollte diese Option auf "Nein" stehen.
+
 06.01.2021
 + Für die Alarmbeleuchtung kann ein extra Profil ausgewählt werden.
 + Den Sensoren können nun direkt Funktionen wie "Alarmbeleuchtung" oder "manuelle anwesenheit" zugeordnet werden.
@@ -66,21 +69,39 @@ Bewegungsmelder können über die GUI aktiviert und deaktiviert werden.
 Beispiel:
 Ist das Profil für Anwesend "Automatik" und für Abwesend auf "Aus" gestellt, verhält sich die Steuerung wie folgt: Wenn Bewegung erkannt wird (z.B. durch betreten eines Raumes), geschieht erst ein mal nichts. Schaltet man nun das Licht manuell ein, wird dieser Zustand gespeichert. Meldet der Bewegungsmelder nun "Abwesend", wird das Licht im Raum ausgeschaltet. Beim nächsten betreten des Raumes wird das Licht nun in den Zustand gesetzt, wie er zuletzt vor verlassen des Raumes war. Das Licht wird wieder eingeschaltet. Der Status wird dabei für jedes Gerät, welcher der Gruppe zugeordnet ist einzeln gespeichert. Jedes Licht in der Gruppe kann also einen anderen Zustand haben. Dies ist z.b. für Schlafzimmer interessant wo man nachts bei Bewegung nicht unbedingt licht möchte aber dennoch sichergehen will, dass niemand vergisst das licht auszuschalten wenn niemand mehr im Raum ist.
 
+## Beispiele
 
-## Steuerung nach Helligkeit
+### Steuerung nach Helligkeit
 Bewegungsmelder können mit einem Helligkeitssensor kombiniert werden, damit das Licht nur aktiviert wird, wenn dies erforderlich ist. Als Helligkeitssensor kann entweder ein eigener Sensor verwendet werden, oder einen im Bewegungsmelder integrierte Sensor. Wenn der Sensor integriert ist und man für einen Raum (z.b. Treppenhaus) mehrere Bewegungsmelder für eine Gruppe verwendet, kann die Gruppensteuerung so eingestellt werden, dass die Beleuchtung nur aktiviert wird, wenn an dem Bewegungsmelder, welcher die Bewegung erkannt hat, auch die Helligkeit zum einschalten unterschritten wurde. Eine Bewegung im Obergeschoss führt so Tagsüber nicht zu einem einschalten der Gruppe, im dunkeln Keller wird eine Bewegung aber dennoch das Treppenhauslicht aktivieren.
 
-## Alarmbeleuchtung
+### Alarmbeleuchtung
 Die Gruppen verfügen über eine "Alarmbeleuchtung". Wird diese Funktion aktiviert, werden alle Geräte eingeschaltet und können über die Gruppenfunktion nicht mehr abgeschaltet werden. Nach deaktivierung der alarmbeleuchtung kehren alle Geräte in den Zustand vor der aktivierung der Alarmfunktion zurück.
 
 Die Alarmbeleuchtung kann über das WebFront oder den Befehl `SXGRP_SetAlertState(int $InstanceID, bool $Value);` geschaltet werden.
 
-## Manuelle Steuerung
+### Manuelle Steuerung
 Zur manuellen Steuerung gibt es sowohl einen Schieberegler für Dimmbare Geräte, als auch einen Ein/Aus Schalter für nicht dimmbare Geräte im WebFront. Werden mehrere Gerätearten in einer Gruppe kombiniert, wird ein dimmen >= 1% automatisch alle nicht dimmbaren Geräte einschalten.
 
 Dies entspricht den Befehlen `SXGRP_SetState(int $InstanceID, bool $Value);` , `SXGRP_SetStateFloat(int InstanceID, float $Value);` und `SXGRP_SetStateInteger(int $InstanceID, int $Value); `
 
 Werden einzelne Geräte nicht über die Gruppe gesteuert, so zeigt die Gruppensteuerung als Status den höchsten Dimm-Wert der Geräte an.
+
+### Automatiklicht
+Funktion: Das Licht wird automatisch ausgeschaltet wenn man den Raum verläßt bzw. keine Bewegung erkannt wird. Beim betreten des Raums wird auf die zuletzt verwendete Einstellung gewechselt. Also z.b. Aus, An oder einen bestimmten Dimm-Wert.
+
+Dies ist Optimal wenn man verhindern möchte das man das Licht vergisst auszuschalten.
+ 
+Verbundene Geräte: Bewegungsmelder, Beleuchtung.
+
+Einstellung: Profil Anwesend: "Automatik", Profil Abwesend: "Aus", Bewegungsmelder aktiv
+
+### Treppenhauslicht
+Funktion: Über Bewegungsmelder oder Taster wir das Licht für eine voreingestellte Zeit eingeschaltet.
+
+Verbundene Geräte: Bewegungsmelder und/oder Taster, Beleuchtung.
+
+Einstellung: Profil Anwesend: "Ein", Profil Abwesend: "Aus", Bewegungsmelder aktiv, Verzögerung für Abwesenheit: 120 Sekunden
+
 
 ## PHP-Befehlsreferenz
 

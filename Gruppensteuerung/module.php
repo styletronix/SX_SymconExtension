@@ -105,7 +105,9 @@
 			$this->RegisterPropertyBoolean("ManualPresenceOnManualProfileChange", false);
 			$this->RegisterPropertyBoolean("DoNotChangeToDefaultPresenceWhenTimerRunning", false);
 			$this->RegisterPropertyInteger("IsVersion", 0);
-			
+			$this->RegisterPropertyBoolean("RetriggerPresenceOnDetection", false);
+			$this->RegisterPropertyBoolean("RetriggerAbsenceOnDetection", false);
+	
 			$this->RegisterAttributeString ("settings", "");
 			$this->RegisterAttributeString ("lastPresenceState", "");
 			$this->RegisterAttributeString ("lastAbsenceState", "");
@@ -391,7 +393,7 @@
 							if ($resetManual == true){
 								$this->SetManualPresence(false);
 							}
-							$this->SetPresenceState(true, true);
+							$this->SetPresenceState(true, true, false);
 						}
 						
 						break;
@@ -459,7 +461,7 @@
 			$ManualPresence = GetValueBoolean($this->GetIDForIdent("ManualPresence"));
 			if ($ManualPresence == true){
 				$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
-				$this->SetPresenceState(true, false);
+				$this->SetPresenceState(true, false, false);
 				return;
 			}
 
@@ -553,19 +555,19 @@
 				
 				if ($result == true){
 				   	$this->SetTimerInterval("UpdatePresence_Timer", $PresenceRefreshTimeout * 1000);
-					$this->SetPresenceState($result, false);
+					$this->SetPresenceState($result, false, false);
 					
 				}else{
 					$this->SetTimerInterval("UpdatePresence_Timer", 0);
 					
 					if ($PresenceOffDelay <= 0){
-						$this->SetPresenceState($result, false);
+						$this->SetPresenceState($result, false, false);
 					}else{
 						$this->SetTimerInterval("PresenceOffDelayScript_Timer", $PresenceOffDelay * 1000);
 					}
 				}
 			}else{
-				$this->SetPresenceState($result, false);
+				$this->SetPresenceState($result, false, false);
 			}
 		}
 		
@@ -783,18 +785,21 @@
 			$this->RefreshPresence();
 		}
 		public function TriggerPresenceDetected(){
-			$this->SetPresenceState(true, false);
+			$this->SetPresenceState(true, false, false);
 		}
 
-		private function SetPresenceState(bool $Value, bool $ignoreIllumination){
+		private function SetPresenceState(bool $Value, bool $ignoreIllumination, bool force){
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
+			$changed = force;
 			
 			$lastStatePresence = GetValue($this->GetIDForIdent("PresenceDetected"));
 			if ( $Value == false and $lastStatePresence == true ){
 				$this->WriteAttributeString("lastPresenceState", $this->GetCurrentStateString());
+				$changed = true;
 			}
 			if ( $Value == true and $lastStatePresence == false ){
 				$this->WriteAttributeString("lastAbsenceState", $this->GetCurrentStateString());
+				$changed = true;
 			}			
 			SetValue($this->GetIDForIdent("PresenceDetected"), $Value);
 			
@@ -819,9 +824,11 @@
 
 			$PresenceResetToTemplateTimeout = $this->ReadPropertyInteger("PresenceResetToTemplateTimeout");
 
-			if ($Value == false){				
-				$ProfileID3 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID3", $this->InstanceID)); 
-				
+			if ($Value == false){	
+			  // Prüfe ob Anwesenheit geändert wurde oder bei jeder Anwesenheitsmeldung die Werte neu gesetzt werden sollen.
+			  if ($changed or $this->ReadPropertyBoolean("RetriggerAbsenceOnDetection")){			
+				// Profil für Abwesenheit aktivieren
+				$ProfileID3 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID3", $this->InstanceID)); 			
 				if ($ProfileID3 == -1 or $ProfileID3 == 0 or $ProfileID3 == -2){
 					if ($PresenceTimeout > 0){
 						$this->SetValue("statusString", "Vorwarnung vor abwesenheit...");
@@ -857,10 +864,11 @@
 					$this->CallProfile($ProfileID3);
 						
 				}
-				
-				if ($PresenceResetToTemplateTimeout > 0 ){
+			  }
+			  
+			  if ($PresenceResetToTemplateTimeout > 0 ){
 					$this->SetTimerInterval("ResetPresenceStateToTemplate_Timer", ($PresenceTimeout + $PresenceResetToTemplateTimeout) * 1000);
-				}
+			  }
 				
 			}else{
 				// Prüfe Helligkeit
@@ -878,8 +886,11 @@
 				$this->SetTimerInterval("PresenceTimeoutOff_Timer", 0);
 				$this->SetTimerInterval("ResetPresenceStateToTemplate_Timer", 0);
 				
-				$ProfileID2 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID2", $this->InstanceID));  
-				
+				// Prüfe ob Anwesenheit geändert wurde oder bei jeder Anwesenheitsmeldung die Werte neu gesetzt werden sollen.
+			  if ($changed or $this->ReadPropertyBoolean("RetriggerPresenceOnDetection")){
+				  
+				  // Profil für Anwesenheit aktivieren
+				$ProfileID2 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID2", $this->InstanceID));  				
 				if ($ProfileID2 == -1 or $ProfileID2 == 0){
 					$currentPrePresenceState = $this->ReadAttributeString("lastPresenceState");
 					if ($currentPrePresenceState !== ""){
@@ -909,13 +920,14 @@
 					$this->CallProfile($ProfileID2);
 						
 				}
+			  }
 			}
 
             $this->WriteSettings($data);
 			$this->RefreshStatus();
 		}
 		private function ApplyPresenceStateAfterProfileChange(){
-			$this->SetPresenceState(GetValueBoolean($this->GetIDForIdent("PresenceDetected")), false);
+			$this->SetPresenceState(GetValueBoolean($this->GetIDForIdent("PresenceDetected")), false, true);
 		}
 		private function PresenceTimeoutOff(){
 			// TODO: Automatik im Ausschaltvorgang berücksichtigen
@@ -1236,7 +1248,7 @@
 						break;
 						
 					case "PresenceOffDelayScript_Timer":
-						$this->SetPresenceState(false, false);
+						$this->SetPresenceState(false, false, false);
 						break;
 						
 					case "ResetPresenceStateToTemplate_Timer":
