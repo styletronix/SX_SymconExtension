@@ -788,9 +788,9 @@
 			$this->SetPresenceState(true, false, false);
 		}
 
-		private function SetPresenceState(bool $Value, bool $ignoreIllumination, bool force){
+		private function SetPresenceState(bool $Value, bool $ignoreIllumination, bool $force){
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
-			$changed = force;
+			$changed = $force;
 			
 			$lastStatePresence = GetValue($this->GetIDForIdent("PresenceDetected"));
 			if ( $Value == false and $lastStatePresence == true ){
