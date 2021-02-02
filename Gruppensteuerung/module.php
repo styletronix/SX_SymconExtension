@@ -461,6 +461,7 @@
 			$ManualPresence = GetValueBoolean($this->GetIDForIdent("ManualPresence"));
 			if ($ManualPresence == true){
 				$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
+				$this->SetValue("statusString", "Manuelle Anwesenheit ist aktiv");
 				$this->SetPresenceState(true, false, false);
 				return;
 			}
@@ -563,6 +564,7 @@
 					if ($PresenceOffDelay <= 0){
 						$this->SetPresenceState($result, false, false);
 					}else{
+						$this->SetValue("statusString", "Verzögerung vor Abwesenheit... (" . $PresenceOffDelay . " Sek.)");
 						$this->SetTimerInterval("PresenceOffDelayScript_Timer", $PresenceOffDelay * 1000);
 					}
 				}
