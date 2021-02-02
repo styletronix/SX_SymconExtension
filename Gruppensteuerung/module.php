@@ -866,6 +866,8 @@
 					$this->CallProfile($ProfileID3);
 						
 				}
+			  }else{
+				  	$this->SetValue("statusString", "Abwesend (keine Änderung)");
 			  }
 			  
 			  if ($PresenceResetToTemplateTimeout > 0 ){
