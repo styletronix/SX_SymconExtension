@@ -22,8 +22,8 @@
             "After absent, time for which the dimm-level is used before switching off": "Nach Abwesenheit wird vor dem vollständigen Abschalten für die eingestellte Zeit (in Sekunden) gewartet und das Licht auf den unten angegebenen Wert gedimmt.",
 			"Dimm delay": "Dimm Verzögerung",
 			"Dimm %": "Abwesend Dimmer %",
-			"Presence timeout (in seconds) switches to absent if no sensor refreshes its status during this time.": "Anwesenheits Timeout (in Sekunden) schaltet nach der hier eingestellten Zeit auf Abwesend, wenn keine der Variablen für die Anwesenheitskontrolle in dieser Zeit aktualisiert wurden.",
-			"Presence timeout": "Anwesenheits Timeout",
+			"Presence timeout (in seconds) switches to absent if no sensor refreshes its status during this time.": "Timeout für Präsenzmelder schaltet nach der hier eingestellten Zeit auf Abwesend, wenn keiner der Bewegungsmelder in dieser Zeit seinen Status aktualisiert hat. Verhindert bei Batteriebetriebenen Meldern Dauerlicht, falls die Batterie während Anwesenheit ausgefallen ist.",
+			"Presence timeout": "Timeout für Präsenzmelder",
 			"Resets the absent template to the default values set by 'save as template' after a time period": "Bei Abwesenheit wird nach dem Reset Timeout (in Sekunden) das gespeicherte Lichtmuster auf die Vorlage zurückgesetzt. Die Vorlage wird mit dem Button 'Als Vorlage speichern' gesetzt.",
 			"Reset Timeout (obsolete)": "Reset Timeout (veraltet)",
 			"OFF": "AUS",
@@ -40,7 +40,9 @@
 			"Reset manual presence on Button press": "Rücksetzen von manuelle Anwesenheit wenn 'Taste an' betätigt wird.",
 			"seconds": "Sekunden",
 			"Reset presence profile to default timeout": "Timeout für Rücksetzung des Anwesenheitsprofils auf Standard",
-			"Do not reset presence profile to default while timer is already running": "Nicht sofort auf Standard Anwesenheit umschalten wenn Reset-Timer noch läuft."
+			"Do not reset presence profile to default while timer is already running": "Nicht sofort auf Standard Anwesenheit umschalten wenn Reset-Timer noch läuft.",
+			"Recall presence profile each time presence is detected": "Anwesenheitsprofil bei jeder erkannten Anwesenheit neu laden.",
+			"Recall absence profile each time absence is detected": "Abwesenheitsprofil bei jeder erkannten Abwesenheit neu laden."
         }
     }
 }

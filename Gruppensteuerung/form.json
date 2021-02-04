@@ -153,6 +153,16 @@
       "type": "CheckBox",
       "name": "DoNotChangeToDefaultPresenceWhenTimerRunning",
       "caption": "Do not reset presence profile to default while timer is already running"
+    },
+	{
+      "type": "CheckBox",
+      "name": "RetriggerPresenceOnDetection",
+      "caption": "Recall presence profile each time presence is detected"
+    },
+	{
+      "type": "CheckBox",
+      "name": "RetriggerAbsenceOnDetection",
+      "caption": "Recall absence profile each time absence is detected"
     }
   ],
     "actions":
