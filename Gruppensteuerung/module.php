@@ -361,7 +361,12 @@
 							$this->RefreshPresence();
 						}
 						
-						if ($key1["TriggerOnEachEvent"] == true or $this->GetObjectValuePercent($DeviceID) > 0.0){
+						$TriggerOnEachEvent = false;
+						if (array_key_exists("TriggerOnEachEvent",$key1)){
+							$TriggerOnEachEvent = $key1["TriggerOnEachEvent"];
+						}
+						
+						if ($TriggerOnEachEvent == true or $this->GetObjectValuePercent($DeviceID) > 0.0){
 						if($key1["typ"] == 1){
 							// Button (depends on brightness)
 							// $this->RefreshPresence();
