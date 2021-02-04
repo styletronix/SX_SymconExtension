@@ -1,13 +1,13 @@
 {
-    "id": "{1A65D909-D832-4FFD-BE4C-0F134DC04282}",
-    "name": "Gruppensteuerung",
+    "id": "{7D1B8672-C290-402F-A3F9-78FDE0418388}",
+    "name": "Alarmanlage",
     "type": 3,
     "vendor": "Styletronix.net",
   "aliases": [
-    "Gruppensteuerung"
+    "Alarmanlage"
   ],  
     "parentRequirements": [],
     "childRequirements": [],
     "implemented": [],
-    "prefix": "SXGRP"
+    "prefix": "SXALERT"
 }
