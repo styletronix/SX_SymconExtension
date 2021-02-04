@@ -371,6 +371,7 @@
 							// Button (depends on brightness)
 							// $this->RefreshPresence();
 							$this->SetPresenceState(true, false, false);	
+							$this->RefreshPresence();
 						}
 						if($key1["typ"] == 2){
 							// Button manual presence on
@@ -402,6 +403,7 @@
 								$this->SetManualPresence(false);
 							}
 							$this->SetPresenceState(true, true, false);
+							$this->RefreshPresence();
 						}
 						}
 						
