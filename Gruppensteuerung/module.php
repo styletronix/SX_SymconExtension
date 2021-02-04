@@ -602,10 +602,21 @@
 			foreach($ActorDeviceList as $device) {
 				$key2 = $device["InstanceID"];				
 				$deviceStatus = $this->GetObjectValuePercent($key2);
-				if ($deviceStatus > $resultFloat){
-					$resultFloat = $deviceStatus;
-				}
+				
+				if ($this->IsBooleanValue($key2)){
+					if ($deviceStatus > 0.0){
+						$result = true;
+					}
+				}else{
+					if ($deviceStatus > $resultFloat){
+						$resultFloat = $deviceStatus;
+					}
+				}		
 			}	
+			
+			if ($result == true and $resultFloat <= 0.0){
+				$resultFloat = 1.0;
+			}
 			
 			if($resultFloat > 0.0){
 				$result = true;
@@ -1317,6 +1328,17 @@
 			}
 		}
 		
+		private function IsBooleanValue(int $TargetID){
+		if (IPS_VariableExists($TargetID)){
+				$variable = IPS_GetVariable($TargetID);										
+				$t = $variable["VariableType"];			
+				
+				if ($t == 0){
+					return true;
+				}
+			}
+			return false;
+		}
 		private function GetObjectValuePercent(int $TargetID){
 			if (IPS_VariableExists($TargetID)){
 				$variable = IPS_GetVariable($TargetID);										
