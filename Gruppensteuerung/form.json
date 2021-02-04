@@ -1,316 +1,219 @@
 {
   "elements": [
-    {
+  {
     "type": "List",
-    "name": "devices",
-    "caption": "Sensoren",
+    "name": "actors",
+    "caption": "Actors",
     "rowCount": 5,
     "add": true,
     "delete": true,
     "columns": [{
-        "caption": "Sensoren",
+        "caption": "Actor",
         "name": "InstanceID", 
         "width": "auto",
         "add": 0,
         "edit": {
-			"caption": "Sensoren",
             "type": "SelectVariable"
-        }
-    }, {
-        "caption": "Bezeichnung",
-        "name": "Bezeichnung",
-        "width": "200px",
-		"add": "neuer Sensor",
-        "edit": {
-			"caption": "Bezeichnung",
-            "type": "ValidationTextBox"
-        }
-    }, {
-        "caption": "24h-Alarm (Sabotage / Technik)",
-        "name": "24h",
-        "width": "100px",
-        "add": false,
-        "edit": {
-			"caption": "24h-Alarm (Sabotage / Technik)",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Technik-Alarm",
-        "name": "Technik",
-        "width": "100px",
-        "add": false,
-        "edit": {
-			"caption": "Technik-Alarm",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Bei jeder Aktualisierung auslösen",
-        "name": "TriggerOnRefresh",
-        "width": "100px",
-        "add": false,
-        "edit": {
-			"caption": "Bei jeder Aktualisierung auslösen",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Ausgangsverzögerung",
-        "name": "verzoegerung_ausgang",
-        "width": "100px",
-        "add": true,
-        "edit": {
-			"caption": "Ausgangsverzögerung",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Eingangsverzögerung",
-        "name": "verzoegerung_eingang",
-        "width": "100px",
-        "add": false,
-        "edit": {
-			"caption": "Eingangsverzögerung",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Intern aktiv",
-        "name": "istInternAktiv",
-        "width": "100px",
-        "add": true,
-        "edit": {
-			"caption": "Intern aktiv",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Aktivierung verhindern",
-        "name": "preventActivation",
-        "width": "100px",
-        "add": false,
-        "edit": {
-            "type": "CheckBox",
-			"caption": "Aktivierung verhindern"
         }
     }]
 },{
     "type": "List",
-    "name": "melder",
-    "caption": "Ausgabe",
+    "name": "sensors",
+    "caption": "Sensors",
     "rowCount": 5,
     "add": true,
     "delete": true,
     "columns": [{
-        "caption": "Melder",
+        "caption": "Sensors",
         "name": "InstanceID", 
         "width": "auto",
         "add": 0,
         "edit": {
-			"caption": "Melder",
             "type": "SelectVariable"
         }
     }, {
-        "caption": "24h-Alarm",
-        "name": "24h",
-        "width": "100px",
-        "add": true,
-        "edit": {
-			"caption": "24h-Alarm",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Technik-Alarm",
-        "name": "Technik",
-        "width": "100px",
-        "add": true,
-        "edit": {
-			"caption": "Technik-Alarm",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Intern aktiv",
-        "name": "istInternAktiv",
-        "width": "100px",
-        "add": true,
-        "edit": {
-			"caption": "Intern aktiv",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Extern aktiv",
-        "name": "istExternAktiv",
-        "width": "100px",
-        "add": true,
-        "edit": {
-			"caption": "Extern aktiv",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Verzögert",
-        "name": "delayed",
-        "width": "100px",
-        "add": false,
-        "edit": {
-			"caption": "Verzögert",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Typ",
+        "caption": "Type",
         "name": "typ",
         "width": "150px",
         "add": 0,
         "edit": {
-			"caption": "Typ",
             "type": "Select",
 			"options": [
-				{ "caption": "Sirene", "value": 0 },
-				{ "caption": "Warnlicht", "value": 1 },
-				{ "caption": "Eingangswarnung", "value": 2 },
-				{ "caption": "Ausgangswarnung", "value": 3 },
-				{ "caption": "Alarmbeleuchtung", "value": 4 }
+				{ "caption": "Motion", "value": 0 },
+				{ "caption": "Button (depends on brightness)", "value": 1 },
+				{ "caption": "Button manual presence on", "value": 2 },
+				{ "caption": "Button manual presence off", "value": 3 },
+				{ "caption": "Button disable presence detection", "value": 4 },
+				{ "caption": "Button enable presence detection", "value": 5 },
+				{ "caption": "Button alert mode on", "value": 6 },
+				{ "caption": "Button alert mode off", "value": 7 },
+				{ "caption": "Button on", "value": 8 }
 				]
         }
+    }, {
+        "caption": "Trigger on each refresh and change",
+        "name": "TriggerOnEachEvent",
+        "width": "150px",
+        "add": false,
+        "edit": {
+			"caption": "Trigger on each refresh and change",
+            "type": "CheckBox"
+        }
     }]
-},
-{
+},{
     "type": "List",
-    "name": "PushNotification",
-    "caption": "Push-Nachrichten",
-    "rowCount": 2,
+    "name": "brightness",
+    "caption": "Brightness",
+    "rowCount": 5,
     "add": true,
     "delete": true,
     "columns": [{
-        "caption": "WebFront",
+        "caption": "Brightness-Sensors",
         "name": "InstanceID", 
         "width": "auto",
         "add": 0,
         "edit": {
-			"caption": "WebFront",
-            "type": "SelectInstance"
-        }
-    }, {
-        "caption": "Titel",
-        "name": "Title",
-        "width": "100px",
-        "add": "Alarm",
-        "edit": {
-			"caption": "Titel",
-            "type": "ValidationTextBox"
-        }
-    }, {
-        "caption": "Text",
-        "name": "Text",
-        "width": "100px",
-        "add": "{tts}",
-        "edit": {
-			"caption": "Text",
-            "type": "ValidationTextBox"
-        }
-    }, {
-        "caption": "Sound",
-        "name": "sound",
-        "width": "100px",
-        "add": "alarm",
-        "edit": {
-			"caption": "Sound",
-            "type": "Select",
-			"options": [
-				{ "caption": "alarm", "value": "alarm" },
-				{ "caption": "bell", "value": "bell" },
-				{ "caption": "boom", "value": "boom" },
-				{ "caption": "buzzer", "value": "buzzer" },
-				{ "caption": "connected", "value": "connected" },
-				{ "caption": "dark", "value": "dark" },
-				{ "caption": "digital", "value": "digital" },
-				{ "caption": "drums", "value": "drums" },
-				{ "caption": "duck", "value": "duck" },
-				{ "caption": "full", "value": "full" },
-				{ "caption": "happy", "value": "happy" },
-				{ "caption": "horn", "value": "horn" },
-				{ "caption": "inception", "value": "inception" },
-				{ "caption": "kazoo", "value": "kazoo" },
-				{ "caption": "roll", "value": "roll" },
-				{ "caption": "siren", "value": "siren" },
-				{ "caption": "space", "value": "space" },
-				{ "caption": "trickling", "value": "trickling" },
-				{ "caption": "turn", "value": "turn" }
-				]
-        }
-    }, {
-        "caption": "Ziel",
-        "name": "TargetID", 
-        "width": "100px",
-        "add": 0,
-        "edit": {
-			"caption": "Ziel",
-            "type": "SelectObject"
-        }
-    }, {
-        "caption": "24h-Alarm",
-        "name": "24h",
-        "width": "100px",
-        "add": true,
-        "edit": {
-			"caption": "24h-Alarm",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Technik-Alarm",
-        "name": "Technik",
-        "width": "100px",
-        "add": true,
-        "edit": {
-			"caption": "Technik-Alarm",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Intern aktiv",
-        "name": "istInternAktiv",
-        "width": "100px",
-        "add": true,
-        "edit": {
-			"caption": "Intern aktiv",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Extern aktiv",
-        "name": "istExternAktiv",
-        "width": "100px",
-        "add": true,
-        "edit": {
-			"caption": "Extern aktiv",
-            "type": "CheckBox"
-        }
-    }, {
-        "caption": "Verzögert",
-        "name": "delayed",
-        "width": "100px",
-        "add": false,
-        "edit": {
-			"caption": "Verzögert",
-            "type": "CheckBox"
+            "type": "SelectVariable"
         }
     }]
-}, 
-{ "type": "Label", "caption": "In der Spalte TEXT bei Push-Nachrichten können folgende Variablen verwendet werden:"},
-{ "type": "Label", "caption": "{melder} = Bezeichnung des Melders, welcher den Alarm ausgelöst hat."},
-{ "type": "Label", "caption": "{tts} = Kompletter Text aus der Variable TTS Ausgabetext."},
-{ "type": "NumberSpinner", "name": "dauer_alarmbeleuchtung", "caption": "Dauer der Alarmbeleuchtung", "suffix": "Sekunden"},
-{ "type": "NumberSpinner", "name": "dauer_sirene", "caption": "Dauer der Sirene", "suffix": "Sekunden"},
-{ "type": "NumberSpinner", "name": "dauer_warnlicht", "caption": "Dauer des Warnlichts", "suffix": "Sekunden"},
-{ "type": "NumberSpinner", "name": "retrigger", "caption": "Maximale erneute Auslösungen", "suffix": "mal"},
-{ "type": "NumberSpinner", "name": "verzoegerung_eingang", "caption": "Eingangsverzögerung", "suffix": "Sekunden"},
-{ "type": "NumberSpinner", "name": "verzoegerung_ausgang", "caption": "Ausgangsverzögerung", "suffix": "Sekunden"},
-{ "type": "NumberSpinner", "name": "verzoegerung_alarm", "caption": "Alarmverzögerung", "suffix": "Sekunden"}
+},
+	{
+      "type": "Label",
+      "label": "0 = Global use of motion and brightness. 1 = motion and brightness are combined per device if it is supplied from the same device instance."
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "BrightnessSegmentationLevel",
+      "caption": "Brightness segmentation level"
+    },
+	{
+      "type": "NumberSpinner",
+      "name": "PresenceOffDelay",
+      "caption": "Delay for absent"
+    },
+	{
+      "type": "Label",
+      "label": "After absent, time for which the dimm-level is used before switching off"
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "PresenceTimeout",
+      "caption": "Dimm delay",
+	  "suffix": "seconds"
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "PresenceDimmerOffPercent",
+      "caption": "Dimm %",
+	  "suffix": "%",
+	  "minimum": 0,
+	  "maximum": 100
+    },
+	{
+      "type": "Label",
+      "label": "Presence timeout (in seconds) switches to absent if no sensor refreshes its status during this time."
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "PresenceRefreshTimeout",
+      "caption": "Presence timeout",
+	  "suffix": "seconds"
+    },
+	{
+      "type": "Label",
+      "label": "Resets the absent template to the default values set by 'save as template' after a time period"
+    },
+    {
+      "type": "NumberSpinner",
+      "name": "PresenceResetToTemplateTimeout",
+      "caption": "Reset Timeout (obsolete)",
+	  "suffix": "seconds"
+    },
+	{
+      "type": "NumberSpinner",
+      "name": "ManualPresenceResetTimeout",
+      "caption": "Manual presence timeout",
+	  "suffix": "seconds"
+    },
+	{
+      "type": "NumberSpinner",
+      "name": "AlertTimeout",
+      "caption": "Alert state timeout",
+	  "suffix": "seconds"
+    },
+	{
+      "type": "NumberSpinner",
+      "name": "PresenceDetectionOffTimeout",
+      "caption": "Presence detector off timeout",
+	  "suffix": "seconds"
+    },
+	{
+      "type": "NumberSpinner",
+      "name": "ResetToDefaultProfilePresenceTimeout",
+      "caption": "Reset presence profile to default timeout",
+	  "suffix": "seconds"
+    },
+	{
+      "type": "CheckBox",
+      "name": "ResetManualPresenceOnManualTrigger",
+      "caption": "Reset manual presence on Button press"
+    },
+	{
+      "type": "CheckBox",
+      "name": "DoNotChangeToDefaultPresenceWhenTimerRunning",
+      "caption": "Do not reset presence profile to default while timer is already running"
+    },
+	{
+      "type": "CheckBox",
+      "name": "RetriggerPresenceOnDetection",
+      "caption": "Recall presence profile each time presence is detected"
+    },
+	{
+      "type": "CheckBox",
+      "name": "RetriggerAbsenceOnDetection",
+      "caption": "Recall absence profile each time absence is detected"
+    }
   ],
     "actions":
     [
       {
         "type": "Button",
-        "label": "Anlage RESET (nach Alarm oder Störung)",
-        "onClick": "SXALERT_Reset($id);"
+        "label": "OFF",
+        "onClick": "SXGRP_SetState($id, false);"
+      },
+      {
+        "type": "Button",
+        "label": "ON",
+        "onClick": "SXGRP_SetState($id, true);"
+      },
+      {
+        "type": "Button",
+        "label": "Activate ALERT Mode",
+        "onClick": "SXGRP_SetAlertState($id, true);"
+      },
+       {
+        "type": "Button",
+        "label": "Deactivate ALERT Mode",
+        "onClick": "SXGRP_SetAlertState($id, false);"
+      },
+       {
+        "type": "Button",
+        "label": "Presence",
+        "onClick": "SXGRP_SetManualPresence($id, true);"
+      },
+       {
+        "type": "Button",
+        "label": "Absent",
+        "onClick": "SXGRP_SetManualPresence($id, false);"
+      },
+       {
+        "type": "Button",
+        "label": "Save as template (obsolete)",
+        "onClick": "SXGRP_StoreCurrentAsPresenceStateTemplate($id);"
       }
     ],
     "status":
     [
-        { "code": 102, "icon": "active", "caption": "OK" },
-        { "code": 201, "icon": "error", "caption": "Authentication failed" },
-        { "code": 202, "icon": "error", "caption": "No credits left" }
+        { "code": 102, "icon": "active", "caption": "OK" }
     ]
 }

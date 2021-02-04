@@ -7,6 +7,10 @@ Die Gruppensteuerung kann für komplexe Aufgaben kaskadiert werden. Das bedeutet
 Falls Sie von einer früheren Version der Gruppensteuerung aktualisiert haben, könne Sie die Kategorien "Geräte", "Helligkeit" und "Bewegung" in der Instanz löschen, sofern Sie darin nur Verknüpfungen abgelegt hatten.
 
 ## Änderungen
+04.02.2021
++ Interner Status wird über die Log-Funktion von IP-Symcon protokolliert.
+o Das aktualisieren von Bewegungsmeldern während der Abwesenheit hatte die Verzögerung vor Abwesenheit neu gestartet.
+
 01.02.2021
 + In den Einstellungen kann gewählt werden ob das Anwesenheits- oder Abwesenheitsprofil bei jeder Aktualisierung neu geladen werden soll. Bisher war der fest eingestellte Wert "Ja". Nun ist der veränderbare Standardwert "Nein". Vor allem bei verwendung des "Automatik" Profils für Anwesenheit sollte diese Option auf "Nein" stehen.
 
