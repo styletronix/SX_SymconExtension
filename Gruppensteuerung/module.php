@@ -85,6 +85,9 @@
 			$this->RegisterVariableInteger("ProfileID4", "Profil Alarmbeleuchtung", "SXGRP.Profiles2");
             $this->EnableAction("ProfileID4");
 
+			$this->RegisterVariableInteger("ProfileID5", "Profil Anwesend Standard", "SXGRP.Profiles2");
+            $this->EnableAction("ProfileID5");
+						
 			$this->RegisterVariableFloat("IlluminationLevelMotion", "Helligkeitsgrenze für Bewegungsmelder", "SXGRP.Brightness");
             $this->EnableAction("IlluminationLevelMotion");
 			
@@ -96,10 +99,18 @@
 			$this->RegisterPropertyInteger("BrightnessSegmentationLevel", 0);
 			$this->RegisterPropertyInteger("ManualPresenceResetTimeout", 0);
 			$this->RegisterPropertyInteger("AlertTimeout", 0);
-			$this->RegisterPropertyInteger("PresenceDetectionOffTimeout", 0);		
+			$this->RegisterPropertyInteger("PresenceDetectionOffTimeout", 0);	
+			$this->RegisterPropertyInteger("ResetToDefaultProfilePresenceTimeout", 0);				
 			$this->RegisterPropertyBoolean("ResetManualPresenceOnManualTrigger", false);
+			$this->RegisterPropertyBoolean("ManualPresenceOnManualProfileChange", false);
+			$this->RegisterPropertyBoolean("DoNotChangeToDefaultPresenceWhenTimerRunning", false);
 			$this->RegisterPropertyInteger("IsVersion", 0);
-			
+			$this->RegisterPropertyBoolean("RetriggerPresenceOnDetection", false);
+			$this->RegisterPropertyBoolean("RetriggerAbsenceOnDetection", false);
+	
+			$this->RegisterAttributeString ("settings", "");
+			$this->RegisterAttributeString ("lastPresenceState", "");
+			$this->RegisterAttributeString ("lastAbsenceState", "");
 
             $this->RegisterPropertyInteger("DeviceCategory", 0); // Veraltet
 			$this->RegisterPropertyString("actors", "");
@@ -119,6 +130,7 @@
 			$this->RegisterTimer("ManualPresenceReset_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ManualPresenceReset_Timer");');
 			$this->RegisterTimer("AlertTimeout_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "AlertTimeout_Timer");');
 			$this->RegisterTimer("PresenceDetectionOffTimeout_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceDetectionOffTimeout_Timer");');
+			$this->RegisterTimer("ResetToDefaultProfilePresenceTimeout_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ResetToDefaultProfilePresenceTimeout_Timer");');
 						
             if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
@@ -331,7 +343,7 @@
 			$arr = $this->GetListItems("actors");
 			if ($arr){
 				foreach($arr as $key1) {
-					if($key1["InstanceID"] == $DeviceID){
+					if($key1["InstanceID"] == $DeviceID){						
 						$this->RefreshStatus();
 						break;
 					}
@@ -340,15 +352,25 @@
 			
 			$arr = $this->GetListItems("sensors");
 			if ($arr){
-				$resetManual = $this->ReadPropertyBoolean("ResetManualPresenceOnManualTrigger");	
+				$resetManual = $this->ReadPropertyBoolean("ResetManualPresenceOnManualTrigger");
+				
 				foreach($arr as $key1) {
 					if($key1["InstanceID"] == $DeviceID){
 						if($key1["typ"] == 0){
 							// Motion
 							$this->RefreshPresence();
 						}
+						
+						$TriggerOnEachEvent = false;
+						if (array_key_exists("TriggerOnEachEvent",$key1)){
+							$TriggerOnEachEvent = $key1["TriggerOnEachEvent"];
+						}
+						
+						if ($TriggerOnEachEvent == true or $this->GetObjectValuePercent($DeviceID) > 0.0){
 						if($key1["typ"] == 1){
 							// Button (depends on brightness)
+							// $this->RefreshPresence();
+							$this->SetPresenceState(true, false, false);	
 							$this->RefreshPresence();
 						}
 						if($key1["typ"] == 2){
@@ -380,7 +402,9 @@
 							if ($resetManual == true){
 								$this->SetManualPresence(false);
 							}
-							$this->SetPresenceState(true, true);
+							$this->SetPresenceState(true, true, false);
+							$this->RefreshPresence();
+						}
 						}
 						
 						break;
@@ -422,11 +446,6 @@
 				}
 			}
 
-			
-		
-			
-			
-
 			$this->RefreshStatus();
 			$this->RefreshIlluminationLevel();
 			$this->RefreshPresence();
@@ -448,7 +467,9 @@
 			$ManualPresence = GetValueBoolean($this->GetIDForIdent("ManualPresence"));
 			if ($ManualPresence == true){
 				$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
-				$this->SetPresenceState(true, false);
+				$this->LogMessage("Manuelle Anwesenheit ist aktiv. Bewegung wird nicht aktualisiert.", KL_NOTIFY);
+				$this->SetValue("statusString", "Manuelle Anwesenheit ist aktiv");
+				$this->SetPresenceState(true, false, false);
 				return;
 			}
 
@@ -464,7 +485,7 @@
 			
 			if ($PresenceDeviceList){
 				foreach($PresenceDeviceList as $Device) {
-					if($Device["typ"] < 0 or $Device["typ"] > 1){
+					if($Device["typ"] < 0 or $Device["typ"] > 0){
 						// Skip Buttons
 						continue;
 					}
@@ -542,19 +563,32 @@
 				
 				if ($result == true){
 				   	$this->SetTimerInterval("UpdatePresence_Timer", $PresenceRefreshTimeout * 1000);
-					$this->SetPresenceState($result, false);
+					$this->SetPresenceState($result, false, false);
 					
 				}else{
 					$this->SetTimerInterval("UpdatePresence_Timer", 0);
 					
 					if ($PresenceOffDelay <= 0){
-						$this->SetPresenceState($result, false);
+						$this->SetPresenceState($result, false, false);
 					}else{
-						$this->SetTimerInterval("PresenceOffDelayScript_Timer", $PresenceOffDelay * 1000);
+						$lastStatePresence = GetValue($this->GetIDForIdent("PresenceDetected"));
+						if ($lastStatePresence){
+							if ($this->GetTimerInterval("PresenceOffDelayScript_Timer") > 0){
+								$this->LogMessage("Verzögerung vor Abwesenheit läuft bereits.", KL_NOTIFY);
+							}else{							
+								$this->LogMessage("Verzögerung vor Abwesenheit... (" . $PresenceOffDelay . " Sek.)", KL_NOTIFY);
+								$this->SetValue("statusString", "Verzögerung vor Abwesenheit... (" . $PresenceOffDelay . " Sek.)");
+								$this->SetTimerInterval("PresenceOffDelayScript_Timer", $PresenceOffDelay * 1000);
+							}
+						} else {
+							$this->LogMessage("Keine Verzögerung vor Abwesenheit da bereits abwesend", KL_NOTIFY);
+							$this->SetValue("statusString", "Keine Verzögerung vor Abwesenheit da bereits abwesend");
+							$this->SetPresenceState($result, false, false);						
+						}					
 					}
 				}
 			}else{
-				$this->SetPresenceState($result, false);
+				$this->SetPresenceState($result, false, false);
 			}
 		}
 		
@@ -568,10 +602,21 @@
 			foreach($ActorDeviceList as $device) {
 				$key2 = $device["InstanceID"];				
 				$deviceStatus = $this->GetObjectValuePercent($key2);
-				if ($deviceStatus > $resultFloat){
-					$resultFloat = $deviceStatus;
-				}
+				
+				if ($this->IsBooleanValue($key2)){
+					if ($deviceStatus > 0.0){
+						$result = true;
+					}
+				}else{
+					if ($deviceStatus > $resultFloat){
+						$resultFloat = $deviceStatus;
+					}
+				}		
 			}	
+			
+			if ($result == true and $resultFloat <= 0.0){
+				$resultFloat = 1.0;
+			}
 			
 			if($resultFloat > 0.0){
 				$result = true;
@@ -772,27 +817,38 @@
 			$this->RefreshPresence();
 		}
 		public function TriggerPresenceDetected(){
-			$this->SetPresenceState(true, false);
+			$this->SetPresenceState(true, false, false);
 		}
 
-		private function SetPresenceState(bool $Value, bool $ignoreIllumination){
+		private function SetPresenceState(bool $Value, bool $ignoreIllumination, bool $force){
 			$enabled = GetValueBoolean(IPS_GetObjectIDByIdent("EnablePresenceDetection", $this->InstanceID));
+			$changed = $force;
+			
+			$lastStatePresence = GetValue($this->GetIDForIdent("PresenceDetected"));
+			if ( $Value == false and $lastStatePresence == true ){
+				$this->WriteAttributeString("lastPresenceState", $this->GetCurrentStateString());
+				$changed = true;
+			}
+			if ( $Value == true and $lastStatePresence == false ){
+				$this->WriteAttributeString("lastAbsenceState", $this->GetCurrentStateString());
+				$changed = true;
+			}			
 			SetValue($this->GetIDForIdent("PresenceDetected"), $Value);
 			
 			$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
 			
             $data = $this->ReadSettings();
-
-			$currentPrePresenceState = $data['PrePresenceState'];
 			$currentPreAlertState = $data['PreAlertState'];
 			
 			if ($currentPreAlertState !== ""){
+				$this->LogMessage("Bewegung nicht ausgewertet da Alarmmodus aktiv ist.", KL_NOTIFY);
 				$this->SetValue("statusString", "Alarmmodus ist aktiv");
 				return;
 			}
 			
 			// Keine weitere Ausführung, wenn Bewegungsmelder deaktiviert sind.
 			if ($enabled == false){
+				$this->LogMessage("Bewegung nicht ausgewertet da Bewegungsmelder deaktiviert sind.", KL_NOTIFY);
 				$this->SetValue("statusString", "Bewegungsmelder sind deaktiviert");
 				return;
 			}
@@ -802,16 +858,14 @@
 
 			$PresenceResetToTemplateTimeout = $this->ReadPropertyInteger("PresenceResetToTemplateTimeout");
 
-			if ($Value == false){
-				if ($currentPrePresenceState == ""){
-					$result = $this->GetCurrentStateString();
-                    $data["PrePresenceState"] = $result;
-				}
-				
-				$ProfileID3 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID3", $this->InstanceID)); 
-				
+			if ($Value == false){	
+			  // Prüfe ob Anwesenheit geändert wurde oder bei jeder Anwesenheitsmeldung die Werte neu gesetzt werden sollen.
+			  if ($changed or $this->ReadPropertyBoolean("RetriggerAbsenceOnDetection")){			
+				// Profil für Abwesenheit aktivieren
+				$ProfileID3 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID3", $this->InstanceID)); 			
 				if ($ProfileID3 == -1 or $ProfileID3 == 0 or $ProfileID3 == -2){
 					if ($PresenceTimeout > 0){
+						$this->LogMessage("Vorwarnung vor abwesenheit... (" . $PresenceTimeout . " Sek.)", KL_NOTIFY);
 						$this->SetValue("statusString", "Vorwarnung vor abwesenheit...");
 						$DimmLevel = $this->ReadPropertyInteger("PresenceDimmerOffPercent");
 						
@@ -824,6 +878,7 @@
 						$this->SetTimerInterval("PresenceTimeoutOff_Timer", $PresenceTimeout * 1000);
 						
 					}else{
+						$this->LogMessage("Abwesend (Aus)", KL_NOTIFY);
 						$this->SetValue("statusString", "Abwesend (Aus)");
 						if ($DeviceList){
 							foreach($DeviceList as $device){
@@ -833,6 +888,7 @@
 					}
 				
 				}elseif($ProfileID3 == -3){
+					$this->LogMessage("Abwesend (An)", KL_NOTIFY);
 					$this->SetValue("statusString", "Abwesend (An)");
 					if ($DeviceList){
 							foreach($DeviceList as $device){
@@ -841,40 +897,52 @@
 						}
 					
 				}elseif($ProfileID3 > 0){
+					$this->LogMessage("Abwesend (Profil ". $ProfileID3 .")", KL_NOTIFY);
 					$this->SetValue("statusString", "Abwesend (Profil ". $ProfileID3 .")");
 					$this->CallProfile($ProfileID3);
 						
 				}
-				
-				if ($PresenceResetToTemplateTimeout > 0 ){
+			  }else{
+				  $this->LogMessage("Abwesend (keine Änderung)", KL_NOTIFY);
+				  	$this->SetValue("statusString", "Abwesend (keine Änderung)");
+			  }
+			  
+			  if ($PresenceResetToTemplateTimeout > 0 ){
 					$this->SetTimerInterval("ResetPresenceStateToTemplate_Timer", ($PresenceTimeout + $PresenceResetToTemplateTimeout) * 1000);
-				}
+			  }
 				
 			}else{
 				// Prüfe Helligkeit
 				if ($ignoreIllumination == false){
-				$IlluminationLevelMotion = GetValueFloat(IPS_GetObjectIDByIdent("IlluminationLevelMotion", $this->InstanceID));  
-				if ($IlluminationLevelMotion > -1){
-					$illumination = $this->GetIlluminationLevelMin();
-					if ($illumination > $IlluminationLevelMotion){
-						$this->SetValue("statusString", "Bewegung wegen Helligkeit ignoriert");
-						return; // Bewegung nicht als erkannt setzen, wenn Helligkeit höher als eingestellter Wert ist.
+					$IlluminationLevelMotion = GetValueFloat(IPS_GetObjectIDByIdent("IlluminationLevelMotion", $this->InstanceID));  
+					if ($IlluminationLevelMotion > -1){
+						$illumination = $this->GetIlluminationLevelMin();
+						if ($illumination > $IlluminationLevelMotion){
+							$this->LogMessage("Bewegung wegen Helligkeit ignoriert", KL_NOTIFY);
+							$this->SetValue("statusString", "Bewegung wegen Helligkeit ignoriert");
+							return; // Bewegung nicht als erkannt setzen, wenn Helligkeit höher als eingestellter Wert ist.
+						}
 					}
-				}
 				}
 				
 				$this->SetTimerInterval("PresenceTimeoutOff_Timer", 0);
 				$this->SetTimerInterval("ResetPresenceStateToTemplate_Timer", 0);
 				
-				$ProfileID2 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID2", $this->InstanceID));  
-				
+				// Prüfe ob Anwesenheit geändert wurde oder bei jeder Anwesenheitsmeldung die Werte neu gesetzt werden sollen.
+			  if ($changed or $this->ReadPropertyBoolean("RetriggerPresenceOnDetection")){
+				  
+				  // Profil für Anwesenheit aktivieren
+				$ProfileID2 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID2", $this->InstanceID));  				
 				if ($ProfileID2 == -1 or $ProfileID2 == 0){
+					$currentPrePresenceState = $this->ReadAttributeString("lastPresenceState");
 					if ($currentPrePresenceState !== ""){
+						$this->LogMessage("Anwesend (Automatik)", KL_NOTIFY);
 						$this->SetValue("statusString", "Anwesend (Automatik)");
 						$this->SetCurrentStateString($currentPrePresenceState);
 					}
 					
 				}elseif($ProfileID2 == -2){
+					$this->LogMessage("Anwesend (Aus)", KL_NOTIFY);
 					$this->SetValue("statusString", "Anwesend (Aus)");
 					if ($DeviceList){
 							foreach($DeviceList as $device){
@@ -884,6 +952,7 @@
 					
 					
 				}elseif($ProfileID2 == -3){
+					$this->LogMessage("Anwesend (An)", KL_NOTIFY);
 					$this->SetValue("statusString", "Anwesend (An)");					
 					if ($DeviceList){
 							foreach($DeviceList as $device){
@@ -892,37 +961,35 @@
 						}
 					
 				}elseif($ProfileID2 > 0){
+					$this->LogMessage("Anwesend (Profil ". $ProfileID2 .")", KL_NOTIFY);
 					$this->SetValue("statusString", "Anwesend (Profil ". $ProfileID2 .")");
 					$this->CallProfile($ProfileID2);
 						
 				}
-				
-				$data["PrePresenceState"] = "";
+			  }
 			}
 
             $this->WriteSettings($data);
 			$this->RefreshStatus();
 		}
 		private function ApplyPresenceStateAfterProfileChange(){
-			$this->SetPresenceState(GetValueBoolean($this->GetIDForIdent("PresenceDetected")), false);
+			$this->SetPresenceState(GetValueBoolean($this->GetIDForIdent("PresenceDetected")), false, true);
 		}
-		private function PresenceTimeoutOff(){			
-			$data = $this->ReadSettings();
-
-			if (array_key_exists('PrePresenceState', $data) == false) {
-				$data['PrePresenceState'] = "";
-			}
-			$currentPrePresenceState = $data['PrePresenceState'];
+		private function PresenceTimeoutOff(){
+			// TODO: Automatik im Ausschaltvorgang berücksichtigen
+			$this->LogMessage("Abwesend (aus)", KL_NOTIFY);
+			$this->SetValue("statusString", "Abwesend (Aus)");
 			
-			if ($currentPrePresenceState !== ""){
-				$arr = $this->GetListItems("actors");
-				if ($arr){
-					foreach($arr as $device){
-						$this->SetObjectValue($device["InstanceID"], false, 0, 0, false, false);
-					}
+			
+			$DeviceList = $this->GetListItems("actors");
+			if ($DeviceList){
+				foreach($DeviceList as $device){
+					$this->SetObjectValue($device["InstanceID"], false, 0, 0, false, false);
 				}
 			}
 		}
+		
+		// Obsolete
 		public function ResetPresenceStateToTemplate(){
 			$data = $this->ReadSettings();
 			
@@ -930,6 +997,8 @@
 			
 			$this->WriteSettings($data);
 		}
+		
+		// Obsolete
 		public function StoreCurrentAsPresenceStateTemplate(){
 			$data = $this->ReadSettings();
 			
@@ -1002,7 +1071,11 @@
 			}
 			SetValue($this->GetIDForIdent("ProfileID"), $id);
 		}
+		
+		// Obsolete
 		public function UseProfileIDAsPresenceStateTeplate(int $id){
+			// $this->SetProfilePresenceDefault($id);
+			
 			$data = $this->ReadSettings();
 			
 			if (array_key_exists('Profile'.$id, $data)) {
@@ -1013,21 +1086,26 @@
 			
 			$this->WriteSettings($data);
 		}
+		
+		// Obsolete
 		public function UseProfileIDAsPresenceStateTeplateAndApplyToCurrentStateIfPresent(int $id){
-			$data = $this->ReadSettings();
+			//$this->SetProfilePresenceDefault($id);
 			
-			if (array_key_exists('Profile'.$id, $data)) {
-				$data['PresenceStateTemplate'] = $data['Profile'.$id];
-				$data['PrePresenceState'] = $data['Profile'.$id];
+			$data = $this->readsettings();
+			
+			if (array_key_exists('profile'.$id, $data)) {
+				$data['presencestatetemplate'] = $data['profile'.$id];
+				$data['prepresencestate'] = $data['profile'.$id];
 			}
 
-			$this->WriteSettings($data);
+			$this->writesettings($data);
 			
-			SetValue($this->GetIDForIdent("ProfileID"), $id);
-			SetValue($this->GetIDForIdent("ProfileID2"), $id);
+			setvalue($this->getidforident("profileid"), $id);
+			setvalue($this->getidforident("profileid2"), $id);
 			
-			$this->RefreshPresence();
+			$this->refreshpresence();
 		}
+		
 		public function StoreProfile(int $id){
 			$data = $this->ReadSettings();
 			
@@ -1058,15 +1136,35 @@
 		public function SetProfilePresent(int $id){
 			SetValue($this->GetIDForIdent("ProfileID2"), $id);
 			
+			if (GetValue($this->GetIDForIdent("ProfileID5")) <> $id){
+				$timer = $this->ReadPropertyInteger("ResetToDefaultProfilePresenceTimeout");	
+				$this->SetTimerInterval("ResetToDefaultProfilePresenceTimeout_Timer",  $timer * 1000);
+			} else {
+				$this->SetTimerInterval("ResetToDefaultProfilePresenceTimeout_Timer", 0);
+			}
+			
 			if (GetValueBoolean($this->GetIDForIdent("PresenceDetected")) == true){
 				$this->ApplyPresenceStateAfterProfileChange();
 			} else {
 				$this->RefreshPresence();
 			}
-			
-			// if ($id > 0){
-				// $this->UseProfileIDAsPresenceStateTeplateAndApplyToCurrentStateIfPresent($id);	
-			// }
+		}
+		public function SetProfilePresenceDefault(int $id){
+			SetValue($this->GetIDForIdent("ProfileID5"), $id);
+						
+			$preventReset = $this->ReadPropertyBoolean("DoNotChangeToDefaultPresenceWhenTimerRunning");	
+			if ($preventReset == true){
+				$currentTimer = $this->GetTimerInterval("ResetToDefaultProfilePresenceTimeout_Timer");
+				if ($currentTimer > 0){ return; }
+			}
+						
+			$this->SetProfilePresent($id);	
+			$this->SetTimerInterval("ResetToDefaultProfilePresenceTimeout_Timer", 0);
+		}
+		public function ResetPresenceProfileToDefault(){
+			$this->SetTimerInterval("ResetToDefaultProfilePresenceTimeout_Timer", 0);
+			$id = GetValue($this->GetIDForIdent("ProfileID5"), $id);
+			$this->SetProfilePresent($id);
 		}
 		public function SetProfileAbsent(int $id){
 			SetValue($this->GetIDForIdent("ProfileID3"), $id);
@@ -1076,8 +1174,13 @@
 			} else {
 				$this->RefreshPresence();
 			}
+		}
+		public function SetProfileAlert(int $id){
+			SetValue($this->GetIDForIdent("ProfileID4"), $id);
 			
-			//$this->RefreshPresence();
+			if (GetValueBoolean($this->GetIDForIdent("AlertModeAktive")) == true){
+				$this->SetAlertState(true);
+			}
 		}
 		public function SetIlluminationLevelMotion(float $Value){
 			SetValue($this->GetIDForIdent("IlluminationLevelMotion"), $Value);
@@ -1116,6 +1219,16 @@
 				// Profil Abwesend
 				$this->SetProfileAbsent($Value);
 				break;
+				
+			case "ProfileID4":
+				// Profil Alarmmodus
+				$this->SetProfileAlert($Value);
+				break;
+				
+			case "ProfileID5":
+				// Profil Anwesend Standard
+				$this->SetProfilePresenceDefault($Value);
+				break;
 			
 			case "EnablePresenceDetection":
 				if ($Value == true){
@@ -1148,30 +1261,32 @@
  		}
 		
 		private function CheckTimerIntervals(){
+			$this->LogMessage("Timer wegen config Änderung oder Neustart zurückgesetzt.", KL_NOTIFY);
 			//$this->SetTimerInterval("PresenceTimeoutOff_Timer", $this->ReadPropertyInteger("PresenceTimeout") * 1000);
 			//$this->SetTimerInterval("PresenceOffDelayScript_Timer", $this->ReadPropertyInteger("PresenceOffDelay") * 1000);
 			
-			if (GetValue($this->GetIDForIdent("PresenceDetected") == false)){
+			if (GetValue($this->GetIDForIdent("PresenceDetected")) == false){
 				$this->SetTimerInterval("ResetPresenceStateToTemplate_Timer", $this->ReadPropertyInteger("PresenceResetToTemplateTimeout") * 1000);	
 			}else{
 				$this->SetTimerInterval("UpdatePresence_Timer", $this->ReadPropertyInteger("PresenceRefreshTimeout") * 1000);
 			}
 		
-			if (GetValueBoolean($this->GetIDForIdent("ManualPresence") == true)){
+			if (GetValueBoolean($this->GetIDForIdent("ManualPresence")) == true){
 				$this->SetTimerInterval("ManualPresenceReset_Timer", $this->ReadPropertyInteger("ManualPresenceResetTimeout") * 1000);
 			}
 			
-			if (GetValueBoolean($this->GetIDForIdent("AlertModeAktive") == true)){
+			if (GetValueBoolean($this->GetIDForIdent("AlertModeAktive")) == true){
 				$this->SetTimerInterval("AlertTimeout_Timer",  $this->ReadPropertyInteger("AlertTimeout") * 1000);
 			}
 			
-			if (GetValueBoolean($this->GetIDForIdent("EnablePresenceDetection") == false)){
+			if (GetValueBoolean($this->GetIDForIdent("EnablePresenceDetection")) == false){
 				$this->SetTimerInterval("PresenceDetectionOffTimeout_Timer",  $this->ReadPropertyInteger("PresenceDetectionOffTimeout") * 1000);
 			}		
 		}
 		
 		private function TimerCallback(string $TimerID){
 			$this->SetTimerInterval($TimerID, 0);
+			$this->LogMessage("Timer abgelaufen: " . $TimerID, KL_NOTIFY);
 				
 				switch($TimerID){
 					case "UpdatePresence_Timer":
@@ -1183,7 +1298,7 @@
 						break;
 						
 					case "PresenceOffDelayScript_Timer":
-						$this->SetPresenceState(false, false);
+						$this->SetPresenceState(false, false, false);
 						break;
 						
 					case "ResetPresenceStateToTemplate_Timer":
@@ -1201,6 +1316,10 @@
 					case "PresenceDetectionOffTimeout_Timer":
 						$this->EnablePresenceDetection();
 						break;
+						
+					case "ResetToDefaultProfilePresenceTimeout_Timer":
+						$this->ResetPresenceProfileToDefault();
+						break;
 				}				
 		}
 		public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
@@ -1209,6 +1328,17 @@
 			}
 		}
 		
+		private function IsBooleanValue(int $TargetID){
+		if (IPS_VariableExists($TargetID)){
+				$variable = IPS_GetVariable($TargetID);										
+				$t = $variable["VariableType"];			
+				
+				if ($t == 0){
+					return true;
+				}
+			}
+			return false;
+		}
 		private function GetObjectValuePercent(int $TargetID){
 			if (IPS_VariableExists($TargetID)){
 				$variable = IPS_GetVariable($TargetID);										
@@ -1374,48 +1504,54 @@
 
         private function WriteSettings($data){
 			IPS_SemaphoreEnter("SXGRP_SettingAccess".$this->InstanceID,  2000);
-            $fp = fopen(IPS_GetKernelDir().$this->InstanceID.'.settings.json', 'w');
-            fwrite($fp, json_encode($data));
-            fclose($fp);
+			
+			$this->WriteAttributeString("settings", json_encode($data));		
+			// Writing to settings file is obsolete. Migration will be performed during first ReadSettings()
 			IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
         }
+		
         private function ReadSettings(){
 			IPS_SemaphoreEnter("SXGRP_SettingAccess".$this->InstanceID,  2000);
 			
-            $filename = IPS_GetKernelDir().$this->InstanceID.'.settings.json';
-            if (file_exists($filename)) {
-				try {
-					$contents = file_get_contents($filename);
-					$data = json_decode($contents,true);
-				
-					if (array_key_exists('PrePresenceState', $data) == false) {
-						$data['PrePresenceState'] = "";
+			$contents = $this->ReadAttributeString("settings");
+			if ($contents == ""){
+				// Migrate settings file to settings property and delete setings file on success
+				$filename = IPS_GetKernelDir().$this->InstanceID.'.settings.json';
+				if (file_exists($filename)) {
+					try {
+						$contents = file_get_contents($filename);
+						$this->WriteAttributeString("settings", $contents);
+						unlink($filename);
+					} catch (Exception $e) {
+						// Ignore File exceptions. Default settings will be loaded.
 					}
-					if (array_key_exists('PresenceStateTemplate', $data) == false) {
-						$data['PresenceStateTemplate'] = "";
-					}
-					IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
-					return $data;
-					
-				} catch (Exception $e) {
-					$contents = array();
-					$contents["PreAlertState"] = "";
-					$contents["PrePresenceState"] = "";
-					$contents["PresenceStateTemplate"] = "";
-					IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
-					return $contents;
-					
 				}
-   
-            }else{
-                $contents = array();
-                $contents["PreAlertState"] = "";
-				$contents["PrePresenceState"] = "";
-				$contents["PresenceStateTemplate"] = "";
-				IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
-                return $contents;
+			}
+			    
+            try {
+				if ($contents == ""){
+					$data = array();
+				}else{
+					$data = json_decode($contents,true);
+				}
+								
+				if (array_key_exists('PrePresenceState', $data) == false) { $data['PrePresenceState'] = "";	}
+				if (array_key_exists('PresenceStateTemplate', $data) == false) { $data['PresenceStateTemplate'] = ""; }
+				if (array_key_exists('PreAlertState', $data) == false) { $data['PreAlertState'] = ""; }
 				
-            }
+				IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
+				return $data;
+					
+			} catch (Exception $e) {
+				// Reset settings to default if decoding was not possible
+				$data = array();
+				$data["PreAlertState"] = "";
+				$data["PrePresenceState"] = "";
+				$data["PresenceStateTemplate"] = "";
+				
+				IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
+				return $data;					
+			}
 			
 			IPS_SemaphoreLeave("SXGRP_SettingAccess".$this->InstanceID);
         }
