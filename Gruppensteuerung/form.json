@@ -50,6 +50,15 @@
 				{ "caption": "Button on", "value": 8 }
 				]
         }
+    }, {
+        "caption": "Trigger on each refresh and change",
+        "name": "TriggerOnEachEvent",
+        "width": "150px",
+        "add": false,
+        "edit": {
+			"caption": "Trigger on each refresh and change",
+            "type": "CheckBox"
+        }
     }]
 },{
     "type": "List",

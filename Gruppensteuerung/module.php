@@ -343,7 +343,7 @@
 			$arr = $this->GetListItems("actors");
 			if ($arr){
 				foreach($arr as $key1) {
-					if($key1["InstanceID"] == $DeviceID){
+					if($key1["InstanceID"] == $DeviceID){						
 						$this->RefreshStatus();
 						break;
 					}
@@ -360,8 +360,17 @@
 							// Motion
 							$this->RefreshPresence();
 						}
+						
+						$TriggerOnEachEvent = false;
+						if (array_key_exists("TriggerOnEachEvent",$key1)){
+							$TriggerOnEachEvent = $key1["TriggerOnEachEvent"];
+						}
+						
+						if ($TriggerOnEachEvent == true or $this->GetObjectValuePercent($DeviceID) > 0.0){
 						if($key1["typ"] == 1){
 							// Button (depends on brightness)
+							// $this->RefreshPresence();
+							$this->SetPresenceState(true, false, false);	
 							$this->RefreshPresence();
 						}
 						if($key1["typ"] == 2){
@@ -394,6 +403,8 @@
 								$this->SetManualPresence(false);
 							}
 							$this->SetPresenceState(true, true, false);
+							$this->RefreshPresence();
+						}
 						}
 						
 						break;
@@ -435,11 +446,6 @@
 				}
 			}
 
-			
-		
-			
-			
-
 			$this->RefreshStatus();
 			$this->RefreshIlluminationLevel();
 			$this->RefreshPresence();
@@ -461,6 +467,7 @@
 			$ManualPresence = GetValueBoolean($this->GetIDForIdent("ManualPresence"));
 			if ($ManualPresence == true){
 				$this->SetTimerInterval("PresenceOffDelayScript_Timer", 0);
+				$this->LogMessage("Manuelle Anwesenheit ist aktiv. Bewegung wird nicht aktualisiert.", KL_NOTIFY);
 				$this->SetValue("statusString", "Manuelle Anwesenheit ist aktiv");
 				$this->SetPresenceState(true, false, false);
 				return;
@@ -478,7 +485,7 @@
 			
 			if ($PresenceDeviceList){
 				foreach($PresenceDeviceList as $Device) {
-					if($Device["typ"] < 0 or $Device["typ"] > 1){
+					if($Device["typ"] < 0 or $Device["typ"] > 0){
 						// Skip Buttons
 						continue;
 					}
@@ -564,8 +571,20 @@
 					if ($PresenceOffDelay <= 0){
 						$this->SetPresenceState($result, false, false);
 					}else{
-						$this->SetValue("statusString", "Verzögerung vor Abwesenheit... (" . $PresenceOffDelay . " Sek.)");
-						$this->SetTimerInterval("PresenceOffDelayScript_Timer", $PresenceOffDelay * 1000);
+						$lastStatePresence = GetValue($this->GetIDForIdent("PresenceDetected"));
+						if ($lastStatePresence){
+							if ($this->GetTimerInterval("PresenceOffDelayScript_Timer") > 0){
+								$this->LogMessage("Verzögerung vor Abwesenheit läuft bereits.", KL_NOTIFY);
+							}else{							
+								$this->LogMessage("Verzögerung vor Abwesenheit... (" . $PresenceOffDelay . " Sek.)", KL_NOTIFY);
+								$this->SetValue("statusString", "Verzögerung vor Abwesenheit... (" . $PresenceOffDelay . " Sek.)");
+								$this->SetTimerInterval("PresenceOffDelayScript_Timer", $PresenceOffDelay * 1000);
+							}
+						} else {
+							$this->LogMessage("Keine Verzögerung vor Abwesenheit da bereits abwesend", KL_NOTIFY);
+							$this->SetValue("statusString", "Keine Verzögerung vor Abwesenheit da bereits abwesend");
+							$this->SetPresenceState($result, false, false);						
+						}					
 					}
 				}
 			}else{
@@ -583,10 +602,21 @@
 			foreach($ActorDeviceList as $device) {
 				$key2 = $device["InstanceID"];				
 				$deviceStatus = $this->GetObjectValuePercent($key2);
-				if ($deviceStatus > $resultFloat){
-					$resultFloat = $deviceStatus;
-				}
+				
+				if ($this->IsBooleanValue($key2)){
+					if ($deviceStatus > 0.0){
+						$result = true;
+					}
+				}else{
+					if ($deviceStatus > $resultFloat){
+						$resultFloat = $deviceStatus;
+					}
+				}		
 			}	
+			
+			if ($result == true and $resultFloat <= 0.0){
+				$resultFloat = 1.0;
+			}
 			
 			if($resultFloat > 0.0){
 				$result = true;
@@ -811,12 +841,14 @@
 			$currentPreAlertState = $data['PreAlertState'];
 			
 			if ($currentPreAlertState !== ""){
+				$this->LogMessage("Bewegung nicht ausgewertet da Alarmmodus aktiv ist.", KL_NOTIFY);
 				$this->SetValue("statusString", "Alarmmodus ist aktiv");
 				return;
 			}
 			
 			// Keine weitere Ausführung, wenn Bewegungsmelder deaktiviert sind.
 			if ($enabled == false){
+				$this->LogMessage("Bewegung nicht ausgewertet da Bewegungsmelder deaktiviert sind.", KL_NOTIFY);
 				$this->SetValue("statusString", "Bewegungsmelder sind deaktiviert");
 				return;
 			}
@@ -833,6 +865,7 @@
 				$ProfileID3 = GetValueInteger(IPS_GetObjectIDByIdent("ProfileID3", $this->InstanceID)); 			
 				if ($ProfileID3 == -1 or $ProfileID3 == 0 or $ProfileID3 == -2){
 					if ($PresenceTimeout > 0){
+						$this->LogMessage("Vorwarnung vor abwesenheit... (" . $PresenceTimeout . " Sek.)", KL_NOTIFY);
 						$this->SetValue("statusString", "Vorwarnung vor abwesenheit...");
 						$DimmLevel = $this->ReadPropertyInteger("PresenceDimmerOffPercent");
 						
@@ -845,6 +878,7 @@
 						$this->SetTimerInterval("PresenceTimeoutOff_Timer", $PresenceTimeout * 1000);
 						
 					}else{
+						$this->LogMessage("Abwesend (Aus)", KL_NOTIFY);
 						$this->SetValue("statusString", "Abwesend (Aus)");
 						if ($DeviceList){
 							foreach($DeviceList as $device){
@@ -854,6 +888,7 @@
 					}
 				
 				}elseif($ProfileID3 == -3){
+					$this->LogMessage("Abwesend (An)", KL_NOTIFY);
 					$this->SetValue("statusString", "Abwesend (An)");
 					if ($DeviceList){
 							foreach($DeviceList as $device){
@@ -862,11 +897,13 @@
 						}
 					
 				}elseif($ProfileID3 > 0){
+					$this->LogMessage("Abwesend (Profil ". $ProfileID3 .")", KL_NOTIFY);
 					$this->SetValue("statusString", "Abwesend (Profil ". $ProfileID3 .")");
 					$this->CallProfile($ProfileID3);
 						
 				}
 			  }else{
+				  $this->LogMessage("Abwesend (keine Änderung)", KL_NOTIFY);
 				  	$this->SetValue("statusString", "Abwesend (keine Änderung)");
 			  }
 			  
@@ -881,6 +918,7 @@
 					if ($IlluminationLevelMotion > -1){
 						$illumination = $this->GetIlluminationLevelMin();
 						if ($illumination > $IlluminationLevelMotion){
+							$this->LogMessage("Bewegung wegen Helligkeit ignoriert", KL_NOTIFY);
 							$this->SetValue("statusString", "Bewegung wegen Helligkeit ignoriert");
 							return; // Bewegung nicht als erkannt setzen, wenn Helligkeit höher als eingestellter Wert ist.
 						}
@@ -898,11 +936,13 @@
 				if ($ProfileID2 == -1 or $ProfileID2 == 0){
 					$currentPrePresenceState = $this->ReadAttributeString("lastPresenceState");
 					if ($currentPrePresenceState !== ""){
+						$this->LogMessage("Anwesend (Automatik)", KL_NOTIFY);
 						$this->SetValue("statusString", "Anwesend (Automatik)");
 						$this->SetCurrentStateString($currentPrePresenceState);
 					}
 					
 				}elseif($ProfileID2 == -2){
+					$this->LogMessage("Anwesend (Aus)", KL_NOTIFY);
 					$this->SetValue("statusString", "Anwesend (Aus)");
 					if ($DeviceList){
 							foreach($DeviceList as $device){
@@ -912,6 +952,7 @@
 					
 					
 				}elseif($ProfileID2 == -3){
+					$this->LogMessage("Anwesend (An)", KL_NOTIFY);
 					$this->SetValue("statusString", "Anwesend (An)");					
 					if ($DeviceList){
 							foreach($DeviceList as $device){
@@ -920,6 +961,7 @@
 						}
 					
 				}elseif($ProfileID2 > 0){
+					$this->LogMessage("Anwesend (Profil ". $ProfileID2 .")", KL_NOTIFY);
 					$this->SetValue("statusString", "Anwesend (Profil ". $ProfileID2 .")");
 					$this->CallProfile($ProfileID2);
 						
@@ -935,7 +977,9 @@
 		}
 		private function PresenceTimeoutOff(){
 			// TODO: Automatik im Ausschaltvorgang berücksichtigen
+			$this->LogMessage("Abwesend (aus)", KL_NOTIFY);
 			$this->SetValue("statusString", "Abwesend (Aus)");
+			
 			
 			$DeviceList = $this->GetListItems("actors");
 			if ($DeviceList){
@@ -1217,6 +1261,7 @@
  		}
 		
 		private function CheckTimerIntervals(){
+			$this->LogMessage("Timer wegen config Änderung oder Neustart zurückgesetzt.", KL_NOTIFY);
 			//$this->SetTimerInterval("PresenceTimeoutOff_Timer", $this->ReadPropertyInteger("PresenceTimeout") * 1000);
 			//$this->SetTimerInterval("PresenceOffDelayScript_Timer", $this->ReadPropertyInteger("PresenceOffDelay") * 1000);
 			
@@ -1241,6 +1286,7 @@
 		
 		private function TimerCallback(string $TimerID){
 			$this->SetTimerInterval($TimerID, 0);
+			$this->LogMessage("Timer abgelaufen: " . $TimerID, KL_NOTIFY);
 				
 				switch($TimerID){
 					case "UpdatePresence_Timer":
@@ -1282,6 +1328,17 @@
 			}
 		}
 		
+		private function IsBooleanValue(int $TargetID){
+		if (IPS_VariableExists($TargetID)){
+				$variable = IPS_GetVariable($TargetID);										
+				$t = $variable["VariableType"];			
+				
+				if ($t == 0){
+					return true;
+				}
+			}
+			return false;
+		}
 		private function GetObjectValuePercent(int $TargetID){
 			if (IPS_VariableExists($TargetID)){
 				$variable = IPS_GetVariable($TargetID);										
