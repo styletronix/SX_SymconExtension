@@ -766,7 +766,7 @@
 				if ($ProfileID4 > 0){
 					// Load Profile if set
 					$this->CallProfile($ProfileID4);
-				}elseif($ProfileID3 == -2){
+				}elseif($ProfileID4 == -2){
 					// Switch off on Alert
 					$arr = $this->GetListItems("actors");
 					if ($arr){
@@ -775,7 +775,7 @@
 						}
 					}
 				}else{
-					// Switch on in Alert (default)
+					// Switch on on Alert (default)
 					$arr = $this->GetListItems("actors");
 					if ($arr){
 						foreach($arr as $device){
