@@ -157,7 +157,7 @@
             $ignoreIDs = IPS_GetChildrenIDs($this->InstanceID);
 
 			foreach(IPS_GetChildrenIDs($CategoryID) as $key2) {
-				set_time_limit(30);
+				;set_time_limit(30);
 
 				$itemObject = IPS_GetObject($key2);
 				$TargetID = $key2;
