@@ -327,7 +327,7 @@ class KeyMatic extends IPSModule {
         }
 		
 		public function OpenDoor(bool $keepopen){
-			;set_time_limit(30);
+			@set_time_limit(30);
 			//Sicherstellen, dass Türe nicht per AutoTimer geschlossen wird
 			$this->SetTimerInterval("AutoLockDelay", 0);
 			$this->SetTimerInterval("MaxOpenTimeDelay", 0);
@@ -345,7 +345,7 @@ class KeyMatic extends IPSModule {
 			//Alarm deaktivieren
 			$AlarmzonenID = IPS_GetCategoryIDByName("Alarmzonen", $this->InstanceID);
 			foreach(IPS_GetChildrenIDs($AlarmzonenID) as $LinkID){
-				;set_time_limit(30);
+				@set_time_limit(30);
 				$itemObject = IPS_GetObject($LinkID);
 
 				if ($itemObject["ObjectType"] == 6){
@@ -367,7 +367,7 @@ class KeyMatic extends IPSModule {
 				$KeyLockDIRECTIONID = IPS_GetObjectIDByIdent("DIRECTION", $TargetID);
 				$count = 0;
 				while ($count <= 20){
-					;set_time_limit(30);
+					@set_time_limit(30);
 					if (GetValueInteger($KeyLockDIRECTIONID) == 0){break;}
 					$count++;
 					IPS_Sleep(500);
@@ -389,7 +389,7 @@ class KeyMatic extends IPSModule {
 				$KeyLockStateID = IPS_GetObjectIDByIdent("STATE", $TargetID);
 				$count = 0;
 				while ($count <= $DoorOpenDelay * 2){
-					;set_time_limit(30);
+					@set_time_limit(30);
 					if (GetValueBoolean($KeyLockStateID) == true){break;}
 					$count++;
 					IPS_Sleep(500);
@@ -402,7 +402,7 @@ class KeyMatic extends IPSModule {
 			//Türöffner betätigen ()
 			$TuerOeffnerID = IPS_GetCategoryIDByName("TuerOeffner", $this->InstanceID);
 			foreach(IPS_GetChildrenIDs($TuerOeffnerID) as $LinkID) {
-				;set_time_limit(30);
+				@set_time_limit(30);
 
 				$itemObject = IPS_GetObject($LinkID);
 				if ($itemObject["ObjectType"] == 6){
@@ -442,7 +442,7 @@ class KeyMatic extends IPSModule {
 			//Türöffner betätigen ()
 			$TuerOeffnerID = IPS_GetCategoryIDByName("TuerOeffner", $this->InstanceID);
 			foreach(IPS_GetChildrenIDs($TuerOeffnerID) as $LinkID) {
-				;set_time_limit(30);
+				@set_time_limit(30);
 
 				$itemObject = IPS_GetObject($LinkID);
 				if ($itemObject["ObjectType"] == 6){

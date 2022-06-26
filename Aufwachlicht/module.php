@@ -116,7 +116,7 @@
 		}
 		
 		private function SetObjectValuePercent(int $TargetID, float $value, bool $lowerOnly, bool $higherOnly){
-			;set_time_limit(30);
+			@set_time_limit(30);
 			
 			if (IPS_VariableExists($TargetID)){
 				$object = IPS_GetObject($TargetID);
