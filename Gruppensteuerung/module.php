@@ -640,10 +640,10 @@
 			SetValue($this->GetIDForIdent("Ergebnis_Float"),	$resultFloat);
 			SetValue($this->GetIDForIdent("Ergebnis_Integer"), $resultFloat * 100);
 			
-			if ($oldStatus == false and $result == true and GetValue($this->GetIDForIdent("AutoOff")) > 0){
+			if ($oldStatus == false and $result == true and $this->ReadPropertyInteger("AutoOff") > 0){
 				$this->StartAutoOffTimer();
 			}
-			if ($result == false or GetValue($this->GetIDForIdent("AutoOff")) == 0){
+			if ($result == false or $this->ReadPropertyInteger("AutoOff") == 0){
 				$this->StopAutoOffTimer();
 			}
 		}
