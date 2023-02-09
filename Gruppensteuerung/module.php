@@ -1382,7 +1382,7 @@
 						break;
 						
 					case "PresenceOffDelayScript_Timer":
-						$this->SetPresenceState(false, false, false);
+						$this->SetPresenceState(false, false, true);
 						break;
 						
 					case "ResetPresenceStateToTemplate_Timer":
