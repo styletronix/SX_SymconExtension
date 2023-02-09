@@ -663,10 +663,10 @@
 		private function TriggerAutoOff(){
 			//TODO: AutoOffWarning;
 			
-			$alert =
-			$value =
-			$precence =
-			$AutoOff = 
+			$alert = $this->GetValue("AlertModeAktive");
+			$value = $this->GetValue("Ergebnis_Boolean");
+			$precence = $this->GetValue("PresenceDetected");
+			$AutoOff = $this->ReadPropertyInteger("AutoOff");
 			
 			if ($value == false){				
 				return;
