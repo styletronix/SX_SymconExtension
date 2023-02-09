@@ -37,9 +37,9 @@
 			
 			$this->RegisterVariableFloat("CurrentMinBrightness", "Aktuelle Helligkeit", "");
 			
-			if (IPS_VariableProfileExists ( "SXGRP.TimeSeconds" ) == false){
-				IPS_CreateVariableProfile("SXGRP.TimeSeconds", 1);
-				IPS_SetVariableProfileText("SXGRP.TimeSeconds", "", " Sekunden");
+			if (IPS_VariableProfileExists ( "SXGRP.TimeMinutes" ) == false){
+				IPS_CreateVariableProfile("SXGRP.TimeMinutes", 1);
+				IPS_SetVariableProfileText("SXGRP.TimeMinutes", "", " Minuten");
 			}
 			
 			if (IPS_VariableProfileExists ( "SXGRP.Profiles" ) == false){
@@ -80,7 +80,7 @@
 				IPS_SetVariableProfileValues("SXGRP.Brightness", 0, 2000, 5);
 			}
 		
-			$this->RegisterVariableInteger("AutoOff", "Automatik Aus", "SXGRP.TimeSeconds");
+			$this->RegisterVariableInteger("AutoOff", "Automatik Aus", "SXGRP.TimeMinutes");
             $this->EnableAction("AutoOff");
 				
 			$this->RegisterVariableInteger("ProfileID", "Profil", "SXGRP.Profiles");
@@ -660,7 +660,7 @@
 		private function StartAutoOffTimer(){
 			$this->SetTimerInterval("AutoOff_Timer", 0);
 			$timer = $this->GetValue("AutoOff");	
-			$this->SetTimerInterval("AutoOff_Timer",  $timer * 1000);
+			$this->SetTimerInterval("AutoOff_Timer",  $timer * 60000);
 		}
 		private function StopAutoOffTimer(){
 			$this->SetTimerInterval("AutoOff_Timer",  0);
