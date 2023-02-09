@@ -20,6 +20,8 @@
             $this->RegisterVariableInteger("Ergebnis_Integer", "Gesamt (Integer)", "~Intensity.100");
             $this->EnableAction("Ergebnis_Integer");
 			
+			
+			
 			$this->RegisterVariableBoolean("EnablePresenceDetection", "Bewegungsmelder aktiviert", "~Switch");
             $this->EnableAction("EnablePresenceDetection");
 			
@@ -34,6 +36,11 @@
 			$this->RegisterVariableString("statusString", "Status");
 			
 			$this->RegisterVariableFloat("CurrentMinBrightness", "Aktuelle Helligkeit", "");
+			
+			if (IPS_VariableProfileExists ( "SXGRP.TimeSeconds" ) == false){
+				IPS_CreateVariableProfile("SXGRP.TimeSeconds", 1);
+				IPS_SetVariableProfileText("SXGRP.TimeSeconds", "", " Sekunden");
+			}
 			
 			if (IPS_VariableProfileExists ( "SXGRP.Profiles" ) == false){
 				IPS_CreateVariableProfile("SXGRP.Profiles", 1);
@@ -73,6 +80,8 @@
 				IPS_SetVariableProfileValues("SXGRP.Brightness", 0, 2000, 5);
 			}
 		
+			$this->RegisterVariableInteger("AutoOff", "Automatik Aus", "SXGRP.TimeSeconds");
+            $this->EnableAction("AutoOff");
 				
 			$this->RegisterVariableInteger("ProfileID", "Profil", "SXGRP.Profiles");
             $this->EnableAction("ProfileID");
@@ -92,7 +101,6 @@
 			$this->RegisterVariableFloat("IlluminationLevelMotion", "Helligkeitsgrenze für Bewegungsmelder", "SXGRP.Brightness");
             $this->EnableAction("IlluminationLevelMotion");
 			
-			$this->RegisterPropertyInteger("AutoOff", 0);
 			$this->RegisterPropertyBoolean("AutoRefreshStatus", false);
 			$this->RegisterPropertyInteger("PresenceTimeout", 10);
 			$this->RegisterPropertyInteger("PresenceOffDelay", 0);
@@ -640,10 +648,10 @@
 			SetValue($this->GetIDForIdent("Ergebnis_Float"),	$resultFloat);
 			SetValue($this->GetIDForIdent("Ergebnis_Integer"), $resultFloat * 100);
 			
-			if ($oldStatus == false and $result == true and $this->ReadPropertyInteger("AutoOff") > 0){
+			if ($oldStatus == false and $result == true and $this->GetValue("AutoOff") > 0){
 				$this->StartAutoOffTimer();
 			}
-			if ($result == false or $this->ReadPropertyInteger("AutoOff") == 0){
+			if ($result == false or $this->GetValue("AutoOff") == 0){
 				$this->StopAutoOffTimer();
 			}
 		}
@@ -651,7 +659,7 @@
 		
 		private function StartAutoOffTimer(){
 			$this->SetTimerInterval("AutoOff_Timer", 0);
-			$timer = $this->ReadPropertyInteger("AutoOff");	
+			$timer = $this->GetValue("AutoOff");	
 			$this->SetTimerInterval("AutoOff_Timer",  $timer * 1000);
 		}
 		private function StopAutoOffTimer(){
@@ -666,7 +674,7 @@
 			$alert = $this->GetValue("AlertModeAktive");
 			$value = $this->GetValue("Ergebnis_Boolean");
 			$precence = $this->GetValue("PresenceDetected");
-			$AutoOff = $this->ReadPropertyInteger("AutoOff");
+			$AutoOff = $this->GetValue("AutoOff");
 			
 			if ($value == false){				
 				return;
@@ -1320,6 +1328,11 @@
 				
 			case "TimerCallback":
 				$this->TimerCallback($Value);
+				break;
+				
+			case "AutoOff":
+				$this->SetValue($Ident, $Value);
+				$this->StartAutoOffTimer();
 				break;
 			
         	default:
