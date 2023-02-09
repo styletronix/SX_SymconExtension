@@ -154,6 +154,17 @@
 	  "suffix": "seconds"
     },
 	{
+      "type": "NumberSpinner",
+      "name": "AutoOff",
+      "caption": "Stairway Auto off",
+	  "suffix": "seconds"
+    },
+	{
+      "type": "CheckBox",
+      "name": "AutoRefreshStatus",
+      "caption": "Periodically refresh status"
+    },
+	{
       "type": "CheckBox",
       "name": "ResetManualPresenceOnManualTrigger",
       "caption": "Reset manual presence on Button press"

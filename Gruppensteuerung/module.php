@@ -9,15 +9,15 @@
 
 			$ApplyChanges = false;
 			
-			$this->RegisterVariableBoolean("Ergebnis_Boolean", "Gesamt", "~Switch");
+			$this->RegisterVariableBoolean("Ergebnis_Boolean", "Gesamt (Bool)", "~Switch");
             $this->EnableAction("Ergebnis_Boolean");
 			IPS_SetHidden($this->GetIDForIdent("Ergebnis_Boolean"), true); 
 			
-            $this->RegisterVariableFloat("Ergebnis_Float", "Gesamt", "~Intensity.1");
+            $this->RegisterVariableFloat("Ergebnis_Float", "Gesamt (Float)", "~Intensity.1");
             $this->EnableAction("Ergebnis_Float");
 			IPS_SetHidden($this->GetIDForIdent("Ergebnis_Float"), true); 
 
-            $this->RegisterVariableInteger("Ergebnis_Integer", "Gesamt", "~Intensity.100");
+            $this->RegisterVariableInteger("Ergebnis_Integer", "Gesamt (Integer)", "~Intensity.100");
             $this->EnableAction("Ergebnis_Integer");
 			
 			$this->RegisterVariableBoolean("EnablePresenceDetection", "Bewegungsmelder aktiviert", "~Switch");
@@ -72,6 +72,7 @@
 				IPS_CreateVariableProfile("SXGRP.Brightness", 2);
 				IPS_SetVariableProfileValues("SXGRP.Brightness", 0, 2000, 5);
 			}
+		
 				
 			$this->RegisterVariableInteger("ProfileID", "Profil", "SXGRP.Profiles");
             $this->EnableAction("ProfileID");
@@ -91,6 +92,8 @@
 			$this->RegisterVariableFloat("IlluminationLevelMotion", "Helligkeitsgrenze für Bewegungsmelder", "SXGRP.Brightness");
             $this->EnableAction("IlluminationLevelMotion");
 			
+			$this->RegisterPropertyInteger("AutoOff", 0);
+			$this->RegisterPropertyBoolean("AutoRefreshStatus", false);
 			$this->RegisterPropertyInteger("PresenceTimeout", 10);
 			$this->RegisterPropertyInteger("PresenceOffDelay", 0);
 			$this->RegisterPropertyInteger("PresenceDimmerOffPercent", 10);
@@ -131,8 +134,11 @@
 			$this->RegisterTimer("AlertTimeout_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "AlertTimeout_Timer");');
 			$this->RegisterTimer("PresenceDetectionOffTimeout_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "PresenceDetectionOffTimeout_Timer");');
 			$this->RegisterTimer("ResetToDefaultProfilePresenceTimeout_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "ResetToDefaultProfilePresenceTimeout_Timer");');
-						
-            if ($ApplyChanges == true){
+			$this->RegisterTimer("AutoOff_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "AutoOff_Timer");');	
+			$this->RegisterTimer("AutoOffWarning_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "AutoOffWarning_Timer");');				
+			$this->RegisterTimer("UpdateStatus_Timer",0,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "UpdateStatus_Timer");');						
+            
+			if ($ApplyChanges == true){
 				IPS_ApplyChanges($this->InstanceID);
 			}
 			
@@ -566,33 +572,39 @@
 					$this->SetPresenceState($result, false, false);
 					
 				}else{
-					$this->SetTimerInterval("UpdatePresence_Timer", 0);
-					
-					if ($PresenceOffDelay <= 0){
-						$this->SetPresenceState($result, false, false);
-					}else{
-						$lastStatePresence = GetValue($this->GetIDForIdent("PresenceDetected"));
-						if ($lastStatePresence){
-							if ($this->GetTimerInterval("PresenceOffDelayScript_Timer") > 0){
-								$this->LogMessage("Verzögerung vor Abwesenheit läuft bereits.", KL_NOTIFY);
-							}else{							
-								$this->LogMessage("Verzögerung vor Abwesenheit... (" . $PresenceOffDelay . " Sek.)", KL_NOTIFY);
-								$this->SetValue("statusString", "Verzögerung vor Abwesenheit... (" . $PresenceOffDelay . " Sek.)");
-								$this->SetTimerInterval("PresenceOffDelayScript_Timer", $PresenceOffDelay * 1000);
-							}
-						} else {
-							$this->LogMessage("Keine Verzögerung vor Abwesenheit da bereits abwesend", KL_NOTIFY);
-							$this->SetValue("statusString", "Keine Verzögerung vor Abwesenheit da bereits abwesend");
-							$this->SetPresenceState($result, false, false);						
-						}					
-					}
+					$this->SetPresenceGone();
 				}
 			}else{
 				$this->SetPresenceState($result, false, false);
 			}
 		}
+		private function SetPresenceGone(){
+				$this->SetTimerInterval("UpdatePresence_Timer", 0);
+				$PresenceOffDelay = $this->ReadPropertyInteger("PresenceOffDelay");
+				
+				if ($PresenceOffDelay <= 0){
+						$this->SetPresenceState(false, false, false);
+				}else{
+					$lastStatePresence = GetValue($this->GetIDForIdent("PresenceDetected"));
+					if ($lastStatePresence){
+						if ($this->GetTimerInterval("PresenceOffDelayScript_Timer") > 0){
+							$this->LogMessage("Verzögerung vor Abwesenheit läuft bereits.", KL_NOTIFY);
+						}else{							
+							$this->LogMessage("Verzögerung vor Abwesenheit... (" . $PresenceOffDelay . " Sek.)", KL_NOTIFY);
+							$this->SetValue("statusString", "Verzögerung vor Abwesenheit... (" . $PresenceOffDelay . " Sek.)");
+							$this->SetTimerInterval("PresenceOffDelayScript_Timer", $PresenceOffDelay * 1000);
+						}
+					} else {
+							$this->LogMessage("Keine Verzögerung vor Abwesenheit da bereits abwesend", KL_NOTIFY);
+							$this->SetValue("statusString", "Keine Verzögerung vor Abwesenheit da bereits abwesend");
+							$this->SetPresenceState(false, false, false);						
+					}		
+				}
+		}
 		
         private function RefreshStatus() {
+			$oldStatus = GetValue($this->GetIDForIdent("Ergebnis_Boolean"));
+			
 			$result = false;
             $resultFloat = 0.0;
 			$ActorDeviceList = $this->GetListItems("actors");
@@ -627,6 +639,58 @@
 			SetValue($this->GetIDForIdent("Ergebnis_Boolean"), $result);
 			SetValue($this->GetIDForIdent("Ergebnis_Float"),	$resultFloat);
 			SetValue($this->GetIDForIdent("Ergebnis_Integer"), $resultFloat * 100);
+			
+			if ($oldStatus == false and $result == true and GetValue($this->GetIDForIdent("AutoOff")) > 0){
+				$this->StartAutoOffTimer();
+			}
+			if ($result == false or GetValue($this->GetIDForIdent("AutoOff")) == 0){
+				$this->StopAutoOffTimer();
+			}
+		}
+		
+		
+		private function StartAutoOffTimer(){
+			$this->SetTimerInterval("AutoOff_Timer", 0);
+			$timer = $this->ReadPropertyInteger("AutoOff");	
+			$this->SetTimerInterval("AutoOff_Timer",  $timer * 1000);
+		}
+		private function StopAutoOffTimer(){
+			$this->SetTimerInterval("AutoOff_Timer",  0);
+		}
+		private function TriggerAutoOffWarning(){
+			//TODO: AutoOffWarning;
+		}
+		private function TriggerAutoOff(){
+			//TODO: AutoOffWarning;
+			
+			$alert =
+			$value =
+			$precence =
+			$AutoOff = 
+			
+			if ($value == false){				
+				return;
+			}
+			if ($AutoOff <= 0){				
+				return;
+			}
+			if ($alert == true){		
+				$this->StartAutoOffTimer();			
+				return;
+			}
+			if ($precence == true){
+				$this->StartAutoOffTimer();
+				return;
+			}
+			
+			
+			$this->StartAutoOffTimer();	//prevent end of timer if auto off fails
+			$this->SetPresenceGone();
+		}
+		private function UpdateStatus(){
+			// TODO: implementiere Refresh
+			// $this->SetValue("statusString", "Bewegung wegen Helligkeit ignoriert");
+			$this->SetTimerInterval("UpdateStatus_Timer",  0);
 		}
 		private function RefreshIlluminationLevel(){
 			$IlluminationLevelMotion = GetValueFloat(IPS_GetObjectIDByIdent("IlluminationLevelMotion", $this->InstanceID));  
@@ -852,6 +916,10 @@
 				$this->SetValue("statusString", "Bewegungsmelder sind deaktiviert");
 				return;
 			}
+			
+			if ($Value == true){
+				$this->StartAutoOffTimer();
+			}	
 			
 			$DeviceList = $this->GetListItems("actors");
 			$PresenceTimeout = $this->ReadPropertyInteger("PresenceTimeout");
@@ -1281,12 +1349,28 @@
 			
 			if (GetValueBoolean($this->GetIDForIdent("EnablePresenceDetection")) == false){
 				$this->SetTimerInterval("PresenceDetectionOffTimeout_Timer",  $this->ReadPropertyInteger("PresenceDetectionOffTimeout") * 1000);
-			}		
+			}	
+
+			if (GetValueBoolean($this->GetIDForIdent("Ergebnis_Boolean")) == true){
+				$this->StartAutoOffTimer();
+			}
+			
+			if ($this->ReadPropertyBoolean("AutoRefreshStatus")){
+				$this->SetTimerInterval("UpdateStatus_Timer",  5000);
+			}else{
+				$this->SetTimerInterval("UpdateStatus_Timer",  0);
+			}
 		}
 		
 		private function TimerCallback(string $TimerID){
-			$this->SetTimerInterval($TimerID, 0);
-			$this->LogMessage("Timer abgelaufen: " . $TimerID, KL_NOTIFY);
+			switch($TimerID){
+				case "UpdateStatus_Timer":
+					break;
+				
+				default:
+					$this->SetTimerInterval($TimerID, 0);
+					$this->LogMessage("Timer abgelaufen: " . $TimerID, KL_NOTIFY);
+			}
 				
 				switch($TimerID){
 					case "UpdatePresence_Timer":
@@ -1320,6 +1404,19 @@
 					case "ResetToDefaultProfilePresenceTimeout_Timer":
 						$this->ResetPresenceProfileToDefault();
 						break;
+						
+					case "AutoOff_Timer":
+						$this->TriggerAutoOff();
+						break;
+						
+					case "AutoOffWarning_Timer_Timer":
+						$this->TriggerAutoOffWarning();
+						break;
+						
+					case "UpdateStatus_Timer":
+						$this->UpdateStatus();
+						break;
+						
 				}				
 		}
 		public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
