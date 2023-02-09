@@ -572,21 +572,21 @@
 					$this->SetPresenceState($result, false, false);
 					
 				}else{
-					$this->SetPresenceGone();
+					$this->SetPresenceGone(false);
 				}
 			}else{
 				$this->SetPresenceState($result, false, false);
 			}
 		}
-		private function SetPresenceGone(){
+		private function SetPresenceGone($forced){
 				$this->SetTimerInterval("UpdatePresence_Timer", 0);
 				$PresenceOffDelay = $this->ReadPropertyInteger("PresenceOffDelay");
 				
 				if ($PresenceOffDelay <= 0){
-						$this->SetPresenceState(false, false, false);
+						$this->SetPresenceState(false, false, $forced);
 				}else{
 					$lastStatePresence = GetValue($this->GetIDForIdent("PresenceDetected"));
-					if ($lastStatePresence){
+					if ($lastStatePresence or $forced){
 						if ($this->GetTimerInterval("PresenceOffDelayScript_Timer") > 0){
 							$this->LogMessage("Verzögerung vor Abwesenheit läuft bereits.", KL_NOTIFY);
 						}else{							
@@ -597,7 +597,7 @@
 					} else {
 							$this->LogMessage("Keine Verzögerung vor Abwesenheit da bereits abwesend", KL_NOTIFY);
 							$this->SetValue("statusString", "Keine Verzögerung vor Abwesenheit da bereits abwesend");
-							$this->SetPresenceState(false, false, false);						
+							$this->SetPresenceState(false, false, $forced);						
 					}		
 				}
 		}
@@ -685,7 +685,7 @@
 			
 			
 			$this->StartAutoOffTimer();	//prevent end of timer if auto off fails
-			$this->SetPresenceGone();
+			$this->SetPresenceGone(true);
 		}
 		private function UpdateStatus(){
 			// TODO: implementiere Refresh
