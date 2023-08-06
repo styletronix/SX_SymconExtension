@@ -43,7 +43,10 @@
 			"Do not reset presence profile to default while timer is already running": "Nicht sofort auf Standard Anwesenheit umschalten wenn Reset-Timer noch läuft.",
 			"Recall presence profile each time presence is detected": "Anwesenheitsprofil bei jeder erkannten Anwesenheit neu laden.",
 			"Recall absence profile each time absence is detected": "Abwesenheitsprofil bei jeder erkannten Abwesenheit neu laden.",
-			"Trigger on each refresh and change": "Bei jeder Änderung und Aktualisierung auslößen"
+			"Trigger on each refresh and change": "Bei jeder Änderung und Aktualisierung auslößen",
+			"Stairway Auto off": "Treppenhausmodus Automatik aus",
+			"Stairway warning before auto off": "Treppenhaus vorwarnung vor automatik aus",
+			"Periodically refresh status": "Status periodisch aktualisieren"
         }
     }
 }
