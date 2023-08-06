@@ -155,6 +155,11 @@
     },
 	{
       "type": "CheckBox",
+      "name": "AutoRefreshStatus",
+      "caption": "Periodically refresh status"
+    },
+	{
+      "type": "CheckBox",
       "name": "ResetManualPresenceOnManualTrigger",
       "caption": "Reset manual presence on Button press"
     },
