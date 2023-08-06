@@ -1121,8 +1121,6 @@
 			foreach($DeviceList as $Device) {
 				$key2 = $Device["InstanceID"];
 				$TargetID = $key2;
-				
-				@set_time_limit(30);
 
 				if (IPS_VariableExists($TargetID)){
 					$itemObject = IPS_GetObject($key2);
@@ -1484,8 +1482,6 @@
 			}
 		}
 		private function SetObjectValuePercent(int $TargetID, float $value, bool $lowerOnly, bool $higherOnly){
-			@set_time_limit(30);
-			
 			if (IPS_VariableExists($TargetID)){
 				$object = IPS_GetObject($TargetID);
 				$variable = IPS_GetVariable($TargetID);
@@ -1545,8 +1541,6 @@
 		}
 		
 		private function SetObjectValue(int $TargetID, bool $value, int $valueInteger, float $valueFloat, bool $lowerOnly, bool $higherOnly){
-			@set_time_limit(30);
-
 				if (IPS_VariableExists($TargetID)){
 					$object = IPS_GetObject($TargetID);
 					$variable = IPS_GetVariable($TargetID);
